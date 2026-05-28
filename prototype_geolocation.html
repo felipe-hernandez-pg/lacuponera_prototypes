@@ -286,7 +286,7 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
 .scan-reco-title{font-size:var(--fs-h4);font-weight:700;color:var(--primary-600);margin:20px 0 12px}
 /* Map pins */
 .map-pin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;z-index:10;text-align:center}
-.map-pin-icon{width:44px;height:44px;border-radius:50%;border:3px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:14px;overflow:hidden;margin:0 auto}
+.map-pin-icon{width:54px;height:54px;border-radius:50%;border:3px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:14px;overflow:hidden;margin:0 auto}
 .map-pin-label{font-size:10px;font-weight:700;color:var(--primary-600);margin-top:4px;background:#fff;padding:2px 6px;border-radius:6px;box-shadow:0 2px 4px rgba(0,0,0,.1);white-space:nowrap;line-height:1.3}
 .map-pin:active{transform:translate(-50%,-100%) scale(.9)}
 .map-back-btn{position:absolute;top:60px;left:16px;z-index:25;width:40px;height:40px;border-radius:50%;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;cursor:pointer}
@@ -403,12 +403,12 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
         <!-- Category chips -->
         <div style="padding-top:14px">
           <div class="category-chips">
-            <div class="chip active"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Ftodas.png&w=64&q=75" alt="">Todas (23)</div>
-            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Flimpieza.png&w=64&q=75" alt="">Limpieza</div>
-            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fbebe.png&w=64&q=75" alt="">Bebé</div>
-            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fcuidado-personal.png&w=64&q=75" alt="">Cuidado personal</div>
-            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fhigiene-bucal.png&w=64&q=75" alt="">Higiene bucal</div>
-            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fafeitado.png&w=64&q=75" alt="">Afeitado</div>
+            <div class="chip active">Todas (23)</div>
+            <div class="chip"><img class="chip-icon" src="cuidado_del_hogar.png" alt="">Limpieza</div>
+            <div class="chip"><img class="chip-icon" src="belleza.png" alt="">Bebé</div>
+            <div class="chip"><img class="chip-icon" src="cuidado_de_la_ropa.png" alt="">Cuidado de la ropa</div>
+            <div class="chip"><img class="chip-icon" src="higiene_bucal.png" alt="">Higiene bucal</div>
+            <div class="chip"><img class="chip-icon" src="belleza.png" alt="">Belleza</div>
           </div>
         </div>
 
@@ -1068,7 +1068,7 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
         <!-- Bottom card -->
         <div style="position:absolute;bottom:20px;left:16px;right:16px;z-index:20">
           <div style="background:#fff;border-radius:16px;padding:16px;box-shadow:0 6px 20px rgba(0,0,0,.15)">
-            <div style="font-size:13px;font-weight:700;color:var(--primary-600);margin-bottom:10px">📍 Tiendas cerca de ti</div>
+            <div style="font-size:16px;font-weight:700;color:var(--primary-600);margin-bottom:10px">📍 Tiendas cerca de ti</div>
             <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px">
               <div style="flex-shrink:0;text-align:center;cursor:pointer" onclick="goToScreen('screen-offers')">
                 <div style="width:50px;height:50px;border-radius:12px;overflow:hidden;border:2px solid #003DA5;margin-bottom:4px"><img src="carrefour.png" style="width:100%;height:100%;object-fit:cover"></div>
@@ -1148,11 +1148,11 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
         <!-- Category chips -->
         <div style="padding-top:14px">
           <div class="category-chips">
-            <div class="chip active"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Ftodas.png&w=64&q=75" alt="">Todas (18)</div>
-            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Flimpieza.png&w=64&q=75" alt="">Limpieza</div>
-            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fcuidado-personal.png&w=64&q=75" alt="">Cuidado personal</div>
-            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fhigiene-bucal.png&w=64&q=75" alt="">Higiene bucal</div>
-            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fbebe.png&w=64&q=75" alt="">Bebé</div>
+            <div class="chip active">Todas (18)</div>
+            <div class="chip"><img class="chip-icon" src="cuidado_del_hogar.png" alt="">Limpieza</div>
+            <div class="chip"><img class="chip-icon" src="cuidado_de_la_ropa.png" alt="">Cuidado de la ropa</div>
+            <div class="chip"><img class="chip-icon" src="higiene_bucal.png" alt="">Higiene bucal</div>
+            <div class="chip"><img class="chip-icon" src="belleza.png" alt="">Belleza</div>
           </div>
         </div>
 
