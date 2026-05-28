@@ -57,9 +57,7 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 #proto-frame.active{display:block}
 
 /* Back overlay hint */
-.back-overlay{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:200;background:rgba(0,0,0,.7);color:#fff;border-radius:999px;padding:8px 14px;font-size:11px;font-weight:800;display:none;animation:fadeOut 3s forwards;pointer-events:none}
-@keyframes fadeOut{0%,70%{opacity:1}100%{opacity:0;display:none}}
-.back-overlay.show{display:block}
+.back-overlay{display:none}
 
 /* Hidden hotspot */
 .hotspot{position:absolute;top:0;left:0;width:50px;height:44px;z-index:200;display:none;cursor:default}
@@ -142,11 +140,6 @@ function loadDesign(url, type) {
   frame.classList.add('active');
   frame.src = url;
   hotspot.classList.add('show');
-  // Show hint briefly
-  backHint.classList.remove('show');
-  void backHint.offsetWidth;
-  backHint.classList.add('show');
-  setTimeout(() => backHint.classList.remove('show'), 3500);
 }
 
 function returnToMenu() {
