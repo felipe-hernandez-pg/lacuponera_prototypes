@@ -478,12 +478,19 @@ function getLevelForState(s){
   if(actions >= 1) return 2;
   return 1;
 }
-function getLevelData(lvl){return LEVELS.find(l=>l.level===lvl)||LEVELS[0]}
+function getLevelData(lvl){
+  var clamped = Math.min(lvl, LEVELS.length);
+  return LEVELS.find(l=>l.level===clamped)||LEVELS[0];
+}
 
 // === STATE ===
 const STORAGE_KEY = 'cupi_coach_v3';
 function freshState(){return{balance:0,historical:11,redeemed:0,tickets:0,surveys:0,shares:0,reviews:0,promos:[],level:1,_pendingLevelUp:0}}
-function load(){try{return{...freshState(),...JSON.parse(localStorage.getItem(STORAGE_KEY))}}catch(e){return freshState()}}
+function load(){
+  // Clear any old storage keys
+  localStorage.removeItem('cupi_coach_v2');
+  try{var s={...freshState(),...JSON.parse(localStorage.getItem(STORAGE_KEY))};s.level=Math.min(s.level,3);return s}catch(e){return freshState()}
+}
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
 let state = load();
 
