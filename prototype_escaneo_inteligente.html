@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Escaneo Inteligente — La Cuponera</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand-01:#5EBC82;--primary-100:#E8F5EE;--primary-200:#B8E4CA;--primary-400:#3DA86A;--primary-600:#122B1C;
+  --neutrals-100:#F7F7F7;--neutrals-200:#E5E5E5;--neutrals-400:#9E9E9E;--neutrals-600:#4A4A4A;--neutrals-800:#1A1A1A;
+  --accent-orange:#FF6F00;--accent-gold:#FFD54F;
+  --fs-h1:24px;--fs-h2:20px;--fs-h3:17px;--fs-h4:15px;--fs-body:14px;--fs-small:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify-content:center;align-items:center;min-height:100vh}
+
+/* Device frame */
+.device{width:390px;height:844px;border-radius:44px;overflow:hidden;position:relative;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+@media(max-width:500px){
+  body{background:#fff}
+  .device{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none}
+}
+
+/* Screens */
+.screen{position:absolute;inset:0;display:none;flex-direction:column;background:#fff;overflow:hidden}
+.screen.active{display:flex}
+.screen-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.screen-content::-webkit-scrollbar{display:none}
+
+/* Header */
+.app-header{padding:56px 20px 16px;background:#fff;position:sticky;top:0;z-index:10}
+.app-header-title{font-size:var(--fs-h2);font-weight:800;color:var(--primary-600)}
+.app-header-back{position:absolute;left:16px;top:54px;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--neutrals-100)}
+
+/* Buttons */
+.btn-primary{width:100%;padding:16px;border-radius:14px;border:none;background:var(--brand-01);color:#fff;font-size:var(--fs-h4);font-weight:700;font-family:inherit;cursor:pointer;transition:all .15s;text-align:center}
+.btn-primary:active{transform:scale(.97);opacity:.9}
+.btn-secondary{width:100%;padding:14px;border-radius:14px;border:2px solid var(--neutrals-200);background:#fff;color:var(--neutrals-600);font-size:var(--fs-body);font-weight:600;font-family:inherit;cursor:pointer;text-align:center}
+.btn-secondary:active{transform:scale(.97)}
+.btn-link{background:none;border:none;color:var(--brand-01);font-size:var(--fs-body);font-weight:600;cursor:pointer;font-family:inherit;padding:12px;text-decoration:underline}
+
+/* Cards */
+.card{background:#fff;border-radius:16px;border:2px solid var(--neutrals-200);padding:20px;margin-bottom:12px;cursor:pointer;transition:all .15s}
+.card:active{transform:scale(.98)}
+.card.selected{border-color:var(--brand-01);background:var(--primary-100)}
+.card-title{font-size:var(--fs-h3);font-weight:800;color:var(--primary-600);margin-bottom:10px}
+.card-body{font-size:var(--fs-body);color:var(--neutrals-600);line-height:1.5}
+.card-body li{margin-bottom:6px;list-style:none;padding-left:20px;position:relative}
+.card-body li::before{content:'✓';position:absolute;left:0;color:var(--brand-01);font-weight:700}
+
+/* Tab bar */
+.tab-bar{display:flex;border-top:1px solid var(--neutrals-200);padding:8px 0 20px;background:#fff}
+.tab-bar-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--neutrals-400);cursor:pointer;padding:6px 0}
+.tab-bar-item.active{color:var(--brand-01)}
+.tab-bar-item svg{width:22px;height:22px}
+
+/* Timeframe tabs */
+.timeframe-tabs{display:flex;gap:6px;padding:0 20px 16px}
+.tf-tab{flex:1;padding:10px 8px;border-radius:10px;text-align:center;font-size:var(--fs-small);font-weight:700;border:1.5px solid var(--neutrals-200);color:var(--neutrals-600);cursor:pointer;background:#fff}
+.tf-tab.active{background:var(--brand-01);color:#fff;border-color:var(--brand-01)}
+
+/* Offer grid */
+.offer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px 16px}
+.offer-grid-item{border-radius:14px;overflow:hidden;border:1.5px solid var(--neutrals-200);background:#fff;cursor:pointer}
+.offer-grid-item img{width:100%;aspect-ratio:1;object-fit:cover}
+.offer-grid-item .offer-grid-info{padding:10px 12px}
+.offer-grid-item .offer-grid-brand{font-size:var(--fs-small);font-weight:700;color:var(--primary-600)}
+.offer-grid-item .offer-grid-cashback{font-size:var(--fs-small);font-weight:600;color:var(--brand-01)}
+
+/* Spinner */
+.spinner{width:40px;height:40px;border:4px solid var(--neutrals-200);border-top-color:var(--brand-01);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Clock animation */
+.clock-icon{animation:tick 1s steps(1) infinite}
+@keyframes tick{50%{opacity:.5}100%{opacity:1}}
+
+/* Popup overlay */
+.popup-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:50;padding:24px}
+.popup-card{background:#fff;border-radius:20px;padding:28px 24px;max-width:320px;width:100%;text-align:center}
+.popup-card h3{font-size:var(--fs-h2);font-weight:800;color:var(--primary-600);margin-bottom:12px}
+.popup-card p{font-size:var(--fs-body);color:var(--neutrals-600);line-height:1.5;margin-bottom:20px}
+
+/* Donut */
+.donut-container{display:flex;justify-content:center;padding:20px 0}
+.donut-container svg{width:180px;height:180px}
+
+/* Community tips */
+.tips-row{display:flex;gap:12px;padding:0 20px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tips-row::-webkit-scrollbar{display:none}
+.tip-card{flex-shrink:0;width:160px;border-radius:14px;overflow:hidden;border:1.5px solid var(--neutrals-200);background:#fff}
+.tip-card img{width:100%;height:100px;object-fit:cover}
+.tip-card .tip-card-body{padding:10px;font-size:var(--fs-small);font-weight:600;color:var(--neutrals-600)}
+.tip-card .play-btn{width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;position:absolute;top:34px;left:50%;transform:translateX(-50%)}
+
+/* Lock screen elements */
+.lock-time{font-size:64px;font-weight:700;text-align:center;color:#fff;margin-top:80px}
+.lock-date{font-size:var(--fs-body);text-align:center;color:rgba(255,255,255,.8);margin-bottom:40px}
+.notif-card{background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-radius:16px;padding:14px 16px;margin:0 16px 10px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.notif-card-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.notif-card-header img{width:20px;height:20px;border-radius:4px}
+.notif-card-header span{font-size:var(--fs-small);font-weight:600;color:var(--neutrals-400)}
+.notif-card-title{font-size:var(--fs-body);font-weight:700;color:var(--neutrals-800);margin-bottom:4px}
+.notif-card-body{font-size:var(--fs-small);color:var(--neutrals-600);line-height:1.4}
+
+/* Email mock */
+.email-header{background:var(--neutrals-100);padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--neutrals-200)}
+.email-header .email-avatar{width:40px;height:40px;border-radius:50%;overflow:hidden}
+.email-header .email-avatar img{width:100%;height:100%;object-fit:cover}
+.email-from{font-size:var(--fs-body);font-weight:700;color:var(--neutrals-800)}
+.email-subject{font-size:var(--fs-small);color:var(--neutrals-400)}
+
+/* Savings list */
+.savings-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--neutrals-100)}
+.savings-item img{width:48px;height:48px;border-radius:10px;object-fit:cover}
+.savings-item .savings-amount{font-size:var(--fs-h3);font-weight:800;color:var(--brand-01)}
+.savings-item .savings-brand{font-size:var(--fs-body);font-weight:600;color:var(--neutrals-600)}
+
+/* Category legend */
+.cat-legend-item{display:flex;align-items:center;gap:12px;padding:10px 0}
+.cat-legend-dot{width:16px;height:16px;border-radius:4px;flex-shrink:0}
+.cat-legend-text{font-size:var(--fs-body);font-weight:600;color:var(--neutrals-600)}
+
+/* DevPanel */
+.dev-panel{position:absolute;bottom:0;left:0;right:0;background:#1a1a2e;color:#fff;padding:12px 16px;font-size:11px;z-index:100;border-top:2px solid var(--brand-01);display:none}
+.dev-panel.visible{display:block}
+.dev-panel label{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-weight:600}
+.dev-panel select,.dev-panel input[type=checkbox]{accent-color:var(--brand-01)}
+.dev-toggle{position:absolute;bottom:70px;right:12px;width:32px;height:32px;border-radius:50%;background:#1a1a2e;border:2px solid var(--brand-01);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:101;font-size:14px}
+
+/* Utility */
+.hidden{display:none}
+.text-center{text-align:center}
+.mt-12{margin-top:12px}
+.mt-20{margin-top:20px}
+.mb-12{margin-bottom:12px}
+.mb-20{margin-bottom:20px}
+.px-20{padding-left:20px;padding-right:20px}
+.py-20{padding-top:20px;padding-bottom:20px}
+</style>
+</head>
+<body>
+<div class="device">
+
+  <!-- ===== SCREEN: ONBOARDING ===== -->
+  <div class="screen active" id="screen-onboarding">
+    <div class="screen-content" style="padding:56px 20px 30px">
+      <div style="text-align:center;margin-bottom:28px">
+        <img src="cuponera_logo.png" style="width:48px;height:48px;border-radius:12px;margin-bottom:12px">
+        <h1 style="font-size:var(--fs-h1);font-weight:900;color:var(--primary-600);line-height:1.2">¿Cómo quieres escanear tus tickets?</h1>
+      </div>
+
+      <!-- Escaneo Inteligente -->
+      <div class="card selected" onclick="setState('scanMode','inteligente');goTo('screen-proceso-inteligente')">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--brand-01),#2ECC71);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="16" height="16" fill="#fff"><path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z"/></svg></div>
+          <div class="card-title" style="margin-bottom:0">ESCANEO INTELIGENTE</div>
+        </div>
+        <div class="card-body">
+          <li>Sólo necesitas subir tu ticket</li>
+        </div>
+        <div style="margin-top:10px;padding:12px;background:var(--primary-100);border-radius:10px">
+          <div style="font-size:var(--fs-small);font-weight:700;color:var(--primary-600);margin-bottom:6px">Ventajas</div>
+          <div class="card-body" style="font-size:var(--fs-small)">
+            <li>Aplicaremos tus ofertas automáticamente</li>
+            <li>Recibirás GRATIS un análisis de tus compras</li>
+            <li>Recibirás ofertas personalizadas y podrás activar avisos</li>
+          </div>
+        </div>
+        <div style="margin-top:14px;text-align:center">
+          <div class="btn-primary" style="display:inline-block;padding:12px 24px">Elegir Inteligente →</div>
+        </div>
+      </div>
+
+      <!-- Escaneo Manual -->
+      <div class="card" onclick="setState('scanMode','manual');goTo('screen-proceso-manual')">
+        <div class="card-title">ESCANEO MANUAL</div>
+        <div class="card-body">
+          <li>Deberás seleccionar establecimiento</li>
+          <li>Deberás seleccionar oferta</li>
+          <li>Entonces podrás subir tu ticket</li>
+        </div>
+        <div style="margin-top:14px;text-align:center">
+          <div class="btn-secondary" style="display:inline-block;padding:10px 20px">Usar manual</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: PROCESO INTELIGENTE ===== -->
+  <div class="screen" id="screen-proceso-inteligente">
+    <div class="app-header">
+      <div class="app-header-back" onclick="goTo('screen-onboarding')">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M15 18l-6-6 6-6" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="app-header-title">Ofertas disponibles</div>
+      <div style="font-size:var(--fs-small);color:var(--brand-01);font-weight:700;margin-top:4px">Modo: Inteligente ✨</div>
+    </div>
+    <div class="screen-content" style="padding-top:12px">
+      <div class="offer-grid">
+        <div class="offer-grid-item">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fd0343577-d143-4179-9567-6d6d3ab534c4.jpeg&w=640&q=75" alt="Fairy">
+          <div class="offer-grid-info"><div class="offer-grid-brand">FAIRY</div><div class="offer-grid-cashback">€4,00</div></div>
+        </div>
+        <div class="offer-grid-item">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc562c9b-4962-4d70-b321-ef101a83a329.jpeg&w=640&q=75" alt="Ariel">
+          <div class="offer-grid-info"><div class="offer-grid-brand">ARIEL</div><div class="offer-grid-cashback">€2,00</div></div>
+        </div>
+        <div class="offer-grid-item">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F4556a36e-a197-4b97-99d5-26e1a02fdc43.png&w=640&q=75" alt="Oral-B">
+          <div class="offer-grid-info"><div class="offer-grid-brand">ORAL-B</div><div class="offer-grid-cashback">2x1</div></div>
+        </div>
+        <div class="offer-grid-item">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Ff0a2af01-a6b0-44bf-bd1a-e809b27e055e.png&w=640&q=75" alt="Lenor">
+          <div class="offer-grid-info"><div class="offer-grid-brand">LENOR</div><div class="offer-grid-cashback">€3,50</div></div>
+        </div>
+        <div class="offer-grid-item">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fb7878290-0949-4cba-8cdc-2b308e66ff16.jpeg&w=640&q=75" alt="H&S">
+          <div class="offer-grid-info"><div class="offer-grid-brand">H&S</div><div class="offer-grid-cashback">50%</div></div>
+        </div>
+        <div class="offer-grid-item">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F5a5a7c3e-e5a1-4d9f-b8f0-123456789abc.jpeg&w=640&q=75" alt="Evax" onerror="this.src='https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fd0343577-d143-4179-9567-6d6d3ab534c4.jpeg&w=640&q=75'">
+          <div class="offer-grid-info"><div class="offer-grid-brand">EVAX</div><div class="offer-grid-cashback">GRATIS</div></div>
+        </div>
+      </div>
+    </div>
+    <!-- Sticky CTA -->
+    <div style="padding:12px 20px 24px;background:#fff;border-top:1px solid var(--neutrals-200)">
+      <div class="btn-primary" style="font-size:var(--fs-h3);padding:18px;box-shadow:0 6px 20px rgba(94,188,130,.4)" onclick="goTo('screen-escanear-ticket')">📸 Sube tu ticket</div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: PROCESO MANUAL ===== -->
+  <div class="screen" id="screen-proceso-manual">
+    <div class="app-header">
+      <div class="app-header-back" onclick="goTo('screen-onboarding')">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M15 18l-6-6 6-6" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="app-header-title">Ofertas disponibles</div>
+      <div style="font-size:var(--fs-small);color:var(--neutrals-400);font-weight:700;margin-top:4px">Modo: Manual</div>
+    </div>
+    <div class="screen-content" style="padding-top:12px;position:relative">
+      <div class="offer-grid" style="filter:blur(1px);opacity:.6">
+        <div class="offer-grid-item">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fd0343577-d143-4179-9567-6d6d3ab534c4.jpeg&w=640&q=75" alt="Fairy">
+          <div class="offer-grid-info"><div class="offer-grid-brand">FAIRY</div><div class="offer-grid-cashback">€4,00</div></div>
+        </div>
+        <div class="offer-grid-item">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc562c9b-4962-4d70-b321-ef101a83a329.jpeg&w=640&q=75" alt="Ariel">
+          <div class="offer-grid-info"><div class="offer-grid-brand">ARIEL</div><div class="offer-grid-cashback">€2,00</div></div>
+        </div>
+        <div class="offer-grid-item">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F4556a36e-a197-4b97-99d5-26e1a02fdc43.png&w=640&q=75" alt="Oral-B">
+          <div class="offer-grid-info"><div class="offer-grid-brand">ORAL-B</div><div class="offer-grid-cashback">2x1</div></div>
+        </div>
+        <div class="offer-grid-item">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Ff0a2af01-a6b0-44bf-bd1a-e809b27e055e.png&w=640&q=75" alt="Lenor">
+          <div class="offer-grid-info"><div class="offer-grid-brand">LENOR</div><div class="offer-grid-cashback">€3,50</div></div>
+        </div>
+      </div>
+      <!-- Popup -->
+      <div class="popup-overlay">
+        <div class="popup-card">
+          <img src="cuponera_logo.png" style="width:48px;height:48px;border-radius:12px;margin-bottom:12px">
+          <h3>La Cuponera</h3>
+          <p>Aquí experimentarías La Cuponera tal cual la ves hoy</p>
+          <div class="btn-primary" onclick="goTo('screen-proceso-inteligente')">Ver proceso Inteligente</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: ESCANEAR TICKET ===== -->
+  <div class="screen" id="screen-escanear-ticket">
+    <div class="app-header">
+      <div class="app-header-back" onclick="goTo('screen-proceso-inteligente')">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M15 18l-6-6 6-6" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="app-header-title">Toma una foto del ticket</div>
+    </div>
+    <div class="screen-content" style="padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px">
+      <!-- Camera mockup -->
+      <div id="camera-frame" style="width:100%;aspect-ratio:3/4;border-radius:20px;border:3px dashed var(--neutrals-200);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:var(--neutrals-100);cursor:pointer;transition:all .2s" onclick="simulateUpload()">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2v11z" stroke="var(--neutrals-400)" stroke-width="1.5"/><circle cx="12" cy="13" r="4" stroke="var(--neutrals-400)" stroke-width="1.5"/></svg>
+        <div style="font-size:var(--fs-body);color:var(--neutrals-400);font-weight:600;text-align:center">Toca para tomar foto<br>o adjuntar imagen</div>
+      </div>
+      <!-- Error state (hidden) -->
+      <div id="upload-error" style="display:none;width:100%;padding:16px;background:#FFF3E0;border-radius:12px;border:1.5px solid #FFB74D;text-align:center">
+        <div style="font-size:24px;margin-bottom:8px">⚠️</div>
+        <div style="font-size:var(--fs-body);font-weight:700;color:#E65100">Eso no parece un ticket</div>
+        <div style="font-size:var(--fs-small);color:#795548;margin-top:4px">Por favor sube una foto de tu ticket de compra</div>
+      </div>
+      <div style="width:100%;display:flex;gap:12px">
+        <div class="btn-secondary" style="flex:1" onclick="showInvalidTicket()">📷 No es ticket</div>
+        <div class="btn-primary" style="flex:2" onclick="setState('receiptUploaded',true);goTo('screen-validacion')">✅ Subir ticket</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: VALIDACIÓN ===== -->
+  <div class="screen" id="screen-validacion">
+    <div class="screen-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;gap:20px">
+      <img src="cupi_success.png" style="width:120px;height:120px;object-fit:contain">
+      <div>
+        <div style="font-size:var(--fs-h2);font-weight:800;color:var(--primary-600);margin-bottom:8px">CUPI está validando tu ticket</div>
+        <div style="font-size:var(--fs-body);color:var(--neutrals-600)">Te avisamos cuando esté listo</div>
+      </div>
+      <div id="validation-spinner">
+        <div class="spinner"></div>
+        <div class="clock-icon" style="margin-top:16px;font-size:32px">⏰</div>
+      </div>
+      <div id="validation-done" style="display:none;width:100%">
+        <div style="font-size:24px;margin-bottom:12px">✅</div>
+        <div style="font-size:var(--fs-body);color:var(--brand-01);font-weight:700;margin-bottom:20px">¡Ticket validado!</div>
+        <div class="btn-primary" id="btn-ver-resultado" style="margin-bottom:10px">Ver resultado</div>
+        <div style="font-size:var(--fs-small);color:var(--neutrals-400);margin-top:8px">Mantén pulsado para simular "sin ofertas"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: RESULTADO SIN OFERTAS ===== -->
+  <div class="screen" id="screen-resultado-sin-ofertas">
+    <div class="app-header">
+      <div class="app-header-title">Ticket sin ofertas</div>
+    </div>
+    <div class="screen-content" style="padding:20px;text-align:center">
+      <div style="font-size:48px;margin-bottom:16px">🎟️</div>
+      <div style="font-size:var(--fs-h3);font-weight:700;color:var(--primary-600);margin-bottom:12px">Aunque no hemos encontrado ofertas en tu ticket</div>
+      <div style="font-size:var(--fs-h3);font-weight:800;color:var(--brand-01);margin-bottom:24px">¡Enhorabuena! Participarás en el sorteo mensual</div>
+      <!-- Product display -->
+      <div style="border-radius:16px;overflow:hidden;margin-bottom:24px;border:1.5px solid var(--neutrals-200)">
+        <img src="https://www.revistainforetail.com/vermultimedia.ashx?c=93dd9e279255bf62dcb36832993058b7&hd=false" style="width:100%;height:180px;object-fit:cover" onerror="this.style.background='var(--neutrals-100)';this.style.height='120px'">
+      </div>
+      <div class="btn-primary mb-12" onclick="goTo('screen-analisis')">Ver detalle de mis compras</div>
+      <button class="btn-link" onclick="goTo('screen-home-ofertas')">Volver a inicio</button>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: RESULTADO CON OFERTAS ===== -->
+  <div class="screen" id="screen-resultado-con-ofertas">
+    <div class="app-header">
+      <div class="app-header-title">Ticket con ofertas</div>
+    </div>
+    <div class="screen-content" style="padding:0 20px 20px">
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:var(--fs-h3);font-weight:700;color:var(--primary-600);margin-bottom:4px">En esta compra has ahorrado</div>
+        <div style="font-size:40px;font-weight:900;color:var(--brand-01)">6,50€</div>
+      </div>
+      <!-- Savings list -->
+      <div style="margin-bottom:20px">
+        <div class="savings-item">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fd0343577-d143-4179-9567-6d6d3ab534c4.jpeg&w=640&q=75" alt="Fairy">
+          <div><div class="savings-amount">3,50€</div><div class="savings-brand">Fairy</div></div>
+        </div>
+        <div class="savings-item">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc562c9b-4962-4d70-b321-ef101a83a329.jpeg&w=640&q=75" alt="Ariel">
+          <div><div class="savings-amount">2,00€</div><div class="savings-brand">Ariel</div></div>
+        </div>
+        <div class="savings-item">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F4556a36e-a197-4b97-99d5-26e1a02fdc43.png&w=640&q=75" alt="Oral-B">
+          <div><div class="savings-amount">1,00€</div><div class="savings-brand">Oral-B</div></div>
+        </div>
+      </div>
+      <!-- Wallet -->
+      <div style="background:var(--primary-100);border-radius:14px;padding:18px;text-align:center;margin-bottom:24px">
+        <div style="font-size:var(--fs-small);font-weight:600;color:var(--primary-600);margin-bottom:4px">Ya has acumulado en tu wallet</div>
+        <div style="font-size:var(--fs-h1);font-weight:900;color:var(--brand-01)">10,00€</div>
+      </div>
+      <div class="btn-primary mb-12" onclick="goTo('screen-analisis')">Ver detalle de mis compras</div>
+      <button class="btn-link" onclick="goTo('screen-home-ofertas')">Volver a inicio</button>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: ANÁLISIS MIS COMPRAS ===== -->
+  <div class="screen" id="screen-analisis">
+    <div class="app-header">
+      <div class="app-header-back" onclick="goTo('screen-resultado-con-ofertas')">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M15 18l-6-6 6-6" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="app-header-title">Análisis de mis compras</div>
+    </div>
+    <div class="screen-content">
+      <!-- Timeframe tabs -->
+      <div class="timeframe-tabs" style="padding-top:12px">
+        <div class="tf-tab active">Hoy</div>
+        <div class="tf-tab">Mes</div>
+        <div class="tf-tab">3 meses</div>
+        <div class="tf-tab">Histórico</div>
+      </div>
+
+      <!-- Donut chart -->
+      <div class="donut-container">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#E8F5EE" stroke-width="18"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#FF7043" stroke-width="18" stroke-dasharray="75 176" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#5EBC82" stroke-width="18" stroke-dasharray="50 201" stroke-dashoffset="-75" transform="rotate(-90 50 50)"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#42A5F5" stroke-width="18" stroke-dasharray="40 211" stroke-dashoffset="-125" transform="rotate(-90 50 50)"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#AB47BC" stroke-width="18" stroke-dasharray="30 221" stroke-dashoffset="-165" transform="rotate(-90 50 50)"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#FFB74D" stroke-width="18" stroke-dasharray="56 195" stroke-dashoffset="-195" transform="rotate(-90 50 50)"/>
+        </svg>
+      </div>
+
+      <!-- Category legend -->
+      <div style="padding:0 20px 16px">
+        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#FF7043"></div><div class="cat-legend-text">Alimentación y bebidas</div></div>
+        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#5EBC82"></div><div class="cat-legend-text">Limpieza y hogar</div></div>
+        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#42A5F5"></div><div class="cat-legend-text">Higiene y cuidado personal</div></div>
+        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#AB47BC"></div><div class="cat-legend-text">Salud y farmacia</div></div>
+        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#FFB74D"></div><div class="cat-legend-text">Mascotas</div></div>
+      </div>
+
+      <!-- Cupi insights -->
+      <div style="padding:0 20px 16px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <img src="cupi_success.png" style="width:36px;height:36px;object-fit:contain">
+          <div style="font-size:var(--fs-h4);font-weight:800;color:var(--primary-600)">Consejos de CUPI</div>
+        </div>
+        <div style="background:var(--primary-100);border-radius:14px;padding:16px">
+          <div style="font-size:var(--fs-body);color:var(--neutrals-600);line-height:1.5">Sabías que <strong>Fairy Spray</strong> puede usarse para mucho más que el prelavado</div>
+        </div>
+      </div>
+
+      <!-- Community tips -->
+      <div style="padding:0 0 16px">
+        <div style="padding:0 20px 12px;font-size:var(--fs-h4);font-weight:800;color:var(--primary-600)">Tips de la comunidad</div>
+        <div class="tips-row">
+          <div class="tip-card" style="position:relative">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fd0343577-d143-4179-9567-6d6d3ab534c4.jpeg&w=640&q=75" alt="">
+            <div style="position:absolute;top:34px;left:50%;transform:translateX(-50%);width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="14" height="14" fill="#fff"><path d="M8 5v14l11-7L8 5z"/></svg></div>
+            <div class="tip-card-body">Los 5 trucos con Fairy Spray</div>
+          </div>
+          <div class="tip-card" style="position:relative">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc562c9b-4962-4d70-b321-ef101a83a329.jpeg&w=640&q=75" alt="">
+            <div style="position:absolute;top:34px;left:50%;transform:translateX(-50%);width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="14" height="14" fill="#fff"><path d="M8 5v14l11-7L8 5z"/></svg></div>
+            <div class="tip-card-body">Cómo lavar a baja temperatura</div>
+          </div>
+          <div class="tip-card" style="position:relative">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F4556a36e-a197-4b97-99d5-26e1a02fdc43.png&w=640&q=75" alt="">
+            <div style="position:absolute;top:34px;left:50%;transform:translateX(-50%);width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="14" height="14" fill="#fff"><path d="M8 5v14l11-7L8 5z"/></svg></div>
+            <div class="tip-card-body">Rutina dental completa</div>
+          </div>
+          <div class="tip-card" style="position:relative">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ff0a2af01-a6b0-44bf-bd1a-e809b27e055e.png&w=640&q=75" alt="" onerror="this.style.background='var(--neutrals-100)'">
+            <div style="position:absolute;top:34px;left:50%;transform:translateX(-50%);width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="14" height="14" fill="#fff"><path d="M8 5v14l11-7L8 5z"/></svg></div>
+            <div class="tip-card-body">Ropa igual de fresca</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:0 20px 30px">
+        <div class="btn-primary" onclick="goTo('screen-home-ofertas')">Volver a inicio</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: HOME OFERTAS HOY ===== -->
+  <div class="screen" id="screen-home-ofertas">
+    <div class="screen-content" style="height:100%;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);display:flex;flex-direction:column">
+      <div class="lock-time">10:32</div>
+      <div class="lock-date">miércoles, 28 de mayo</div>
+
+      <!-- Push notification (not clickable) -->
+      <div class="notif-card" style="opacity:.95">
+        <div class="notif-card-header">
+          <img src="cuponera_logo.png" alt="La Cuponera">
+          <span>La Cuponera · 10:00</span>
+        </div>
+        <div class="notif-card-title">Cupi te trae tus ofertas de hoy</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+          <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fb7878290-0949-4cba-8cdc-2b308e66ff16.jpeg&w=640&q=75" style="width:36px;height:36px;border-radius:8px;object-fit:cover" alt="Evax">
+          <div class="notif-card-body"><strong>Evax Cottonlike</strong> — Gratis</div>
+        </div>
+      </div>
+
+      <!-- Mail notification (clickable) -->
+      <div class="notif-card" style="cursor:pointer" onclick="goTo('screen-email-ofertas')">
+        <div class="notif-card-header">
+          <img src="cuponera_logo.png" alt="La Cuponera">
+          <span>La Cuponera · ayer 19:00</span>
+        </div>
+        <div class="notif-card-title">📧 Cupi te recomienda</div>
+        <div class="notif-card-body">Tus ofertas de hoy · Consejos y Comunidad</div>
+        <div style="margin-top:10px">
+          <div class="btn-primary" style="padding:10px;font-size:var(--fs-small)">Ver ofertas personalizadas</div>
+        </div>
+      </div>
+
+      <div style="flex:1"></div>
+      <div style="text-align:center;padding:20px;color:rgba(255,255,255,.5);font-size:var(--fs-small)">Desliza para desbloquear</div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: EMAIL OFERTAS ===== -->
+  <div class="screen" id="screen-email-ofertas">
+    <div class="screen-content" style="background:var(--neutrals-100)">
+      <!-- Email app header -->
+      <div style="background:#fff;padding:48px 16px 12px;border-bottom:1px solid var(--neutrals-200);display:flex;align-items:center;gap:12px">
+        <div style="cursor:pointer" onclick="goTo('screen-home-ofertas')">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M15 18l-6-6 6-6" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="flex:1;font-size:var(--fs-body);font-weight:700;color:var(--neutrals-800)">Bandeja de entrada</div>
+      </div>
+      <!-- Email content -->
+      <div style="background:#fff;margin:12px;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.06)">
+        <div class="email-header">
+          <div class="email-avatar"><img src="cuponera_logo.png" alt=""></div>
+          <div>
+            <div class="email-from">La Cuponera</div>
+            <div class="email-subject">Cupi te recomienda</div>
+          </div>
+        </div>
+        <div style="padding:20px">
+          <!-- Cupi header image -->
+          <div style="text-align:center;margin-bottom:20px">
+            <img src="cupi_success.png" style="width:80px;height:80px;object-fit:contain">
+            <div style="font-size:var(--fs-h2);font-weight:900;color:var(--primary-600);margin-top:8px">Cupi te recomienda</div>
+          </div>
+
+          <!-- Offer list -->
+          <div style="margin-bottom:20px">
+            <div class="savings-item">
+              <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fd0343577-d143-4179-9567-6d6d3ab534c4.jpeg&w=640&q=75" alt="Fairy">
+              <div><div class="savings-amount" style="color:#E65100">GRATIS</div><div class="savings-brand">Fairy</div></div>
+            </div>
+            <div class="savings-item">
+              <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc562c9b-4962-4d70-b321-ef101a83a329.jpeg&w=640&q=75" alt="Ariel">
+              <div><div class="savings-amount">-50%</div><div class="savings-brand">Ariel</div></div>
+            </div>
+            <div class="savings-item">
+              <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F4556a36e-a197-4b97-99d5-26e1a02fdc43.png&w=640&q=75" alt="Oral-B">
+              <div><div class="savings-amount">2x1</div><div class="savings-brand">Oral-B</div></div>
+            </div>
+          </div>
+
+          <!-- Educational content -->
+          <div style="background:var(--neutrals-100);border-radius:12px;padding:16px;margin-bottom:20px">
+            <div style="font-size:var(--fs-h4);font-weight:800;color:var(--primary-600);margin-bottom:8px">Sabías que…</div>
+            <div style="font-size:var(--fs-body);color:var(--neutrals-600);line-height:1.5">Los cepillos eléctricos Oral-B eliminan hasta un 100% más de placa que un cepillo manual. Su tecnología de movimiento oscilante-rotativo envuelve cada diente para una limpieza superior.</div>
+            <div style="margin-top:12px;font-size:var(--fs-small);color:var(--brand-01);font-weight:600">Más info en oralb.es →</div>
+          </div>
+
+          <!-- Espacio marcas -->
+          <div style="border:2px dashed var(--neutrals-200);border-radius:12px;padding:20px;text-align:center;color:var(--neutrals-400);font-size:var(--fs-small);font-weight:600">
+            Espacio para las marcas
+          </div>
+        </div>
+      </div>
+      <div style="padding:16px 20px 30px">
+        <div class="btn-primary" onclick="goTo('screen-onboarding')">Volver al inicio</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DevPanel toggle -->
+  <div class="dev-toggle" onclick="toggleDevPanel()">⚙️</div>
+  <!-- DevPanel -->
+  <div class="dev-panel" id="devPanel">
+    <div style="font-weight:800;margin-bottom:8px;color:var(--brand-01)">🛠 DevPanel</div>
+    <label>
+      <span>resultType:</span>
+      <select id="dev-resultType" onchange="setState('resultType',this.value)">
+        <option value="conOfertas">conOfertas</option>
+        <option value="sinOfertas">sinOfertas</option>
+      </select>
+    </label>
+    <label>
+      <input type="checkbox" id="dev-oneWeekLater" onchange="setState('oneWeekLater',this.checked)">
+      <span>oneWeekLater</span>
+    </label>
+    <div style="margin-top:6px;font-size:10px;color:var(--neutrals-400)">Long-press "Ver resultado" = sinOfertas | Normal press = conOfertas</div>
+  </div>
+</div>
+
+<script>
+// State
+const state = {
+  scanMode: 'inteligente',
+  receiptUploaded: false,
+  validationStatus: 'idle',
+  resultType: 'conOfertas',
+  walletAmount: 10,
+  savings: [{brand:'Fairy',amount:3.5},{brand:'Ariel',amount:2},{brand:'Oral-B',amount:1}],
+  timeframe: 'Hoy',
+  oneWeekLater: false
+};
+
+function setState(key, val) { state[key] = val; }
+
+// Navigation
+function goTo(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(screenId);
+  if (target) {
+    target.classList.add('active');
+    const content = target.querySelector('.screen-content');
+    if (content) content.scrollTop = 0;
+  }
+  // Trigger validation timer
+  if (screenId === 'screen-validacion') startValidation();
+}
+
+// Validation flow
+function startValidation() {
+  state.validationStatus = 'validating';
+  document.getElementById('validation-spinner').style.display = 'block';
+  document.getElementById('validation-done').style.display = 'none';
+  setTimeout(() => {
+    state.validationStatus = 'done';
+    document.getElementById('validation-spinner').style.display = 'none';
+    document.getElementById('validation-done').style.display = 'block';
+    setupResultButton();
+  }, 3000);
+}
+
+// Long press detection for result button
+function setupResultButton() {
+  const btn = document.getElementById('btn-ver-resultado');
+  let pressTimer = null;
+  let isLongPress = false;
+
+  btn.ontouchstart = btn.onmousedown = function(e) {
+    isLongPress = false;
+    pressTimer = setTimeout(() => {
+      isLongPress = true;
+      goTo('screen-resultado-sin-ofertas');
+    }, 600);
+  };
+  btn.ontouchend = btn.onmouseup = function(e) {
+    clearTimeout(pressTimer);
+    if (!isLongPress) {
+      goTo('screen-resultado-con-ofertas');
+    }
+  };
+  btn.ontouchmove = function() { clearTimeout(pressTimer); };
+}
+
+// Simulate invalid ticket
+function showInvalidTicket() {
+  const frame = document.getElementById('camera-frame');
+  const error = document.getElementById('upload-error');
+  frame.style.border = '3px solid #FFB74D';
+  frame.style.background = '#FFF3E0';
+  error.style.display = 'block';
+  setTimeout(() => {
+    frame.style.border = '3px dashed var(--neutrals-200)';
+    frame.style.background = 'var(--neutrals-100)';
+    error.style.display = 'none';
+  }, 2500);
+}
+
+function simulateUpload() {
+  const frame = document.getElementById('camera-frame');
+  frame.style.border = '3px solid var(--brand-01)';
+  frame.style.background = 'var(--primary-100)';
+  frame.innerHTML = '<div style="font-size:48px">📄</div><div style="font-size:14px;font-weight:700;color:var(--brand-01)">Ticket listo</div>';
+}
+
+// DevPanel
+function toggleDevPanel() {
+  document.getElementById('devPanel').classList.toggle('visible');
+}
+
+// Timeframe tabs interaction
+document.querySelectorAll('.tf-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    this.parentElement.querySelectorAll('.tf-tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    state.timeframe = this.textContent;
+  });
+});
+</script>
+</body>
+</html>
