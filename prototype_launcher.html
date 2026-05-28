@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>La Cuponera — Design Sprint</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand-01:#5EBC82;--primary-100:#E8F5EE;--primary-200:#B8E4CA;--primary-400:#3DA86A;--primary-600:#122B1C;
+  --neutrals-100:#F7F7F7;--neutrals-200:#E5E5E5;--neutrals-400:#9E9E9E;--neutrals-600:#4A4A4A;--neutrals-800:#1A1A1A;
+  --accent-purple:#6D5DFB;--accent-orange:#FF6F00;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+
+.device{width:390px;height:844px;border-radius:44px;overflow:hidden;position:relative;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+@media(max-width:500px){
+  body{background:#fff;overflow:auto}
+  .device{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none;position:fixed;inset:0}
+}
+
+/* MENU */
+#menu{position:absolute;inset:0;display:flex;flex-direction:column;background:linear-gradient(180deg,#fff 0%,var(--primary-100) 100%);z-index:100;transition:opacity .3s,transform .3s}
+#menu.hidden{opacity:0;pointer-events:none;transform:scale(.95)}
+
+.menu-header{padding:60px 24px 20px;text-align:center}
+.menu-logo{width:56px;height:56px;border-radius:16px;margin:0 auto 12px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.menu-title{font-size:22px;font-weight:900;color:var(--primary-600);margin-bottom:4px}
+.menu-subtitle{font-size:13px;font-weight:600;color:var(--neutrals-400);line-height:1.4}
+
+.menu-grid{flex:1;padding:0 20px 20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+
+.design-card{display:flex;align-items:center;gap:14px;padding:16px;border-radius:20px;border:1.5px solid var(--neutrals-200);background:#fff;cursor:pointer;transition:all .15s;box-shadow:0 4px 12px rgba(0,0,0,.04)}
+.design-card:active{transform:scale(.97);box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.design-card:hover{border-color:var(--brand-01)}
+
+.dc-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.dc-icon.geo{background:linear-gradient(135deg,#E3F2FD,#BBDEFB)}
+.dc-icon.scan{background:linear-gradient(135deg,var(--primary-100),var(--primary-200))}
+.dc-icon.cupi{background:linear-gradient(135deg,#FFF3E0,#FFE0B2)}
+.dc-icon.club{background:linear-gradient(135deg,#EDE7F6,#D1C4E9)}
+
+.dc-body{flex:1}
+.dc-body h3{font-size:15px;font-weight:800;color:var(--primary-600);margin-bottom:3px}
+.dc-body p{font-size:12px;font-weight:600;color:var(--neutrals-400);line-height:1.3}
+.dc-arrow{font-size:18px;font-weight:900;color:var(--neutrals-400)}
+
+.shake-hint{text-align:center;padding:16px 24px 32px}
+.shake-hint p{font-size:11px;font-weight:700;color:var(--neutrals-400);display:flex;align-items:center;justify-content:center;gap:6px}
+.shake-icon{display:inline-block;animation:shake-anim 1.5s ease-in-out infinite}
+@keyframes shake-anim{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}75%{transform:rotate(-8deg)}}
+
+/* PROTOTYPE FRAME */
+#proto-frame{position:absolute;inset:0;border:none;width:100%;height:100%;z-index:50;display:none}
+#proto-frame.active{display:block}
+
+/* Back overlay hint */
+.back-overlay{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:200;background:rgba(0,0,0,.7);color:#fff;border-radius:999px;padding:8px 14px;font-size:11px;font-weight:800;display:none;animation:fadeOut 3s forwards;pointer-events:none}
+@keyframes fadeOut{0%,70%{opacity:1}100%{opacity:0;display:none}}
+.back-overlay.show{display:block}
+</style>
+</head>
+<body>
+<div class="device">
+
+  <!-- MENU SCREEN -->
+  <div id="menu">
+    <div class="menu-header">
+      <img class="menu-logo" src="cuponera_logo.png" alt="La Cuponera">
+      <div class="menu-title">Design Sprint IPSOS</div>
+      <div class="menu-subtitle">Selecciona un diseño para probarlo.<br>Agita el móvil para volver a este menú.</div>
+    </div>
+
+    <div class="menu-grid">
+      <div class="design-card" onclick="loadDesign('prototype_geolocation.html','geo')">
+        <div class="dc-icon geo">📍</div>
+        <div class="dc-body">
+          <h3>Diseño 1 — Geolocalización</h3>
+          <p>Ofertas cercanas basadas en tu ubicación y retailer.</p>
+        </div>
+        <div class="dc-arrow">›</div>
+      </div>
+
+      <div class="design-card" onclick="loadDesign('prototype_escaneo_inteligente.html','scan')">
+        <div class="dc-icon scan">🧠</div>
+        <div class="dc-body">
+          <h3>Diseño 2 — Escaneo Inteligente</h3>
+          <p>Reconocimiento automático de tickets con feedback en tiempo real.</p>
+        </div>
+        <div class="dc-arrow">›</div>
+      </div>
+
+      <div class="design-card" onclick="loadDesign('prototype_cupi_gamification.html','cupi')">
+        <div class="dc-icon cupi">🐾</div>
+        <div class="dc-body">
+          <h3>Diseño 3 — Cupi Gamification</h3>
+          <p>Mascota virtual que crece con tu actividad y te guía en la app.</p>
+        </div>
+        <div class="dc-arrow">›</div>
+      </div>
+
+      <div class="design-card" onclick="loadDesign('prototype_club.html','club')">
+        <div class="dc-icon club">💎</div>
+        <div class="dc-body">
+          <h3>Diseño 4 — La Cuponera Club</h3>
+          <p>Programa de puntos con niveles, misiones y recompensas exclusivas.</p>
+        </div>
+        <div class="dc-arrow">›</div>
+      </div>
+    </div>
+
+    <div class="shake-hint">
+      <p><span class="shake-icon">📱</span> Agita el móvil para volver aquí</p>
+    </div>
+  </div>
+
+  <!-- PROTOTYPE IFRAME -->
+  <iframe id="proto-frame" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+
+  <!-- BACK HINT -->
+  <div class="back-overlay" id="backHint">📱 Agita para volver al menú</div>
+
+</div>
+
+<script>
+const menu = document.getElementById('menu');
+const frame = document.getElementById('proto-frame');
+const backHint = document.getElementById('backHint');
+
+function loadDesign(url, type) {
+  menu.classList.add('hidden');
+  frame.classList.add('active');
+  frame.src = url;
+  // Show hint briefly
+  backHint.classList.remove('show');
+  void backHint.offsetWidth; // reflow
+  backHint.classList.add('show');
+  setTimeout(() => backHint.classList.remove('show'), 3500);
+}
+
+function returnToMenu() {
+  frame.classList.remove('active');
+  frame.src = '';
+  menu.classList.remove('hidden');
+}
+
+// === SHAKE DETECTION ===
+let lastShake = 0;
+let shakeCount = 0;
+let lastX = null, lastY = null, lastZ = null;
+const SHAKE_THRESHOLD = 25;
+const SHAKE_TIMEOUT = 600;
+
+function handleMotion(e) {
+  const acc = e.accelerationIncludingGravity || e.acceleration;
+  if (!acc) return;
+  const { x, y, z } = acc;
+  if (lastX !== null) {
+    const delta = Math.abs(x - lastX) + Math.abs(y - lastY) + Math.abs(z - lastZ);
+    if (delta > SHAKE_THRESHOLD) {
+      const now = Date.now();
+      if (now - lastShake > SHAKE_TIMEOUT) {
+        shakeCount = 1;
+      } else {
+        shakeCount++;
+      }
+      lastShake = now;
+      if (shakeCount >= 2) {
+        shakeCount = 0;
+        returnToMenu();
+      }
+    }
+  }
+  lastX = x; lastY = y; lastZ = z;
+}
+
+// Request permission on iOS 13+
+function initShake() {
+  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+    DeviceMotionEvent.requestPermission().then(perm => {
+      if (perm === 'granted') window.addEventListener('devicemotion', handleMotion);
+    }).catch(() => {});
+  } else if ('DeviceMotionEvent' in window) {
+    window.addEventListener('devicemotion', handleMotion);
+  }
+}
+
+// Auto-init on first touch (for iOS permission)
+document.addEventListener('touchstart', function once() {
+  initShake();
+  document.removeEventListener('touchstart', once);
+}, { once: true });
+
+// Also init immediately for Android
+initShake();
+
+// Keyboard fallback: press Escape to return
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') returnToMenu();
+});
+</script>
+</body>
+</html>
