@@ -147,7 +147,8 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
 /* Categories */
 .category-chips{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .category-chips::-webkit-scrollbar{display:none}
-.chip{padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;border:1.5px solid var(--neutrals-200);color:var(--neutrals-600);background:#fff;transition:all .15s}
+.chip{padding:10px 16px;border-radius:22px;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer;border:1.5px solid var(--neutrals-200);color:var(--neutrals-600);background:#fff;transition:all .15s;display:flex;align-items:center;gap:6px}
+.chip-icon{width:20px;height:20px;object-fit:contain;flex-shrink:0}
 .chip.active{background:var(--primary-600);color:#fff;border-color:var(--primary-600)}
 .chip:active{transform:scale(.95)}
 
@@ -285,9 +286,11 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
 .scan-reco-title{font-size:var(--fs-h4);font-weight:700;color:var(--primary-600);margin:20px 0 12px}
 /* Map pins */
 .map-pin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;z-index:10;text-align:center}
-.map-pin-icon{width:40px;height:40px;border-radius:50%;border:3px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:14px;overflow:hidden;margin:0 auto}
+.map-pin-icon{width:44px;height:44px;border-radius:50%;border:3px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:14px;overflow:hidden;margin:0 auto}
 .map-pin-label{font-size:10px;font-weight:700;color:var(--primary-600);margin-top:4px;background:#fff;padding:2px 6px;border-radius:6px;box-shadow:0 2px 4px rgba(0,0,0,.1);white-space:nowrap;line-height:1.3}
 .map-pin:active{transform:translate(-50%,-100%) scale(.9)}
+.map-back-btn{position:absolute;top:60px;left:16px;z-index:25;width:40px;height:40px;border-radius:50%;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.map-back-btn:active{transform:scale(.9)}
 @keyframes pulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.5);opacity:0}}
 
 /* ========== UTILITY ========== */
@@ -400,12 +403,24 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
         <!-- Category chips -->
         <div style="padding-top:14px">
           <div class="category-chips">
-            <div class="chip active">Todas (23)</div>
-            <div class="chip">Limpieza</div>
-            <div class="chip">Bebé</div>
-            <div class="chip">Cuidado personal</div>
-            <div class="chip">Higiene bucal</div>
-            <div class="chip">Afeitado</div>
+            <div class="chip active"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Ftodas.png&w=64&q=75" alt="">Todas (23)</div>
+            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Flimpieza.png&w=64&q=75" alt="">Limpieza</div>
+            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fbebe.png&w=64&q=75" alt="">Bebé</div>
+            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fcuidado-personal.png&w=64&q=75" alt="">Cuidado personal</div>
+            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fhigiene-bucal.png&w=64&q=75" alt="">Higiene bucal</div>
+            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fafeitado.png&w=64&q=75" alt="">Afeitado</div>
+          </div>
+        </div>
+
+        <!-- Treasure Hunt Banner -->
+        <div style="margin:0 16px 12px;padding:18px 20px;background:linear-gradient(135deg,#FFF8E1 0%,#FFECB3 100%);border-radius:16px;border:2px solid #FFD54F;cursor:pointer;box-shadow:0 4px 12px rgba(255,213,79,.3)" onclick="goToScreen('screen-scan')">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#FF6F00,#FFA000);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🔍</div>
+            <div style="flex:1">
+              <div style="font-size:16px;font-weight:800;color:#E65100;margin-bottom:3px">Búsqueda de Tesoro</div>
+              <div style="font-size:13px;color:#795548;font-weight:500;line-height:17px">Escanea un producto y descubre si tiene oferta 🎁</div>
+            </div>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M9 18l6-6-6-6" stroke="#E65100" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
         </div>
 
@@ -483,18 +498,6 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
               <div class="offer-desc">Botes de 30, 60 y 90 gummies</div>
             </div>
             <div class="offer-cashback">35%</div>
-          </div>
-        </div>
-
-        <!-- Treasure Hunt Banner -->
-        <div style="margin:16px 16px 20px;padding:18px 20px;background:linear-gradient(135deg,#FFF8E1 0%,#FFECB3 100%);border-radius:16px;border:2px solid #FFD54F;cursor:pointer;box-shadow:0 4px 12px rgba(255,213,79,.3)" onclick="goToScreen('screen-scan')">
-          <div style="display:flex;align-items:center;gap:14px">
-            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#FF6F00,#FFA000);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🔍</div>
-            <div style="flex:1">
-              <div style="font-size:16px;font-weight:800;color:#E65100;margin-bottom:3px">Búsqueda de Tesoro</div>
-              <div style="font-size:13px;color:#795548;font-weight:500;line-height:17px">Escanea un producto y descubre si tiene oferta 🎁</div>
-            </div>
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M9 18l6-6-6-6" stroke="#E65100" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
         </div>
       </div>
@@ -988,7 +991,12 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
 
     <!-- ========== SCREEN 9: MAP ========== -->
     <div class="screen" id="screen-map">
-      <div style="position:relative;width:100%;height:100%;background:#e8e4d8">
+      <div style="position:relative;width:100%;height:100%;background:#e8e4d8;overflow:hidden">
+        <!-- Back button -->
+        <div class="map-back-btn" onclick="goToScreen('screen-offers')">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M15 18l-6-6 6-6" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
         <!-- Fake map background -->
         <div style="position:absolute;inset:0;overflow:hidden">
           <!-- Streets grid -->
@@ -1025,32 +1033,32 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
         <!-- Retailer pins -->
         <!-- Carrefour -->
         <div class="map-pin" style="top:32%;left:30%" onclick="goToScreen('screen-offers')">
-          <div class="map-pin-icon" style="background:#003DA5"><img src="carrefour_logo.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
+          <div class="map-pin-icon" style="background:#fff"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Carrefour_logo.svg/200px-Carrefour_logo.svg.png" style="width:80%;height:80%;object-fit:contain"></div>
           <div class="map-pin-label">Carrefour<br><span style="font-weight:400;font-size:9px">23 ofertas</span></div>
         </div>
         <!-- Mercadona -->
         <div class="map-pin" style="top:62%;left:65%" onclick="goToScreen('screen-mercadona')">
-          <div class="map-pin-icon" style="background:#009B3A">🟢</div>
+          <div class="map-pin-icon" style="background:#fff"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Logotipo_Mercadona_%28nuevo%29.svg/200px-Logotipo_Mercadona_%28nuevo%29.svg.png" style="width:80%;height:80%;object-fit:contain"></div>
           <div class="map-pin-label">Mercadona<br><span style="font-weight:400;font-size:9px">18 ofertas</span></div>
         </div>
         <!-- Alcampo -->
         <div class="map-pin" style="top:25%;left:72%">
-          <div class="map-pin-icon" style="background:#E30613">🔴</div>
+          <div class="map-pin-icon" style="background:#fff"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Alcampo_logo.svg/200px-Alcampo_logo.svg.png" style="width:80%;height:80%;object-fit:contain"></div>
           <div class="map-pin-label">Alcampo<br><span style="font-weight:400;font-size:9px">12 ofertas</span></div>
         </div>
         <!-- Lidl -->
         <div class="map-pin" style="top:72%;left:25%">
-          <div class="map-pin-icon" style="background:#0050AA">🔵</div>
+          <div class="map-pin-icon" style="background:#fff"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Lidl-Logo.svg/200px-Lidl-Logo.svg.png" style="width:80%;height:80%;object-fit:contain"></div>
           <div class="map-pin-label">Lidl<br><span style="font-weight:400;font-size:9px">9 ofertas</span></div>
         </div>
         <!-- El Corte Inglés -->
         <div class="map-pin" style="top:40%;left:78%">
-          <div class="map-pin-icon" style="background:#006633">🟩</div>
+          <div class="map-pin-icon" style="background:#fff"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/El_Corte_Ingl%C3%A9s_logo.svg/200px-El_Corte_Ingl%C3%A9s_logo.svg.png" style="width:80%;height:80%;object-fit:contain"></div>
           <div class="map-pin-label">El Corte Inglés<br><span style="font-weight:400;font-size:9px">15 ofertas</span></div>
         </div>
 
         <!-- Top search bar -->
-        <div style="position:absolute;top:60px;left:16px;right:16px;z-index:20">
+        <div style="position:absolute;top:60px;left:64px;right:16px;z-index:20">
           <div style="background:#fff;border-radius:24px;padding:12px 18px;box-shadow:0 4px 16px rgba(0,0,0,.15);display:flex;align-items:center;gap:10px">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><circle cx="11" cy="11" r="8" stroke="var(--neutrals-400)" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="var(--neutrals-400)" stroke-width="2" stroke-linecap="round"/></svg>
             <span style="font-size:14px;color:var(--neutrals-400);font-weight:500">Buscar tienda cerca de ti...</span>
@@ -1067,26 +1075,26 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
                 <div style="font-size:9px;font-weight:600;color:var(--neutrals-600)">50m</div>
               </div>
               <div style="flex-shrink:0;text-align:center;cursor:pointer" onclick="goToScreen('screen-mercadona')">
-                <div style="width:50px;height:50px;border-radius:12px;background:#009B3A;display:flex;align-items:center;justify-content:center;border:2px solid #009B3A;margin-bottom:4px">
-                  <span style="color:#fff;font-size:10px;font-weight:900;text-align:center;line-height:1.1">M</span>
+                <div style="width:50px;height:50px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #009B3A;margin-bottom:4px;overflow:hidden">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Logotipo_Mercadona_%28nuevo%29.svg/200px-Logotipo_Mercadona_%28nuevo%29.svg.png" style="width:80%;height:80%;object-fit:contain">
                 </div>
                 <div style="font-size:9px;font-weight:600;color:var(--neutrals-600)">200m</div>
               </div>
               <div style="flex-shrink:0;text-align:center">
-                <div style="width:50px;height:50px;border-radius:12px;background:#E30613;display:flex;align-items:center;justify-content:center;border:2px solid #E30613;margin-bottom:4px">
-                  <span style="color:#fff;font-size:9px;font-weight:900;text-align:center;line-height:1.1">Alcampo</span>
+                <div style="width:50px;height:50px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #E30613;margin-bottom:4px;overflow:hidden">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Alcampo_logo.svg/200px-Alcampo_logo.svg.png" style="width:80%;height:80%;object-fit:contain">
                 </div>
                 <div style="font-size:9px;font-weight:600;color:var(--neutrals-600)">350m</div>
               </div>
               <div style="flex-shrink:0;text-align:center">
-                <div style="width:50px;height:50px;border-radius:12px;background:#0050AA;display:flex;align-items:center;justify-content:center;border:2px solid #0050AA;margin-bottom:4px">
-                  <span style="color:#fff;font-size:10px;font-weight:900">Lidl</span>
+                <div style="width:50px;height:50px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #0050AA;margin-bottom:4px;overflow:hidden">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Lidl-Logo.svg/200px-Lidl-Logo.svg.png" style="width:80%;height:80%;object-fit:contain">
                 </div>
                 <div style="font-size:9px;font-weight:600;color:var(--neutrals-600)">500m</div>
               </div>
               <div style="flex-shrink:0;text-align:center">
-                <div style="width:50px;height:50px;border-radius:12px;background:#006633;display:flex;align-items:center;justify-content:center;border:2px solid #006633;margin-bottom:4px">
-                  <span style="color:#fff;font-size:8px;font-weight:900;text-align:center;line-height:1">ECI</span>
+                <div style="width:50px;height:50px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #006633;margin-bottom:4px;overflow:hidden">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/El_Corte_Ingl%C3%A9s_logo.svg/200px-El_Corte_Ingl%C3%A9s_logo.svg.png" style="width:80%;height:80%;object-fit:contain">
                 </div>
                 <div style="font-size:9px;font-weight:600;color:var(--neutrals-600)">800m</div>
               </div>
@@ -1110,7 +1118,7 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
         <div class="retailer-header" style="background:linear-gradient(135deg,#009B3A 0%,#00C853 100%)">
           <div class="retailer-logo-row">
             <div class="retailer-logo" style="padding:6px;overflow:hidden;background:#fff">
-              <span style="font-size:11px;font-weight:900;color:#009B3A;text-align:center;line-height:1.1">M</span>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Logotipo_Mercadona_%28nuevo%29.svg/200px-Logotipo_Mercadona_%28nuevo%29.svg.png" style="width:100%;height:100%;object-fit:contain">
             </div>
             <div>
               <div class="retailer-name" style="font-size:28px">Mercadona</div>
@@ -1140,11 +1148,23 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
         <!-- Category chips -->
         <div style="padding-top:14px">
           <div class="category-chips">
-            <div class="chip active">Todas (18)</div>
-            <div class="chip">Limpieza</div>
-            <div class="chip">Cuidado personal</div>
-            <div class="chip">Higiene bucal</div>
-            <div class="chip">Bebé</div>
+            <div class="chip active"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Ftodas.png&w=64&q=75" alt="">Todas (18)</div>
+            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Flimpieza.png&w=64&q=75" alt="">Limpieza</div>
+            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fcuidado-personal.png&w=64&q=75" alt="">Cuidado personal</div>
+            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fhigiene-bucal.png&w=64&q=75" alt="">Higiene bucal</div>
+            <div class="chip"><img class="chip-icon" src="https://www.lacuponera.es/promociones/_next/image?url=%2Fimg%2Fcategories%2Fbebe.png&w=64&q=75" alt="">Bebé</div>
+          </div>
+        </div>
+
+        <!-- Treasure Hunt Banner -->
+        <div style="margin:0 16px 12px;padding:18px 20px;background:linear-gradient(135deg,#FFF8E1 0%,#FFECB3 100%);border-radius:16px;border:2px solid #FFD54F;cursor:pointer;box-shadow:0 4px 12px rgba(255,213,79,.3)" onclick="goToScreen('screen-scan')">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#FF6F00,#FFA000);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🔍</div>
+            <div style="flex:1">
+              <div style="font-size:16px;font-weight:800;color:#E65100;margin-bottom:3px">Búsqueda de Tesoro</div>
+              <div style="font-size:13px;color:#795548;font-weight:500;line-height:17px">Escanea un producto y descubre si tiene oferta 🎁</div>
+            </div>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M9 18l6-6-6-6" stroke="#E65100" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
         </div>
 
@@ -1222,18 +1242,6 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
               <div class="offer-desc">Botes de 30, 60 y 90 gummies</div>
             </div>
             <div class="offer-cashback">35%</div>
-          </div>
-        </div>
-
-        <!-- Treasure Hunt Banner -->
-        <div style="margin:16px 16px 20px;padding:18px 20px;background:linear-gradient(135deg,#FFF8E1 0%,#FFECB3 100%);border-radius:16px;border:2px solid #FFD54F;cursor:pointer;box-shadow:0 4px 12px rgba(255,213,79,.3)" onclick="goToScreen('screen-scan')">
-          <div style="display:flex;align-items:center;gap:14px">
-            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#FF6F00,#FFA000);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🔍</div>
-            <div style="flex:1">
-              <div style="font-size:16px;font-weight:800;color:#E65100;margin-bottom:3px">Búsqueda de Tesoro</div>
-              <div style="font-size:13px;color:#795548;font-weight:500;line-height:17px">Escanea un producto y descubre si tiene oferta 🎁</div>
-            </div>
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M9 18l6-6-6-6" stroke="#E65100" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
         </div>
       </div>
