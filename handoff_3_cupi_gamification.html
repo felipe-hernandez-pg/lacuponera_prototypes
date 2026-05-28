@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Handoff #3 — Cupi Coach (Gamificación)</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--green:#5EBC82;--dark:#122B1C;--grey:#6B7280;--light:#F3F4F6;--orange:#FF6F00;--purple:#7C4DFF}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:#fff;color:#1a1a1a;line-height:1.6;padding:40px 24px;max-width:800px;margin:0 auto}
+h1{font-size:28px;font-weight:900;color:var(--dark);margin-bottom:8px}
+h2{font-size:20px;font-weight:800;color:var(--dark);margin:32px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--green)}
+h3{font-size:16px;font-weight:800;color:var(--dark);margin:20px 0 8px}
+.subtitle{font-size:14px;color:var(--grey);font-weight:600;margin-bottom:24px}
+.badge{display:inline-block;background:var(--green);color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.5px}
+.section{background:var(--light);border-radius:16px;padding:20px;margin:16px 0}
+.step{display:flex;align-items:flex-start;gap:14px;margin:16px 0;padding:14px;background:#fff;border-radius:12px;border:1.5px solid #E5E7EB}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0}
+.step-content{flex:1}
+.step-content strong{font-size:14px;color:var(--dark)}
+.step-content p{font-size:13px;color:var(--grey);margin-top:4px}
+.step-action{display:inline-block;background:var(--dark);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;margin-top:6px}
+.note{background:#FEF3C7;border-left:4px solid #F59E0B;border-radius:0 10px 10px 0;padding:14px 16px;margin:16px 0;font-size:13px;font-weight:600;color:#92400E}
+.visual-ref{background:#EDF7F1;border:2px dashed var(--green);border-radius:12px;padding:14px;margin:12px 0;font-size:13px;font-weight:700;color:var(--dark)}
+.visual-ref::before{content:'👁️ ';font-size:14px}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+th{text-align:left;padding:10px 12px;background:var(--dark);color:#fff;font-weight:700}
+td{padding:10px 12px;border-bottom:1px solid #E5E7EB}
+.objective{background:linear-gradient(135deg,#153B25,var(--green));color:#fff;border-radius:16px;padding:20px;margin:16px 0}
+.objective h3{color:#fff;margin:0 0 8px}
+.objective p{font-size:14px;opacity:.9;font-weight:600}
+.flow-arrow{text-align:center;font-size:22px;color:var(--green);margin:4px 0}
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.feature-card{padding:14px;border-radius:12px;border:1.5px solid #E5E7EB;background:#fff}
+.feature-card h4{font-size:13px;font-weight:800;margin-bottom:4px;color:var(--dark)}
+.feature-card p{font-size:12px;color:var(--grey);font-weight:600}
+@media(max-width:600px){.feature-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<span class="badge">Prototipo #3</span>
+<h1>Cupi Coach — Gamificación con Dinero Real</h1>
+<p class="subtitle">Handoff para agencia · Design Sprint La Cuponera · 29/5/2026</p>
+
+<div class="objective">
+  <h3>🎯 Objetivo del test</h3>
+  <p>Evaluar si una mascota "coach" (Cupi) que acompaña al usuario con tips y una sección "Gana más" con acciones bonus (encuestas, invitaciones, reseñas) motivan al consumidor a interactuar más con la app y subir más tickets. Todo el sistema está basado en dinero real (€), no en puntos o niveles abstractos.</p>
+</div>
+
+<h2>📋 Resumen del Concepto</h2>
+<div class="section">
+  <p><strong>Cupi</strong> es una mascota que actúa como "coach" (acompañante, no protagonista). Aparece en burbujas pequeñas dando tips contextuales. El sistema de recompensas está 100% basado en <strong>euros reales</strong> (cashback) — no hay puntos, niveles ni XP. Además de subir tickets, el usuario puede ganar dinero extra con acciones sencillas ("Gana más").</p>
+</div>
+
+<h2>⚡ Elementos Clave del Diseño</h2>
+<div class="feature-grid">
+  <div class="feature-card">
+    <h4>💰 Sistema Monetario</h4>
+    <p>Todo es en € reales. Wallet con balance actual + acumulado histórico. Canjeable a partir de 10€.</p>
+  </div>
+  <div class="feature-card">
+    <h4>🐸 Cupi como Coach</h4>
+    <p>Pequeño (36px), en burbujas laterales. Da tips contextuales. No domina la pantalla.</p>
+  </div>
+  <div class="feature-card">
+    <h4>🔥 "Gana más" (2 columnas)</h4>
+    <p>Acciones bonus: encuestas (+0,50€), invitar amigo (+1€), reseñas (+0,30€), subir 3 tickets (x2 cashback).</p>
+  </div>
+  <div class="feature-card">
+    <h4>📊 Wallet con Historial</h4>
+    <p>Balance + acumulado total + historial de promos con estados (Aprobado, Pendiente, Por expirar, Canjeado).</p>
+  </div>
+</div>
+
+<h2>🗺️ Flujo Completo (Paso a Paso)</h2>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <strong>Pantalla Home</strong>
+    <p>El usuario llega a la home. Ve: (1) Wallet con saldo y acumulado histórico + Cupi flotante al lado, (2) Burbuja de Cupi con un tip, (3) Ofertas en carrusel horizontal, (4) Sección "Gana más" con 4 acciones bonus en grid de 2 columnas.</p>
+    <span class="step-action">ACCIÓN → Explorar la pantalla, leer el tip de Cupi, ver las ofertas</span>
+  </div>
+</div>
+<div class="visual-ref">Tarjeta wallet verde degradado arriba (saldo 0,00€, acumulado 0,00€) con Cupi flotando a la derecha. Debajo burbuja blanca con avatar de Cupi + tip. Luego filtros de retailer y categoría, carrusel de ofertas, y grid "🔥 Gana más" con 4 cajas compactas.</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <strong>Explorar una Oferta</strong>
+    <p>El usuario toca una oferta del carrusel. Ve el detalle del producto con cashback, pasos para participar ("Compra → Escanea → Cashback") y un tip de Cupi específico del producto.</p>
+    <span class="step-action">ACCIÓN → Tocar oferta "Ariel Pods 3en1" → Leer detalle → Pulsar "ESCANEAR TICKET"</span>
+  </div>
+</div>
+<div class="visual-ref">Imagen grande del producto, badge "2,00€ cashback", 3 pasos numerados, burbuja de Cupi "Este producto es de los más canjeados. ¡Sube tu ticket y gana 2,00€ al instante!"</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <strong>Escanear Ticket</strong>
+    <p>Pantalla de captura con header verde, previsualización del ticket, y botón "Confirmar y enviar".</p>
+    <span class="step-action">ACCIÓN → Pulsar "CONFIRMAR Y ENVIAR"</span>
+  </div>
+</div>
+<div class="visual-ref">Header verde degradado "Escanea tu ticket", zona negra con imagen de ticket, botón verde inferior</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">4</div>
+  <div class="step-content">
+    <strong>Éxito: Cashback Aprobado</strong>
+    <p>Cupi celebra: "¡Genial! Ya llevas X€ acumulados." Se muestra el importe ganado (+2,00€). El usuario puede ir al Wallet o volver al inicio.</p>
+    <span class="step-action">ACCIÓN → Pulsar "VER MI WALLET"</span>
+  </div>
+</div>
+<div class="visual-ref">Icono de Cupi con check, "+2,00€ en tu wallet" en píldora verde, burbuja de Cupi con felicitación y total acumulado</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">5</div>
+  <div class="step-content">
+    <strong>Pantalla Wallet (Historial)</strong>
+    <p>Tarjeta verde con saldo disponible (izquierda) y acumulado total (derecha). Texto "Canjeable a partir de 10,00€". Botón de canjear (deshabilitado si < 10€). Lista de historial con todas las participaciones y sus estados.</p>
+    <span class="step-action">ACCIÓN → Revisar historial de participaciones → Volver a Home (tab Inicio)</span>
+  </div>
+</div>
+<div class="visual-ref">Tarjeta con "Saldo disponible: 2,00€" y "Acumulado total: 2,00€". Debajo: botón "CANJEAR SALDO" gris (deshabilitado). Lista de promos: "Ariel Pods 3en1 · Hoy · +2,00€ [Aprobado]", y mocks adicionales con estados "Por expirar" y "Canjeado"</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">6</div>
+  <div class="step-content">
+    <strong>Acciones "Gana más" (Bonus)</strong>
+    <p>Volver a Home y explorar la sección "Gana más". Probar una acción: la encuesta semanal (+0,50€ bonus).</p>
+    <span class="step-action">ACCIÓN → Tocar "📋 Encuesta semanal" en el grid</span>
+  </div>
+</div>
+<div class="visual-ref">Grid 2x2 con iconos coloridos: Encuesta (+0,50€, borde morado), Invita amigo (+1,00€, borde naranja), Reseña (+0,30€, borde verde), Sube 3 tickets (x2, borde gris). Cada caja tiene icono, título, reward y expiración.</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">7</div>
+  <div class="step-content">
+    <strong>Bonus Completado</strong>
+    <p>Mismo flujo de éxito: Cupi celebra, se muestra "+0,50€ bonus en tu wallet", y se actualiza el balance.</p>
+    <span class="step-action">ACCIÓN → "VOLVER AL INICIO" → Ver que el balance se actualizó a 2,50€</span>
+  </div>
+</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">8</div>
+  <div class="step-content">
+    <strong>Perfil (Reset Demo)</strong>
+    <p>Explorar la pantalla de Perfil donde se ve resumen de stats y opción de reiniciar la demo.</p>
+    <span class="step-action">ACCIÓN → Tocar tab "Perfil" → revisar estadísticas</span>
+  </div>
+</div>
+
+<h2>⏱️ Duración Estimada del Test</h2>
+<div class="section">
+  <p><strong>6–9 minutos</strong> para completar el flujo completo.</p>
+</div>
+
+<h2>📝 Guion Sugerido para el Moderador</h2>
+<div class="section">
+  <table>
+    <tr><th>#</th><th>Indicación al Consumidor</th><th>Qué Observar</th></tr>
+    <tr><td>1</td><td>"Estás en la app. Mira la pantalla principal y dime qué ves."</td><td>¿Nota el wallet? ¿Lee el tip de Cupi? ¿Entiende que está en euros?</td></tr>
+    <tr><td>2</td><td>"¿Qué te parece este personaje (Cupi) que te da consejos?"</td><td>¿Le parece útil, molesto, simpático? ¿Leería sus tips?</td></tr>
+    <tr><td>3</td><td>"Imagina que compraste Ariel. Busca cómo ganar tu cashback."</td><td>¿Toca la oferta? ¿Entiende los 3 pasos? ¿Le parece fácil?</td></tr>
+    <tr><td>4</td><td>"Sube tu ticket."</td><td>¿El flujo es claro? ¿La confirmación de Cupi genera confianza?</td></tr>
+    <tr><td>5</td><td>"Revisa tu wallet. ¿Qué información ves?"</td><td>¿Entiende saldo vs acumulado? ¿Le gusta ver el historial? ¿El umbral de 10€ le motiva?</td></tr>
+    <tr><td>6</td><td>"Vuelve a la home. ¿Ves alguna forma de ganar dinero extra?"</td><td>¿Encuentra "Gana más"? ¿Le atraen las acciones? ¿Cuál haría primero?</td></tr>
+    <tr><td>7</td><td>"Prueba una de las acciones."</td><td>¿Le parece valioso el bonus (0,50€)? ¿Lo haría en la vida real?</td></tr>
+    <tr><td>8</td><td>"¿Usarías esta app regularmente? ¿Qué te motiva más?"</td><td>Cashback directo vs acciones bonus. Rol de Cupi en motivación.</td></tr>
+  </table>
+</div>
+
+<h2>🎯 KPIs a Evaluar</h2>
+<div class="section">
+  <ul style="list-style:none;padding:0">
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Cupi como coach:</strong> ¿El tono y tamaño son adecuados? ¿No molesta pero aporta?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Sistema monetario:</strong> ¿Prefieren € a puntos/niveles? ¿El umbral de 10€ se percibe alcanzable?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Gana más:</strong> ¿Las acciones bonus motivan? ¿Qué tipo prefieren?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Wallet/Historial:</strong> ¿Transparencia genera confianza? ¿Los estados (Pendiente, Aprobado…) se entienden?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Intención de uso:</strong> ¿Subirían más tickets por los bonus? ¿Les retiene la acumulación progresiva?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Engagement:</strong> ¿Harían acciones extra (encuestas, invitar amigos) por dinero real?</li>
+  </ul>
+</div>
+
+<div class="note">
+  ⚠️ <strong>Nota técnica:</strong> El prototipo tiene estado persistente (localStorage). Cada acción actualiza el saldo en tiempo real. Si necesitan reiniciar: ir a Perfil → botón rojo "🔄 REINICIAR DEMO". Los datos se acumulan entre interacciones.
+</div>
+
+<h2>🔗 URL del Prototipo</h2>
+<div class="section">
+  <p style="font-size:14px;font-weight:700;word-break:break-all">https://felipe-hernandez-pg.github.io/lacuponera_prototypes/prototype_cupi_gamification.html</p>
+</div>
+
+</body>
+</html>
