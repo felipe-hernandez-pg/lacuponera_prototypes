@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>CUPI Gamification — La Cuponera</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand-01:#5EBC82;--primary-100:#E8F5EE;--primary-200:#B8E4CA;--primary-400:#3DA86A;--primary-600:#122B1C;
+  --neutrals-100:#F7F7F7;--neutrals-200:#E5E5E5;--neutrals-400:#9E9E9E;--neutrals-600:#4A4A4A;--neutrals-800:#1A1A1A;
+  --accent-orange:#FF6F00;--accent-gold:#FFD54F;--accent-purple:#7C4DFF;--accent-pink:#FF4081;
+  --fs-h1:24px;--fs-h2:20px;--fs-h3:17px;--fs-h4:15px;--fs-body:14px;--fs-small:12px;--fs-xs:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify-content:center;align-items:center;min-height:100vh}
+
+.device{width:390px;height:844px;border-radius:44px;overflow:hidden;position:relative;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+@media(max-width:500px){
+  body{background:#fff}
+  .device{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none}
+}
+
+.screen{position:absolute;inset:0;display:none;flex-direction:column;background:#fff;overflow:hidden}
+.screen.active{display:flex}
+.screen-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.screen-content::-webkit-scrollbar{display:none}
+
+/* XP Bar */
+.xp-bar-container{background:var(--neutrals-200);border-radius:20px;height:12px;overflow:hidden;position:relative}
+.xp-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--brand-01),#2ECC71);transition:width .6s ease}
+.xp-bar-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.3)}
+
+/* Cupi avatar */
+.cupi-avatar{width:160px;height:160px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;position:relative}
+.cupi-avatar img{width:120px;height:120px;object-fit:contain;animation:cupiFloat 3s ease-in-out infinite}
+@keyframes cupiFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* Level badge */
+.level-badge{position:absolute;bottom:0;right:10px;background:linear-gradient(135deg,var(--accent-gold),#FFA000);color:var(--primary-600);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+
+/* Action cards */
+.action-card{display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;border:1.5px solid var(--neutrals-200);background:#fff;margin-bottom:10px;cursor:pointer;transition:all .15s}
+.action-card:active{transform:scale(.97);border-color:var(--brand-01)}
+.action-card-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.action-card-info{flex:1}
+.action-card-title{font-size:var(--fs-body);font-weight:700;color:var(--neutrals-800)}
+.action-card-desc{font-size:var(--fs-small);color:var(--neutrals-400);margin-top:2px}
+.action-card-xp{font-size:var(--fs-body);font-weight:800;color:var(--brand-01);white-space:nowrap}
+
+/* Booster cards */
+.booster-card{border-radius:16px;padding:16px;margin-bottom:10px;border:2px solid transparent;cursor:pointer;transition:all .15s}
+.booster-card:active{transform:scale(.97)}
+
+/* Bottom nav */
+.bottom-nav{display:flex;border-top:1px solid var(--neutrals-200);padding:10px 0;padding-bottom:env(safe-area-inset-bottom,18px);background:#fff}
+.bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--neutrals-400);cursor:pointer;padding:6px 0}
+.bottom-nav-item.active{color:var(--brand-01)}
+.bottom-nav-item svg{width:24px;height:24px}
+
+/* Buttons */
+.btn-primary{width:100%;padding:16px;border-radius:14px;border:none;background:var(--brand-01);color:#fff;font-size:var(--fs-h4);font-weight:700;font-family:inherit;cursor:pointer;transition:all .15s;text-align:center}
+.btn-primary:active{transform:scale(.97);opacity:.9}
+.btn-secondary{width:100%;padding:14px;border-radius:14px;border:2px solid var(--neutrals-200);background:#fff;color:var(--neutrals-600);font-size:var(--fs-body);font-weight:600;font-family:inherit;cursor:pointer;text-align:center}
+
+/* Modal overlay */
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:50;padding:24px;animation:fadeIn .3s ease}
+.modal-card{background:#fff;border-radius:24px;padding:32px 24px;max-width:320px;width:100%;text-align:center;animation:scaleIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* Confetti */
+@keyframes confettiFall{0%{transform:translateY(-100%) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:confettiFall 2.5s ease forwards}
+
+/* Offer cards */
+.offer-pill{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;background:#fff;border:1.5px solid var(--neutrals-200);font-size:var(--fs-small);font-weight:600;color:var(--neutrals-800);white-space:nowrap}
+.offer-pill img{width:28px;height:28px;border-radius:6px;object-fit:cover}
+
+/* Badge grid */
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:0 20px}
+.badge-item{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px;border-radius:14px;background:var(--neutrals-100)}
+.badge-item.locked{opacity:.4;filter:grayscale(1)}
+.badge-item img{width:40px;height:40px;border-radius:8px;object-fit:cover}
+.badge-item span{font-size:var(--fs-xs);font-weight:700;color:var(--neutrals-600);text-align:center}
+
+/* Animations */
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.shimmer-bg{background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.4) 50%,transparent 100%);background-size:200% 100%;animation:shimmer 2s infinite}
+
+/* Reward card */
+.reward-card{background:linear-gradient(135deg,#FFD54F 0%,#FFA000 100%);border-radius:20px;padding:24px;text-align:center;margin:0 20px;box-shadow:0 8px 24px rgba(255,160,0,.3)}
+</style>
+</head>
+<body>
+<div class="device" id="app">
+
+  <!-- ===== SCREEN: LOADING / INTRO ===== -->
+  <div class="screen active" id="screen-loading">
+    <div class="screen-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;background:linear-gradient(180deg,#E8F5EE 0%,#fff 60%)">
+      <!-- Cupi greeting -->
+      <div style="margin-bottom:24px">
+        <img src="cupi_success.png" style="width:140px;height:140px;object-fit:contain;animation:cupiFloat 3s ease-in-out infinite" alt="Cupi">
+      </div>
+      <div style="font-size:var(--fs-h2);font-weight:900;color:var(--primary-600);margin-bottom:8px">¡Bienvenido de nuevo!</div>
+      <div style="font-size:var(--fs-body);color:var(--neutrals-400);margin-bottom:32px">Cupi te estaba esperando 🎉</div>
+
+      <!-- Brand tip bubble -->
+      <div style="background:#fff;border-radius:16px;padding:18px;margin-bottom:32px;border:1.5px solid var(--primary-200);box-shadow:0 4px 12px rgba(94,188,130,.1);position:relative">
+        <div style="position:absolute;top:-10px;left:24px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:10px solid var(--primary-200)"></div>
+        <div style="font-size:var(--fs-small);font-weight:700;color:var(--brand-01);margin-bottom:6px">💡 Sabías que...</div>
+        <div id="brand-tip" style="font-size:var(--fs-body);color:var(--neutrals-600);line-height:1.5">¿Sabías que puedes lavar los platos en agua fría con Fairy y obtener los mismos resultados perfectos? ¡Ahorra energía!</div>
+      </div>
+
+      <div style="width:100%">
+        <div class="btn-primary" onclick="goTo('screen-home')" style="font-size:var(--fs-h3);padding:18px;box-shadow:0 6px 20px rgba(94,188,130,.4)">Entrar 🚀</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: HOME ===== -->
+  <div class="screen" id="screen-home">
+    <div class="screen-content" style="background:var(--neutrals-100)">
+      <!-- Top bar -->
+      <div style="background:#fff;padding:52px 20px 16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font-size:var(--fs-h3);font-weight:800;color:var(--primary-600)">¡Hola! 👋</div>
+            <div style="font-size:var(--fs-small);color:var(--neutrals-400);font-weight:500">Nivel <span id="home-level">1</span> · <span id="home-xp">0</span> XP</div>
+          </div>
+          <div style="position:relative">
+            <img src="cupi_success.png" style="width:48px;height:48px;object-fit:contain;border-radius:50%;border:2px solid var(--brand-01)" alt="Cupi">
+            <div style="position:absolute;bottom:-2px;right:-2px;background:var(--accent-gold);width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;border:2px solid #fff" id="home-level-badge">1</div>
+          </div>
+        </div>
+        <!-- XP bar -->
+        <div class="xp-bar-container">
+          <div class="xp-bar-fill" id="home-xp-bar" style="width:0%"></div>
+          <div class="xp-bar-label"><span id="home-xp-progress">0/10 XP</span></div>
+        </div>
+      </div>
+
+      <!-- Cupi section -->
+      <div style="background:#fff;margin-top:8px;padding:20px;text-align:center">
+        <div class="cupi-avatar" id="home-cupi-container">
+          <div style="width:160px;height:160px;border-radius:50%;background:linear-gradient(135deg,var(--primary-100) 0%,#fff 100%);display:flex;align-items:center;justify-content:center;border:3px solid var(--primary-200)">
+            <img src="cupi_success.png" style="width:100px;height:100px;object-fit:contain;animation:cupiFloat 3s ease-in-out infinite" id="home-cupi-img" alt="Cupi">
+          </div>
+          <div class="level-badge" id="home-cupi-level">1</div>
+        </div>
+        <div style="margin-top:12px;font-size:var(--fs-h4);font-weight:800;color:var(--primary-600)" id="home-cupi-stage">Cupi Bebé 🥚</div>
+        <div style="font-size:var(--fs-small);color:var(--neutrals-400);margin-top:4px" id="home-cupi-next">Siguiente evolución: Nivel 5</div>
+      </div>
+
+      <!-- Boosters of the week -->
+      <div style="padding:20px 20px 8px">
+        <div style="font-size:var(--fs-h4);font-weight:800;color:var(--primary-600);margin-bottom:12px">🔥 Boosters de la semana</div>
+        <div class="booster-card" style="background:linear-gradient(135deg,#EDE7F6,#fff);border-color:#7C4DFF" onclick="doAction('survey')">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:44px;height:44px;border-radius:12px;background:var(--accent-purple);display:flex;align-items:center;justify-content:center;font-size:20px">📋</div>
+            <div style="flex:1">
+              <div style="font-size:var(--fs-body);font-weight:700;color:var(--neutrals-800)">Completa la encuesta semanal</div>
+              <div style="font-size:var(--fs-small);color:var(--accent-purple);font-weight:600">+1 nivel extra · Expira en 3 días</div>
+            </div>
+            <div style="font-size:var(--fs-h3);font-weight:900;color:var(--accent-purple)">+1</div>
+          </div>
+        </div>
+        <div class="booster-card" style="background:linear-gradient(135deg,#FFF3E0,#fff);border-color:var(--accent-orange)">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:44px;height:44px;border-radius:12px;background:var(--accent-orange);display:flex;align-items:center;justify-content:center;font-size:20px">🎯</div>
+            <div style="flex:1">
+              <div style="font-size:var(--fs-body);font-weight:700;color:var(--neutrals-800)">Sube 3 tickets esta semana</div>
+              <div style="font-size:var(--fs-small);color:var(--accent-orange);font-weight:600">x2 XP en cada ticket · 1/3 completado</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;background:var(--neutrals-200);border-radius:8px;height:6px;overflow:hidden">
+            <div style="width:33%;height:100%;background:var(--accent-orange);border-radius:8px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offers row -->
+      <div style="padding:0 20px 8px">
+        <div style="font-size:var(--fs-h4);font-weight:800;color:var(--primary-600);margin-bottom:12px">🎁 Ofertas destacadas</div>
+        <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch">
+          <div class="offer-pill">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fd0343577-d143-4179-9567-6d6d3ab534c4.jpeg&w=640&q=75" alt="">
+            <span>Fairy · GRATIS</span>
+          </div>
+          <div class="offer-pill">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc562c9b-4962-4d70-b321-ef101a83a329.jpeg&w=640&q=75" alt="">
+            <span>Ariel · -50%</span>
+          </div>
+          <div class="offer-pill">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F4556a36e-a197-4b97-99d5-26e1a02fdc43.png&w=640&q=75" alt="">
+            <span>Oral-B · 2x1</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div style="padding:16px 20px 20px">
+        <div style="font-size:var(--fs-h4);font-weight:800;color:var(--primary-600);margin-bottom:12px">⚡ Acciones rápidas</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="background:#fff;border-radius:14px;padding:16px;text-align:center;border:1.5px solid var(--neutrals-200);cursor:pointer" onclick="doAction('receipt')">
+            <div style="font-size:28px;margin-bottom:8px">📸</div>
+            <div style="font-size:var(--fs-small);font-weight:700;color:var(--neutrals-800)">Subir ticket</div>
+            <div style="font-size:var(--fs-xs);color:var(--brand-01);font-weight:700;margin-top:4px">+2 XP</div>
+          </div>
+          <div style="background:#fff;border-radius:14px;padding:16px;text-align:center;border:1.5px solid var(--neutrals-200);cursor:pointer" onclick="doAction('redeem')">
+            <div style="font-size:28px;margin-bottom:8px">🎟️</div>
+            <div style="font-size:var(--fs-small);font-weight:700;color:var(--neutrals-800)">Canjear oferta</div>
+            <div style="font-size:var(--fs-xs);color:var(--brand-01);font-weight:700;margin-top:4px">+5 XP</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <div class="bottom-nav-item active" onclick="goTo('screen-home')">
+        <svg viewBox="0 0 24 24" fill="var(--brand-01)"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
+        <span style="color:var(--brand-01)">Inicio</span>
+      </div>
+      <div class="bottom-nav-item" onclick="goTo('screen-wallet')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M21 18v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1" stroke="var(--neutrals-400)" stroke-width="1.5"/><rect x="13" y="10" width="8" height="4" rx="2" stroke="var(--neutrals-400)" stroke-width="1.5"/></svg>
+        <span>Wallet</span>
+      </div>
+      <div class="bottom-nav-item" onclick="goTo('screen-actions')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="var(--neutrals-400)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Acciones</span>
+      </div>
+      <div class="bottom-nav-item" onclick="goTo('screen-badges')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 15l-3 3v4l3-2 3 2v-4l-3-3z" stroke="var(--neutrals-400)" stroke-width="1.5"/><circle cx="12" cy="9" r="6" stroke="var(--neutrals-400)" stroke-width="1.5"/></svg>
+        <span>Insignias</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: WALLET / CUPI HUB ===== -->
+  <div class="screen" id="screen-wallet">
+    <div class="screen-content" style="background:var(--neutrals-100)">
+      <!-- Header -->
+      <div style="background:linear-gradient(135deg,var(--primary-600) 0%,#1B4332 100%);padding:52px 20px 30px;text-align:center;border-radius:0 0 24px 24px">
+        <div style="font-size:var(--fs-h2);font-weight:900;color:#fff;margin-bottom:16px">Mi Cupi Hub</div>
+        <!-- Cupi big avatar -->
+        <div style="width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid rgba(255,255,255,.3)">
+          <img src="cupi_success.png" style="width:80px;height:80px;object-fit:contain;animation:cupiFloat 3s ease-in-out infinite" id="wallet-cupi-img" alt="Cupi">
+        </div>
+        <!-- Level + XP -->
+        <div style="margin-top:16px">
+          <div style="font-size:var(--fs-small);color:rgba(255,255,255,.7);font-weight:600">Nivel <span id="wallet-level">1</span></div>
+          <div style="margin-top:8px;background:rgba(255,255,255,.2);border-radius:20px;height:10px;overflow:hidden;margin:8px 40px 0">
+            <div id="wallet-xp-bar" style="width:0%;height:100%;border-radius:20px;background:linear-gradient(90deg,var(--accent-gold),#FFA000);transition:width .6s ease"></div>
+          </div>
+          <div style="font-size:var(--fs-xs);color:rgba(255,255,255,.6);margin-top:6px" id="wallet-xp-label">0/10 XP para nivel 2</div>
+        </div>
+        <div style="margin-top:12px;display:inline-block;padding:6px 14px;border-radius:8px;background:rgba(255,255,255,.15);font-size:var(--fs-small);font-weight:700;color:#fff" id="wallet-stage">🥚 Cupi Bebé</div>
+      </div>
+
+      <!-- Actions list -->
+      <div style="padding:20px">
+        <div style="font-size:var(--fs-h4);font-weight:800;color:var(--primary-600);margin-bottom:14px">Gana XP con acciones</div>
+        
+        <div class="action-card" onclick="doAction('receipt')">
+          <div class="action-card-icon" style="background:var(--primary-100)">📸</div>
+          <div class="action-card-info">
+            <div class="action-card-title">Subir ticket</div>
+            <div class="action-card-desc">Sube un ticket de compra</div>
+          </div>
+          <div class="action-card-xp">+2 XP</div>
+        </div>
+
+        <div class="action-card" onclick="doAction('survey')">
+          <div class="action-card-icon" style="background:#EDE7F6">📋</div>
+          <div class="action-card-info">
+            <div class="action-card-title">Hacer encuesta</div>
+            <div class="action-card-desc">Contesta una encuesta rápida</div>
+          </div>
+          <div class="action-card-xp">+1 XP</div>
+        </div>
+
+        <div class="action-card" onclick="doAction('redeem')">
+          <div class="action-card-icon" style="background:#FFF3E0">🎟️</div>
+          <div class="action-card-info">
+            <div class="action-card-title">Canjear oferta</div>
+            <div class="action-card-desc">Usa una de tus ofertas activas</div>
+          </div>
+          <div class="action-card-xp">+5 XP</div>
+        </div>
+
+        <div class="action-card" onclick="doAction('share')">
+          <div class="action-card-icon" style="background:#E3F2FD">📤</div>
+          <div class="action-card-info">
+            <div class="action-card-title">Compartir con amigos</div>
+            <div class="action-card-desc">Invita a un amigo a La Cuponera</div>
+          </div>
+          <div class="action-card-xp">+3 XP</div>
+        </div>
+      </div>
+
+      <!-- Wallet balance -->
+      <div style="padding:0 20px 20px">
+        <div style="background:linear-gradient(135deg,var(--primary-100),#fff);border-radius:16px;padding:18px;border:1.5px solid var(--primary-200)">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:var(--fs-small);font-weight:600;color:var(--neutrals-600)">Mi wallet</div>
+              <div style="font-size:var(--fs-h1);font-weight:900;color:var(--brand-01)">10,00€</div>
+            </div>
+            <div class="btn-primary" style="width:auto;padding:12px 20px;font-size:var(--fs-body)">Cobrar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <div class="bottom-nav-item" onclick="goTo('screen-home')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke="var(--neutrals-400)" stroke-width="1.5"/></svg>
+        <span>Inicio</span>
+      </div>
+      <div class="bottom-nav-item active" onclick="goTo('screen-wallet')">
+        <svg viewBox="0 0 24 24" fill="var(--brand-01)"><path d="M21 18v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1"/><rect x="13" y="10" width="8" height="4" rx="2"/></svg>
+        <span style="color:var(--brand-01)">Wallet</span>
+      </div>
+      <div class="bottom-nav-item" onclick="goTo('screen-actions')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="var(--neutrals-400)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Acciones</span>
+      </div>
+      <div class="bottom-nav-item" onclick="goTo('screen-badges')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 15l-3 3v4l3-2 3 2v-4l-3-3z" stroke="var(--neutrals-400)" stroke-width="1.5"/><circle cx="12" cy="9" r="6" stroke="var(--neutrals-400)" stroke-width="1.5"/></svg>
+        <span>Insignias</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: ACTIONS ===== -->
+  <div class="screen" id="screen-actions">
+    <div class="screen-content" style="background:var(--neutrals-100)">
+      <div style="background:#fff;padding:52px 20px 20px">
+        <div style="font-size:var(--fs-h2);font-weight:900;color:var(--primary-600);margin-bottom:4px">Acciones</div>
+        <div style="font-size:var(--fs-body);color:var(--neutrals-400)">Completa acciones para ganar XP y subir de nivel</div>
+      </div>
+
+      <!-- Today's actions -->
+      <div style="padding:20px">
+        <div style="font-size:var(--fs-h4);font-weight:800;color:var(--primary-600);margin-bottom:14px">📅 Hoy</div>
+
+        <div class="action-card" onclick="doAction('receipt')">
+          <div class="action-card-icon" style="background:var(--primary-100)">📸</div>
+          <div class="action-card-info">
+            <div class="action-card-title">Subir ticket de compra</div>
+            <div class="action-card-desc">Sube tu ticket de hoy</div>
+          </div>
+          <div class="action-card-xp">+2 XP</div>
+        </div>
+
+        <div class="action-card" onclick="doAction('survey')">
+          <div class="action-card-icon" style="background:#EDE7F6">📋</div>
+          <div class="action-card-info">
+            <div class="action-card-title">Encuesta: Tus marcas favoritas</div>
+            <div class="action-card-desc">2 min · 5 preguntas</div>
+          </div>
+          <div class="action-card-xp">+1 XP</div>
+        </div>
+
+        <div class="action-card" onclick="doAction('redeem')">
+          <div class="action-card-icon" style="background:#FFF3E0">🎟️</div>
+          <div class="action-card-info">
+            <div class="action-card-title">Canjear oferta Fairy</div>
+            <div class="action-card-desc">Disponible: GRATIS en cualquier super</div>
+          </div>
+          <div class="action-card-xp">+5 XP</div>
+        </div>
+
+        <div style="font-size:var(--fs-h4);font-weight:800;color:var(--primary-600);margin:20px 0 14px">🎯 Retos semanales</div>
+
+        <div class="action-card" onclick="doAction('share')">
+          <div class="action-card-icon" style="background:#E3F2FD">📤</div>
+          <div class="action-card-info">
+            <div class="action-card-title">Invita a 2 amigos</div>
+            <div class="action-card-desc">0/2 completados</div>
+          </div>
+          <div class="action-card-xp">+3 XP</div>
+        </div>
+
+        <div class="action-card" style="opacity:.5;pointer-events:none">
+          <div class="action-card-icon" style="background:var(--neutrals-100)">🔒</div>
+          <div class="action-card-info">
+            <div class="action-card-title">Desbloquea en nivel 5</div>
+            <div class="action-card-desc">Reto especial de marca</div>
+          </div>
+          <div class="action-card-xp" style="color:var(--neutrals-400)">+10 XP</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <div class="bottom-nav-item" onclick="goTo('screen-home')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke="var(--neutrals-400)" stroke-width="1.5"/></svg>
+        <span>Inicio</span>
+      </div>
+      <div class="bottom-nav-item" onclick="goTo('screen-wallet')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M21 18v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1" stroke="var(--neutrals-400)" stroke-width="1.5"/><rect x="13" y="10" width="8" height="4" rx="2" stroke="var(--neutrals-400)" stroke-width="1.5"/></svg>
+        <span>Wallet</span>
+      </div>
+      <div class="bottom-nav-item active" onclick="goTo('screen-actions')">
+        <svg viewBox="0 0 24 24" fill="var(--brand-01)"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span style="color:var(--brand-01)">Acciones</span>
+      </div>
+      <div class="bottom-nav-item" onclick="goTo('screen-badges')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 15l-3 3v4l3-2 3 2v-4l-3-3z" stroke="var(--neutrals-400)" stroke-width="1.5"/><circle cx="12" cy="9" r="6" stroke="var(--neutrals-400)" stroke-width="1.5"/></svg>
+        <span>Insignias</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: BADGES ===== -->
+  <div class="screen" id="screen-badges">
+    <div class="screen-content" style="background:var(--neutrals-100)">
+      <div style="background:#fff;padding:52px 20px 20px">
+        <div style="font-size:var(--fs-h2);font-weight:900;color:var(--primary-600);margin-bottom:4px">Mis Insignias</div>
+        <div style="font-size:var(--fs-body);color:var(--neutrals-400)">Colecciona insignias de marca</div>
+      </div>
+
+      <div style="padding:20px 0">
+        <div style="padding:0 20px 14px;font-size:var(--fs-h4);font-weight:800;color:var(--primary-600)">🏆 Desbloqueadas</div>
+        <div class="badge-grid">
+          <div class="badge-item">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fd0343577-d143-4179-9567-6d6d3ab534c4.jpeg&w=640&q=75" alt="Fairy">
+            <span>Fairy Fan</span>
+          </div>
+          <div class="badge-item">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc562c9b-4962-4d70-b321-ef101a83a329.jpeg&w=640&q=75" alt="Ariel">
+            <span>Ariel Pro</span>
+          </div>
+          <div class="badge-item">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F4556a36e-a197-4b97-99d5-26e1a02fdc43.png&w=640&q=75" alt="Oral-B">
+            <span>Oral-B Guru</span>
+          </div>
+        </div>
+
+        <div style="padding:20px 20px 14px;font-size:var(--fs-h4);font-weight:800;color:var(--neutrals-400)">🔒 Por desbloquear</div>
+        <div class="badge-grid">
+          <div class="badge-item locked">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fb7878290-0949-4cba-8cdc-2b308e66ff16.jpeg&w=640&q=75" alt="">
+            <span>Nivel 5</span>
+          </div>
+          <div class="badge-item locked">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Ff0a2af01-a6b0-44bf-bd1a-e809b27e055e.png&w=640&q=75" alt="">
+            <span>Nivel 10</span>
+          </div>
+          <div class="badge-item locked">
+            <div style="width:40px;height:40px;border-radius:8px;background:var(--neutrals-200);display:flex;align-items:center;justify-content:center;font-size:18px">❓</div>
+            <span>Nivel 15</span>
+          </div>
+          <div class="badge-item locked">
+            <div style="width:40px;height:40px;border-radius:8px;background:var(--neutrals-200);display:flex;align-items:center;justify-content:center;font-size:18px">❓</div>
+            <span>Nivel 20</span>
+          </div>
+          <div class="badge-item locked">
+            <div style="width:40px;height:40px;border-radius:8px;background:var(--neutrals-200);display:flex;align-items:center;justify-content:center;font-size:18px">❓</div>
+            <span>Nivel 25</span>
+          </div>
+          <div class="badge-item locked">
+            <div style="width:40px;height:40px;border-radius:8px;background:var(--accent-gold);display:flex;align-items:center;justify-content:center;font-size:18px">🎁</div>
+            <span>Nivel 30</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <div class="bottom-nav-item" onclick="goTo('screen-home')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke="var(--neutrals-400)" stroke-width="1.5"/></svg>
+        <span>Inicio</span>
+      </div>
+      <div class="bottom-nav-item" onclick="goTo('screen-wallet')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M21 18v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1" stroke="var(--neutrals-400)" stroke-width="1.5"/><rect x="13" y="10" width="8" height="4" rx="2" stroke="var(--neutrals-400)" stroke-width="1.5"/></svg>
+        <span>Wallet</span>
+      </div>
+      <div class="bottom-nav-item" onclick="goTo('screen-actions')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="var(--neutrals-400)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Acciones</span>
+      </div>
+      <div class="bottom-nav-item active" onclick="goTo('screen-badges')">
+        <svg viewBox="0 0 24 24" fill="var(--brand-01)"><path d="M12 15l-3 3v4l3-2 3 2v-4l-3-3z"/><circle cx="12" cy="9" r="6"/></svg>
+        <span style="color:var(--brand-01)">Insignias</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: LEVEL UP ===== -->
+  <div class="screen" id="screen-levelup">
+    <div class="screen-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;background:linear-gradient(180deg,#E8F5EE 0%,#fff 50%,var(--accent-gold) 200%);position:relative;overflow:hidden">
+      <!-- Confetti will be injected here -->
+      <div id="confetti-container" style="position:absolute;inset:0;pointer-events:none;overflow:hidden"></div>
+      
+      <div style="position:relative;z-index:1;text-align:center">
+        <div style="font-size:48px;margin-bottom:16px;animation:pulse 1s ease-in-out infinite">🎉</div>
+        <div style="font-size:var(--fs-h1);font-weight:900;color:var(--primary-600);margin-bottom:8px">¡Enhorabuena!</div>
+        <div style="font-size:var(--fs-h2);font-weight:700;color:var(--brand-01);margin-bottom:24px">Has subido al nivel <span id="levelup-level">2</span></div>
+
+        <!-- Cupi evolution -->
+        <div style="width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;border:4px solid var(--accent-gold);box-shadow:0 8px 24px rgba(255,213,79,.4)">
+          <img src="cupi_success.png" style="width:90px;height:90px;object-fit:contain" id="levelup-cupi-img" alt="Cupi">
+        </div>
+        <div style="font-size:var(--fs-h4);font-weight:800;color:var(--primary-600);margin-bottom:6px" id="levelup-stage">Cupi Bebé 🥚</div>
+        <div style="font-size:var(--fs-body);color:var(--neutrals-400);margin-bottom:24px" id="levelup-unlock-text">Nueva insignia desbloqueada</div>
+
+        <!-- Unlocked badge -->
+        <div id="levelup-badge" style="display:inline-flex;align-items:center;gap:10px;padding:12px 20px;border-radius:12px;background:#fff;border:2px solid var(--accent-gold);margin-bottom:32px;box-shadow:0 4px 12px rgba(0,0,0,.08)">
+          <div style="font-size:24px">🏅</div>
+          <div style="text-align:left">
+            <div style="font-size:var(--fs-body);font-weight:700;color:var(--neutrals-800)" id="levelup-badge-name">Explorador</div>
+            <div style="font-size:var(--fs-small);color:var(--neutrals-400)">Insignia desbloqueada</div>
+          </div>
+        </div>
+
+        <div style="width:100%">
+          <div class="btn-primary" onclick="closeLevelUp()" style="font-size:var(--fs-h3);padding:18px">¡Genial! Continuar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: REWARD (Level 30) ===== -->
+  <div class="screen" id="screen-reward">
+    <div class="screen-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;background:linear-gradient(180deg,#FFF8E1 0%,#fff 100%)">
+      <div style="font-size:64px;margin-bottom:16px;animation:pulse 1s ease-in-out infinite">🎁</div>
+      <div style="font-size:var(--fs-h1);font-weight:900;color:var(--primary-600);margin-bottom:8px">¡Premio especial!</div>
+      <div style="font-size:var(--fs-body);color:var(--neutrals-600);margin-bottom:28px;text-align:center;line-height:1.5">Cupi ha evolucionado al máximo nivel.<br>Has desbloqueado un premio exclusivo.</div>
+
+      <!-- Reward card -->
+      <div class="reward-card" style="margin-bottom:28px;width:100%">
+        <div style="font-size:40px;margin-bottom:12px">🧺</div>
+        <div style="font-size:var(--fs-h2);font-weight:900;color:var(--primary-600);margin-bottom:6px">Cesta de productos GRATIS</div>
+        <div style="font-size:var(--fs-body);color:var(--neutrals-600)">Incluye: Fairy, Ariel, Oral-B, H&S y Evax</div>
+      </div>
+
+      <!-- Cupi max form -->
+      <div style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--accent-gold),#FF6F00);display:flex;align-items:center;justify-content:center;margin-bottom:24px;box-shadow:0 8px 24px rgba(255,111,0,.3);border:4px solid #fff">
+        <img src="cupi_success.png" style="width:80px;height:80px;object-fit:contain" alt="Cupi MAX">
+      </div>
+      <div style="font-size:var(--fs-h4);font-weight:800;color:var(--accent-orange);margin-bottom:28px">⭐ CUPI LEGENDARIO ⭐</div>
+
+      <div style="width:100%">
+        <div class="btn-primary" onclick="goTo('screen-home')" style="background:var(--accent-orange);font-size:var(--fs-h3);padding:18px;box-shadow:0 6px 20px rgba(255,111,0,.4)">Canjear premio 🎉</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: ACTION FEEDBACK ===== -->
+  <div class="modal-overlay" id="modal-feedback" style="display:none">
+    <div class="modal-card">
+      <div style="font-size:48px;margin-bottom:12px" id="modal-emoji">🎉</div>
+      <div style="font-size:var(--fs-h2);font-weight:900;color:var(--primary-600);margin-bottom:4px" id="modal-title">+2 XP</div>
+      <div style="font-size:var(--fs-body);color:var(--neutrals-600);margin-bottom:16px" id="modal-desc">¡Has subido un ticket!</div>
+      <!-- Mini XP bar -->
+      <div style="margin-bottom:8px;background:var(--neutrals-200);border-radius:20px;height:10px;overflow:hidden">
+        <div id="modal-xp-bar" style="width:0%;height:100%;border-radius:20px;background:linear-gradient(90deg,var(--brand-01),#2ECC71);transition:width .8s ease"></div>
+      </div>
+      <div style="font-size:var(--fs-small);color:var(--neutrals-400);margin-bottom:20px" id="modal-xp-label">0/10 XP</div>
+      <!-- Cupi reaction -->
+      <img src="cupi_success.png" style="width:64px;height:64px;object-fit:contain;margin-bottom:16px;animation:cupiFloat 2s ease-in-out infinite" alt="Cupi">
+      <div style="font-size:var(--fs-body);font-weight:700;color:var(--brand-01);margin-bottom:16px" id="modal-cupi-says">¡Bien hecho! Cupi está contento 😊</div>
+      <div class="btn-primary" onclick="closeModal()">Continuar</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// === STATE ===
+const gameState = {
+  xp: 0,
+  level: 1,
+  totalXp: 0,
+  badges: ['Fairy Fan', 'Ariel Pro', 'Oral-B Guru'],
+  currentScreen: 'screen-loading'
+};
+
+// Level thresholds (XP needed per level)
+function xpForLevel(level) {
+  return 5 + (level * 5); // Level 1: 10, Level 2: 15, Level 3: 20, etc.
+}
+
+// Cupi evolution stages
+function getCupiStage(level) {
+  if (level >= 30) return { name: 'Cupi Legendario', emoji: '⭐', next: 'Nivel máximo' };
+  if (level >= 20) return { name: 'Cupi Maestro', emoji: '👑', next: 'Nivel 30' };
+  if (level >= 15) return { name: 'Cupi Adulto', emoji: '💪', next: 'Nivel 20' };
+  if (level >= 10) return { name: 'Cupi Joven', emoji: '🌟', next: 'Nivel 15' };
+  if (level >= 5) return { name: 'Cupi Niño', emoji: '🐣', next: 'Nivel 10' };
+  return { name: 'Cupi Bebé', emoji: '🥚', next: 'Nivel 5' };
+}
+
+const cupiMessages = [
+  '¡Bien hecho! Cupi está contento 😊',
+  '¡Genial! Sigue así 🚀',
+  '¡Eso es! Cupi evoluciona contigo 🌱',
+  '¡Increíble! Estás subiendo rápido ⚡',
+  '¡Cupi te aplaude! 👏'
+];
+
+const brandTips = [
+  '¿Sabías que puedes lavar los platos en agua fría con Fairy y obtener los mismos resultados perfectos?',
+  'Los cepillos eléctricos Oral-B eliminan hasta un 100% más de placa que un cepillo manual.',
+  'Ariel PODS se disuelven completamente incluso a 30°C. ¡Ahorra energía en cada lavado!',
+  'H&S no solo elimina la caspa, también hidrata tu cuero cabelludo con cada uso.',
+  'Evax Cottonlike tiene una capa de algodón natural que respeta tu piel.'
+];
+
+// === NAVIGATION ===
+function goTo(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(screenId);
+  if (target) {
+    target.classList.add('active');
+    const content = target.querySelector('.screen-content');
+    if (content) content.scrollTop = 0;
+  }
+  gameState.currentScreen = screenId;
+  updateUI();
+}
+
+// === ACTIONS ===
+function doAction(type) {
+  let xpGain = 0;
+  let emoji = '🎉';
+  let title = '';
+  let desc = '';
+
+  switch(type) {
+    case 'receipt':
+      xpGain = 2; emoji = '📸'; title = '+2 XP'; desc = '¡Has subido un ticket!';
+      break;
+    case 'survey':
+      xpGain = 1; emoji = '📋'; title = '+1 XP'; desc = '¡Encuesta completada!';
+      break;
+    case 'redeem':
+      xpGain = 5; emoji = '🎟️'; title = '+5 XP'; desc = '¡Oferta canjeada!';
+      break;
+    case 'share':
+      xpGain = 3; emoji = '📤'; title = '+3 XP'; desc = '¡Invitación enviada!';
+      break;
+  }
+
+  gameState.xp += xpGain;
+  gameState.totalXp += xpGain;
+
+  // Show feedback modal
+  document.getElementById('modal-emoji').textContent = emoji;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-desc').textContent = desc;
+  document.getElementById('modal-cupi-says').textContent = cupiMessages[Math.floor(Math.random() * cupiMessages.length)];
+  document.getElementById('modal-feedback').style.display = 'flex';
+
+  // Animate XP bar in modal
+  const threshold = xpForLevel(gameState.level);
+  const pct = Math.min((gameState.xp / threshold) * 100, 100);
+  setTimeout(() => {
+    document.getElementById('modal-xp-bar').style.width = pct + '%';
+  }, 100);
+  document.getElementById('modal-xp-label').textContent = gameState.xp + '/' + threshold + ' XP';
+}
+
+function closeModal() {
+  document.getElementById('modal-feedback').style.display = 'none';
+  
+  // Check level up
+  const threshold = xpForLevel(gameState.level);
+  if (gameState.xp >= threshold) {
+    gameState.xp -= threshold;
+    gameState.level++;
+    showLevelUp();
+  } else {
+    updateUI();
+  }
+}
+
+function showLevelUp() {
+  const stage = getCupiStage(gameState.level);
+  document.getElementById('levelup-level').textContent = gameState.level;
+  document.getElementById('levelup-stage').textContent = stage.name + ' ' + stage.emoji;
+  
+  // Badge name based on level
+  const badgeNames = ['Explorador', 'Aventurero', 'Cazador', 'Experto', 'Maestro', 'Campeón', 'Leyenda'];
+  const badgeIdx = Math.min(Math.floor((gameState.level - 1) / 5), badgeNames.length - 1);
+  document.getElementById('levelup-badge-name').textContent = badgeNames[badgeIdx];
+  document.getElementById('levelup-unlock-text').textContent = 
+    gameState.level % 5 === 0 ? '¡Cupi ha evolucionado!' : 'Nueva insignia desbloqueada';
+
+  // Spawn confetti
+  spawnConfetti();
+
+  goTo('screen-levelup');
+
+  // Check if reward level (30)
+  if (gameState.level >= 30) {
+    document.getElementById('levelup-unlock-text').textContent = '¡Premio especial desbloqueado!';
+  }
+}
+
+function closeLevelUp() {
+  if (gameState.level >= 30) {
+    goTo('screen-reward');
+  } else {
+    goTo('screen-home');
+  }
+}
+
+function spawnConfetti() {
+  const container = document.getElementById('confetti-container');
+  container.innerHTML = '';
+  const colors = ['#FF6F00','#FFD54F','#5EBC82','#7C4DFF','#FF4081','#42A5F5'];
+  for (let i = 0; i < 40; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.top = '-20px';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = Math.random() * 1.5 + 's';
+    piece.style.animationDuration = (2 + Math.random()) + 's';
+    piece.style.width = (6 + Math.random() * 8) + 'px';
+    piece.style.height = (6 + Math.random() * 8) + 'px';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    container.appendChild(piece);
+  }
+}
+
+// === UI UPDATE ===
+function updateUI() {
+  const threshold = xpForLevel(gameState.level);
+  const pct = Math.min((gameState.xp / threshold) * 100, 100);
+  const stage = getCupiStage(gameState.level);
+
+  // Home screen
+  const homeLevel = document.getElementById('home-level');
+  if (homeLevel) homeLevel.textContent = gameState.level;
+  const homeXp = document.getElementById('home-xp');
+  if (homeXp) homeXp.textContent = gameState.totalXp;
+  const homeXpBar = document.getElementById('home-xp-bar');
+  if (homeXpBar) homeXpBar.style.width = pct + '%';
+  const homeXpProgress = document.getElementById('home-xp-progress');
+  if (homeXpProgress) homeXpProgress.textContent = gameState.xp + '/' + threshold + ' XP';
+  const homeLevelBadge = document.getElementById('home-level-badge');
+  if (homeLevelBadge) homeLevelBadge.textContent = gameState.level;
+  const homeCupiLevel = document.getElementById('home-cupi-level');
+  if (homeCupiLevel) homeCupiLevel.textContent = gameState.level;
+  const homeCupiStage = document.getElementById('home-cupi-stage');
+  if (homeCupiStage) homeCupiStage.textContent = stage.name + ' ' + stage.emoji;
+  const homeCupiNext = document.getElementById('home-cupi-next');
+  if (homeCupiNext) homeCupiNext.textContent = stage.next === 'Nivel máximo' ? '¡Nivel máximo alcanzado!' : 'Siguiente evolución: ' + stage.next;
+
+  // Wallet screen
+  const walletLevel = document.getElementById('wallet-level');
+  if (walletLevel) walletLevel.textContent = gameState.level;
+  const walletXpBar = document.getElementById('wallet-xp-bar');
+  if (walletXpBar) walletXpBar.style.width = pct + '%';
+  const walletXpLabel = document.getElementById('wallet-xp-label');
+  if (walletXpLabel) walletXpLabel.textContent = gameState.xp + '/' + threshold + ' XP para nivel ' + (gameState.level + 1);
+  const walletStage = document.getElementById('wallet-stage');
+  if (walletStage) walletStage.textContent = stage.emoji + ' ' + stage.name;
+}
+
+// Init: randomize brand tip
+document.getElementById('brand-tip').textContent = brandTips[Math.floor(Math.random() * brandTips.length)];
+updateUI();
+</script>
+</body>
+</html>
