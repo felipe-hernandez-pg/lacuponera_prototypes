@@ -62,10 +62,10 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 .back-overlay.show{display:block}
 
 /* Floating back button */
-.fab-back{position:absolute;bottom:24px;right:16px;z-index:200;width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,.75);border:2px solid rgba(255,255,255,.3);display:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.3);transition:transform .15s}
+.fab-back{position:absolute;top:14px;right:14px;z-index:200;display:none;align-items:center;gap:5px;padding:8px 14px;border-radius:999px;background:rgba(0,0,0,.75);border:1.5px solid rgba(255,255,255,.25);cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.3);transition:transform .15s;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .fab-back:active{transform:scale(.9)}
 .fab-back.show{display:flex}
-.fab-back svg{width:22px;height:22px;stroke:#fff;stroke-width:2.5;fill:none}
+.fab-back span{font-size:12px;font-weight:800;color:#fff;letter-spacing:.3px}
 </style>
 </head>
 <body>
@@ -118,7 +118,7 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
     </div>
 
     <div class="shake-hint">
-      <p><span class="shake-icon">📱</span> Agita el móvil para volver aquí</p>
+      <p><span class="shake-icon">📱</span> Pulsa “✕ Menú” (arriba-derecha) para volver aquí</p>
     </div>
   </div>
 
@@ -130,7 +130,7 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 
   <!-- FLOATING BACK BUTTON -->
   <div class="fab-back" id="fabBack" onclick="returnToMenu()">
-    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    <span>✕ Menú</span>
   </div>
 
 </div>
