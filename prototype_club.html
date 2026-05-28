@@ -453,8 +453,9 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
       <div class="success-points" id="scanSuccessMoney">+2,00€ en wallet</div>
       <div class="success-points" style="background:var(--primary-100);color:var(--brand-01)" id="scanSuccessPoints">+100 puntos Club</div>
       <div style="width:100%;margin-top:12px">
-        <button class="btn-primary" onclick="goTo('screen-profile')">VER WALLET</button>
-        <button class="btn-secondary" style="margin-top:10px" onclick="goTo('screen-home')">VOLVER AL INICIO</button>
+        <button class="btn-secondary" onclick="goTo('screen-profile')">VER WALLET</button>
+        <button class="btn-primary" style="margin-top:10px" onclick="goToClub()">IR AL CLUB 🏆</button>
+        <button class="btn-secondary" style="margin-top:10px" onclick="goTo('screen-offers')">MÁS OFERTAS</button>
       </div>
     </div>
   </div>
@@ -657,10 +658,8 @@ const TIERS = [
   {key:'diamante',label:'Diamante',icon:'💎',pts:2500,receipts:52}
 ];
 const MYSTERY_REWARDS = [
-  {emoji:'✨',title:'+50 puntos extra',desc:'Se han sumado 50 puntos a tu cuenta Club.'},
-  {emoji:'💰',title:'+0,50€ en tu wallet',desc:'Se ha añadido 0,50€ a tu wallet.',wallet:0.5},
-  {emoji:'🧺',title:'Muestra gratis de Ariel Pods',desc:'Recibirás una muestra gratuita en tu próximo pedido.'},
-  {emoji:'🏷️',title:'50% dto. en producto P&G',desc:'Cupón exclusivo: 50% de descuento en tu próxima compra.'}
+  {emoji:'🧴',title:'Fairy Spray gratis',desc:'¡Recibirás un bote de Fairy Spray completamente gratis en tu próximo pedido!'},
+  {emoji:'💰',title:'+2,00€ en tu wallet',desc:'Se han añadido 2,00€ a tu wallet.',wallet:2.0}
 ];
 
 function freshState(){return{points:0,receipts:0,wallet:0,approved:0,missions:{daily:1,fairy:0,invite:0},_seenIntro:false}}
@@ -774,7 +773,6 @@ function openMysteryBox(){
   const box=document.getElementById('mysteryBox');box.classList.add('opened');box.style.pointerEvents='none';
   const reward=MYSTERY_REWARDS[Math.floor(Math.random()*MYSTERY_REWARDS.length)];
   box.textContent=reward.emoji;
-  if(reward.title.includes('+50'))state.points+=50;
   if(reward.wallet)state.wallet=Number((state.wallet+reward.wallet).toFixed(2));
   save(state);
   setTimeout(()=>{
