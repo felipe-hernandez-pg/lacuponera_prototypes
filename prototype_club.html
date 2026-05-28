@@ -434,11 +434,13 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
         <div style="font-size:var(--fs-h2);font-weight:900;margin-top:8px">Escanea tu ticket</div>
         <div style="font-size:13px;font-weight:600;opacity:.85;margin-top:4px" id="scanOfferLabel">Ariel Pods · Mercadona</div>
       </div>
-      <div class="receipt-zone">
-        <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.6);margin-top:120px">Coloca el ticket dentro del recuadro</div>
-        <div class="capture-btn" onclick="captureReceipt()"></div>
+      <div class="receipt-zone" style="background:#111;align-items:center;justify-content:center">
+        <img src="ticket_preview.jpg" style="width:auto;height:100%;max-width:100%;object-fit:contain;border-radius:12px;opacity:.92">
       </div>
-      <div style="text-align:center;padding:0 16px"><p style="font-size:var(--fs-small);color:var(--neutrals-400);font-weight:600;line-height:1.4">Asegúrate de que se lea la fecha, el retailer y los productos. Aprobación instantánea en esta demo.</p></div>
+      <div style="padding:16px">
+        <button class="btn-primary" onclick="captureReceipt()">CONFIRMAR Y ENVIAR TICKET</button>
+        <p style="font-size:var(--fs-small);color:var(--neutrals-400);font-weight:600;line-height:1.4;text-align:center;margin-top:10px">Aprobación instantánea en esta demo.</p>
+      </div>
     </div>
   </div>
 
