@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#5EBC82">
+<meta name="mobile-web-app-capable" content="yes">
+<title>La Cuponera — Geolocation Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ========== RESET & BASE ========== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000;overflow:hidden;touch-action:manipulation}
+
+/* ========== DESIGN TOKENS ========== */
+:root{
+  --brand-01:#5EBC82;--brand-02:#2A43D8;--brand-03:#FFFFFF;
+  --primary-600:#122B1C;--primary-400:#368253;--primary-200:#C3F8D8;--primary-100:#E4FCED;
+  --neutrals-600:#333333;--neutrals-500:#6B6B6B;--neutrals-400:#A8A8A8;--neutrals-300:#E6E6E6;--neutrals-200:#F2F2F2;--neutrals-100:#FAFAFA;
+  --secondary-01:#FAD91E;--secondary-02:#FF552A;
+  --error:#C40C3E;--success:#69930F;--warning:#E76A0E;
+  --heading:#122B1C;--subheading:#1B4129;
+  --primary:#48AD6F;--primaryAcc1:#5EBC82;--primaryAcc2:#C3F8D8;--primaryAcc3:#64BF87;
+  --fs-h2:32px;--fs-newH2:24px;--fs-h3:19px;--fs-h4:16px;--fs-body:14px;--fs-cta:16px;--fs-small:11px;--fs-xSmall:9px;
+  --lh-h2:32px;--lh-newH2:24px;--lh-h3:21px;--lh-h4:21px;--lh-body:21px;--lh-cta:16px;--lh-small:16px;
+}
+
+/* ========== DEVICE FRAME ========== */
+.device-frame{
+  position:relative;width:390px;height:844px;margin:20px auto;
+  background:#fff;border-radius:44px;overflow:hidden;
+  box-shadow:0 25px 80px rgba(0,0,0,.4),inset 0 0 0 3px #1a1a1a;
+}
+.status-bar{position:absolute;top:0;left:0;right:0;height:54px;z-index:1000;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 6px;pointer-events:none}
+.status-bar .time{font-weight:700;font-size:15px;color:var(--primary-600)}
+.status-bar .icons{display:flex;gap:6px;align-items:center}
+.status-bar .icons svg{width:16px;height:16px}
+.dynamic-island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:126px;height:36px;background:#000;border-radius:20px;z-index:1001}
+
+@media screen and (max-width:500px),(hover:none) and (pointer:coarse){
+  body{background:#fff !important}
+  .device-frame{width:100% !important;height:100vh !important;height:100dvh !important;margin:0 !important;border-radius:0 !important;box-shadow:none !important;border:none !important;inset:0 !important;position:fixed !important}
+  .dynamic-island{display:none !important}
+  .status-bar{display:none !important}
+  .screen-content{padding-top:env(safe-area-inset-top,20px) !important}
+  .tab-bar{padding-bottom:env(safe-area-inset-bottom,0px);height:calc(83px + env(safe-area-inset-bottom,0px))}
+}
+
+/* ========== SCREENS ========== */
+.screens{position:absolute;top:0;left:0;width:100%;height:100%}
+.screen{position:absolute;top:0;left:0;width:100%;height:100%;background:#fff;visibility:hidden;opacity:0;transition:opacity .3s ease,visibility .3s ease,transform .3s ease}
+.screen.active{visibility:visible;opacity:1;transform:translateX(0)}
+.screen.slide-in{transform:translateX(100%)}
+
+/* ========== TAB BAR ========== */
+.tab-bar{position:absolute;bottom:0;left:0;right:0;height:83px;background:#fff;border-top:1px solid var(--neutrals-200);display:flex;align-items:flex-start;padding-top:8px;z-index:100}
+.tab-bar-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.tab-bar-item svg{width:24px;height:24px}
+.tab-bar-item span{font-size:10px;font-weight:600;color:var(--neutrals-500);line-height:14px}
+.tab-bar-item.active svg path,.tab-bar-item.active svg circle{fill:var(--brand-01)}
+.tab-bar-item.active span{color:var(--brand-01)}
+
+/* ========== GRADIENT BUTTON ========== */
+.gradient-btn{
+  width:100%;height:48px;border-radius:100px;border:none;cursor:pointer;
+  background:linear-gradient(90deg,var(--primary) 0%,var(--primaryAcc3) 100%);
+  color:#fff;font-family:'Montserrat',sans-serif;font-size:var(--fs-cta);font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 12px rgba(72,173,111,.25);transition:transform .1s
+}
+.gradient-btn:active{transform:scale(.97)}
+
+/* ========== SCREEN 1: LOCK SCREEN / NOTIFICATION ========== */
+.lock-screen{
+  background:linear-gradient(180deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+  display:flex;flex-direction:column;align-items:center;padding-top:80px;
+}
+.lock-time{font-size:72px;font-weight:300;color:#fff;letter-spacing:-2px}
+.lock-date{font-size:16px;color:rgba(255,255,255,.7);margin-top:4px}
+.notification-card{
+  margin:40px 20px 0;width:calc(100% - 40px);
+  background:rgba(255,255,255,.95);backdrop-filter:blur(20px);
+  border-radius:16px;padding:14px 16px;
+  cursor:pointer;transition:transform .1s;
+  box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
+.notification-card:active{transform:scale(.98)}
+.notif-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.notif-app-icon{width:24px;height:24px;border-radius:6px;background:var(--brand-01);display:flex;align-items:center;justify-content:center}
+.notif-app-icon svg{width:14px;height:14px}
+.notif-app-name{font-size:12px;font-weight:600;color:var(--neutrals-500);flex:1}
+.notif-time{font-size:12px;color:var(--neutrals-400)}
+.notif-title{font-size:16px;font-weight:700;color:var(--primary-600);margin-bottom:4px}
+.notif-body{font-size:14px;color:var(--neutrals-600);line-height:20px}
+.notif-location{display:flex;align-items:center;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid var(--neutrals-200)}
+.notif-location svg{width:14px;height:14px;flex-shrink:0}
+.notif-location span{font-size:13px;color:var(--neutrals-500);font-weight:500}
+.lock-hint{color:rgba(255,255,255,.4);font-size:13px;margin-top:auto;margin-bottom:40px;font-weight:500}
+
+/* ========== SCREEN 2: RETAILER OFFERS ========== */
+.screen-content{padding-top:54px;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:90px}
+.retailer-header{
+  background:linear-gradient(135deg,#003DA5 0%,#0056D6 100%);
+  padding:20px 20px 16px;margin:0;position:relative;
+}
+.retailer-logo-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.retailer-logo{width:60px;height:60px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;color:#003DA5;font-size:11px;text-align:center;line-height:1.1}
+.retailer-name{font-size:var(--fs-newH2);font-weight:800;color:#fff}
+.retailer-subtitle{font-size:13px;color:rgba(255,255,255,.8);font-weight:500}
+.retailer-stats{display:flex;gap:12px;margin-top:14px}
+.retailer-stat{background:rgba(255,255,255,.15);border-radius:10px;padding:8px 14px;flex:1;text-align:center}
+.retailer-stat .stat-num{font-size:22px;font-weight:800;color:#fff}
+.retailer-stat .stat-label{font-size:var(--fs-small);color:rgba(255,255,255,.7);font-weight:600;margin-top:2px}
+.nearby-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.2);border-radius:20px;padding:6px 12px;margin-top:10px}
+.nearby-badge svg{width:12px;height:12px}
+.nearby-badge span{font-size:13px;color:#fff;font-weight:600}
+
+/* Offers list */
+.offers-section{padding:16px 16px 0}
+.offers-section-title{font-size:var(--fs-h4);font-weight:700;color:var(--primary-600);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.offers-section-title .count{background:var(--primary-100);color:var(--primary-400);font-size:var(--fs-small);font-weight:700;padding:2px 8px;border-radius:10px}
+.offer-list-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px;margin-bottom:10px;
+  border:1.5px solid var(--neutrals-200);border-radius:14px;
+  cursor:pointer;transition:all .15s;position:relative;
+}
+.offer-list-item:active{border-color:var(--brand-01);background:var(--primary-100)}
+.offer-thumb{width:60px;height:60px;border-radius:10px;background:var(--neutrals-100);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.offer-thumb img{width:100%;height:100%;object-fit:cover}
+.offer-thumb .placeholder{font-size:24px}
+.offer-detail{flex:1;min-width:0}
+.offer-brand{font-size:12px;font-weight:700;color:var(--neutrals-500);text-transform:uppercase;letter-spacing:.3px}
+.offer-name{font-size:15px;font-weight:700;color:var(--primary-600);line-height:20px;margin-top:2px}
+.offer-desc{font-size:13px;color:var(--neutrals-500);margin-top:2px}
+.offer-cashback{
+  background:var(--primary-100);color:var(--primary-400);
+  font-size:15px;font-weight:800;
+  padding:6px 12px;border-radius:8px;white-space:nowrap;
+}
+.offer-tag{position:absolute;top:-6px;left:12px;background:var(--secondary-02);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px}
+
+/* Categories */
+.category-chips{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.category-chips::-webkit-scrollbar{display:none}
+.chip{padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;border:1.5px solid var(--neutrals-200);color:var(--neutrals-600);background:#fff;transition:all .15s}
+.chip.active{background:var(--primary-600);color:#fff;border-color:var(--primary-600)}
+.chip:active{transform:scale(.95)}
+
+/* ========== SCREEN 3: OFFER DETAIL ========== */
+.offer-detail-screen{padding:0}
+.detail-header{position:relative;padding:54px 16px 16px;background:var(--neutrals-100)}
+.detail-back{position:absolute;top:60px;left:16px;width:40px;height:40px;border-radius:20px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.1);z-index:10}
+.detail-back:active{background:var(--neutrals-200)}
+.detail-image{width:100%;height:200px;display:flex;align-items:center;justify-content:center;margin-top:20px}
+.detail-image img{max-height:180px;max-width:80%;object-fit:contain}
+.detail-image .big-emoji{font-size:80px}
+.detail-body{padding:20px 16px;padding-bottom:120px}
+.detail-brand-tag{display:inline-block;background:var(--primary-100);color:var(--primary-400);font-size:var(--fs-small);font-weight:700;padding:4px 10px;border-radius:8px;margin-bottom:10px}
+.detail-title{font-size:var(--fs-newH2);font-weight:800;color:var(--primary-600);margin-bottom:6px}
+.detail-desc{font-size:15px;color:var(--neutrals-600);line-height:22px;margin-bottom:16px}
+.detail-cashback-row{display:flex;align-items:center;gap:12px;padding:14px;background:var(--primary-100);border-radius:12px;margin-bottom:16px}
+.detail-cashback-row .amount{font-size:var(--fs-newH2);font-weight:900;color:var(--primary-600)}
+.detail-cashback-row .label{font-size:var(--fs-body);color:var(--primary-400);font-weight:600}
+.detail-retailers{display:flex;gap:8px;margin-bottom:16px;align-items:center}
+.detail-retailers img{height:28px;border-radius:6px;border:1px solid var(--neutrals-200)}
+.detail-retailers span{font-size:var(--fs-small);color:var(--neutrals-500);font-weight:500}
+.detail-conditions{font-size:13px;color:var(--neutrals-500);line-height:19px}
+.detail-conditions li{margin-bottom:5px}
+.detail-fixed-btn{position:absolute;bottom:90px;left:16px;right:16px;z-index:50}
+/* Tabs in detail */
+.detail-tabs{display:flex;border-bottom:2px solid var(--neutrals-200);margin:0 0 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.detail-tabs::-webkit-scrollbar{display:none}
+.detail-tab{padding:10px 14px;font-size:14px;font-weight:600;color:var(--neutrals-500);cursor:pointer;position:relative;white-space:nowrap;flex-shrink:0}
+.detail-tab.active{color:var(--primary-600);font-weight:700}
+.detail-tab.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--primary-600)}
+.detail-tab:active{background:var(--neutrals-100)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+/* Reviews */
+.review-item{border:1px solid var(--neutrals-200);border-radius:10px;padding:12px;margin-bottom:10px}
+.review-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.review-avatar{width:28px;height:28px;border-radius:14px;background:var(--primary-200);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--primary-600)}
+.review-name{font-size:13px;font-weight:700;color:var(--primary-600)}
+.review-date{font-size:11px;color:var(--neutrals-400);margin-left:auto}
+.review-stars{color:#FAD91E;font-size:14px;margin-bottom:4px}
+.review-text{font-size:13px;color:var(--neutrals-600);line-height:18px}
+.rating-summary{display:flex;align-items:center;gap:12px;padding:12px;background:var(--neutrals-100);border-radius:10px;margin-bottom:14px}
+.rating-big{font-size:28px;font-weight:900;color:var(--primary-600)}
+.rating-details{flex:1}
+.rating-bar-row{display:flex;align-items:center;gap:6px;margin-bottom:2px}
+.rating-bar-row span{font-size:9px;color:var(--neutrals-500);width:10px}
+.rating-bar{flex:1;height:4px;background:var(--neutrals-200);border-radius:2px;overflow:hidden}
+.rating-bar-fill{height:100%;background:var(--secondary-01);border-radius:2px}
+.rating-count{font-size:13px;color:var(--neutrals-500)}
+/* FAQ */
+.faq-item{border:1px solid var(--neutrals-200);border-radius:10px;margin-bottom:8px;overflow:hidden}
+.faq-question{padding:12px 14px;font-size:var(--fs-body);font-weight:700;color:var(--primary-600);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.faq-question:active{background:var(--neutrals-100)}
+.faq-question .arrow{font-size:12px;color:var(--neutrals-400);transition:transform .2s}
+.faq-item.open .faq-question .arrow{transform:rotate(180deg)}
+.faq-answer{padding:0 14px 12px;font-size:13px;color:var(--neutrals-600);line-height:19px;display:none}
+.faq-item.open .faq-answer{display:block}
+/* Ingredients */
+.ingredient-list{list-style:none}
+.ingredient-list li{padding:8px 0;border-bottom:1px solid var(--neutrals-200);font-size:13px;color:var(--neutrals-600);display:flex;align-items:center;gap:8px}
+.ingredient-list li::before{content:'';width:6px;height:6px;border-radius:3px;background:var(--brand-01);flex-shrink:0}
+.ingredient-badge{display:inline-flex;align-items:center;gap:4px;background:var(--primary-100);border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;color:var(--primary-400);margin-right:6px;margin-bottom:6px}
+/* How to use */
+.step-item{display:flex;gap:12px;margin-bottom:14px}
+.step-number{width:28px;height:28px;border-radius:14px;background:var(--brand-01);color:#fff;font-size:var(--fs-small);font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-text{font-size:var(--fs-body);color:var(--primary-600);line-height:18px;padding-top:4px}
+
+/* ========== SCREEN 4: CONFIRMATION ========== */
+.confirmation-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 20px;text-align:center}
+.confirm-icon{width:100px;height:100px;border-radius:50px;background:var(--primary-100);display:flex;align-items:center;justify-content:center;margin-bottom:24px;animation:popIn .4s ease}
+.confirm-icon svg{width:56px;height:56px}
+@keyframes popIn{0%{transform:scale(0);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.confirm-title{font-size:var(--fs-newH2);font-weight:800;color:var(--primary-600);margin-bottom:8px}
+.confirm-subtitle{font-size:15px;color:var(--neutrals-500);line-height:22px;max-width:280px;margin-bottom:24px}
+.confirm-offers-added{background:var(--neutrals-100);border-radius:12px;padding:14px 20px;width:100%;margin-bottom:24px}
+.confirm-offers-added .row{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
+.confirm-offers-added .row .left{font-size:var(--fs-body);color:var(--primary-600);font-weight:600}
+.confirm-offers-added .row .right{font-size:var(--fs-body);color:var(--primary-400);font-weight:700}
+.confirm-bottom{position:absolute;bottom:100px;left:20px;right:20px}
+.confirm-tip{display:flex;align-items:center;gap:8px;background:var(--primary-100);border-radius:10px;padding:10px 14px;margin-bottom:16px}
+.confirm-tip svg{width:20px;height:20px;flex-shrink:0}
+.confirm-tip span{font-size:var(--fs-small);color:var(--primary-600);font-weight:600;line-height:16px}
+
+/* ========== SCREEN 0: PERMISSION ========== */
+.permission-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 24px;text-align:center}
+.permission-illustration{width:140px;height:140px;margin-bottom:30px;position:relative}
+.permission-illustration .map-bg{width:140px;height:140px;border-radius:70px;background:linear-gradient(135deg,var(--primary-100),var(--primaryAcc2));display:flex;align-items:center;justify-content:center}
+.permission-illustration .pin{font-size:56px}
+.permission-title{font-size:var(--fs-newH2);font-weight:800;color:var(--primary-600);margin-bottom:10px;line-height:28px}
+.permission-desc{font-size:15px;color:var(--neutrals-500);line-height:22px;margin-bottom:30px;max-width:300px}
+.permission-features{width:100%;margin-bottom:30px;text-align:left}
+.perm-feature{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.perm-feature .icon{width:36px;height:36px;border-radius:10px;background:var(--primary-100);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.perm-feature .icon svg{width:18px;height:18px}
+.perm-feature .text{font-size:15px;color:var(--primary-600);font-weight:600;line-height:20px;padding-top:8px}
+.permission-btns{width:100%;position:absolute;bottom:60px;left:0;right:0;padding:0 24px}
+.secondary-btn{width:100%;height:48px;border-radius:100px;cursor:pointer;background:#fff;border:2px solid var(--primaryAcc1);color:var(--primary-600);font-family:'Montserrat',sans-serif;font-size:var(--fs-cta);font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:10px}
+.secondary-btn:active{background:var(--primary-100)}
+
+/* ========== SCAN SCREENS ========== */
+.scan-screen{display:flex;flex-direction:column;height:100%;background:#000;position:relative}
+.scan-viewfinder{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.scan-frame{width:220px;height:220px;position:relative}
+.scan-frame::before,.scan-frame::after{content:'';position:absolute;width:40px;height:40px;border-color:var(--brand-01);border-style:solid}
+.scan-frame::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:8px 0 0 0}
+.scan-frame::after{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 8px 0 0}
+.scan-frame-bottom{position:absolute;bottom:0;left:0;right:0;height:40px}
+.scan-frame-bottom::before,.scan-frame-bottom::after{content:'';position:absolute;width:40px;height:40px;border-color:var(--brand-01);border-style:solid}
+.scan-frame-bottom::before{bottom:0;left:0;border-width:0 0 3px 3px;border-radius:0 0 0 8px}
+.scan-frame-bottom::after{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 8px 0}
+.scan-laser{position:absolute;top:10%;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,var(--brand-01),transparent);animation:scanMove 2s ease-in-out infinite;box-shadow:0 0 8px var(--brand-01)}
+@keyframes scanMove{0%,100%{top:10%}50%{top:85%}}
+.scan-product-img{width:200px;height:200px;object-fit:contain;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0;transition:opacity .4s}
+.scan-product-img.visible{opacity:1}
+.scan-instruction{color:#fff;font-size:16px;font-weight:600;margin-top:24px;text-align:center;padding:0 20px}
+.scan-hint{color:rgba(255,255,255,.6);font-size:13px;margin-top:8px}
+.scan-top-bar{position:absolute;top:0;left:0;right:0;padding:60px 20px 16px;display:flex;align-items:center;justify-content:space-between;z-index:10}
+.scan-close{width:36px;height:36px;border-radius:18px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.scan-title{color:#fff;font-size:var(--fs-h4);font-weight:700}
+.scan-bottom-btn{position:absolute;bottom:40px;left:20px;right:20px}
+/* Scan result */
+.scan-result{padding:54px 20px 100px;height:100%;overflow-y:auto}
+.scan-result-header{text-align:center;margin-bottom:20px}
+.scan-result-icon{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;animation:popIn .4s ease}
+.scan-result-icon.success{background:var(--primary-100)}
+.scan-result-icon.fail{background:#fce4ec}
+.scan-result-title{font-size:var(--fs-newH2);font-weight:800;color:var(--primary-600)}
+.scan-result-subtitle{font-size:var(--fs-body);color:var(--neutrals-500);margin-top:6px;line-height:20px}
+.scan-product-card{display:flex;gap:14px;padding:16px;border:1.5px solid var(--neutrals-200);border-radius:14px;margin-bottom:16px;align-items:center}
+.scan-product-card img{width:70px;height:70px;object-fit:contain;border-radius:8px}
+.scan-product-info{flex:1}
+.scan-savings{background:var(--primary-100);border-radius:12px;padding:16px;margin-bottom:16px;text-align:center}
+.scan-savings .big{font-size:32px;font-weight:900;color:var(--primary-600)}
+.scan-savings .label{font-size:var(--fs-small);color:var(--primary-400);font-weight:600;margin-top:4px}
+.scan-reco-title{font-size:var(--fs-h4);font-weight:700;color:var(--primary-600);margin:20px 0 12px}
+/* Map pins */
+.map-pin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;z-index:10;text-align:center}
+.map-pin-icon{width:40px;height:40px;border-radius:50%;border:3px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:14px;overflow:hidden;margin:0 auto}
+.map-pin-label{font-size:10px;font-weight:700;color:var(--primary-600);margin-top:4px;background:#fff;padding:2px 6px;border-radius:6px;box-shadow:0 2px 4px rgba(0,0,0,.1);white-space:nowrap;line-height:1.3}
+.map-pin:active{transform:translate(-50%,-100%) scale(.9)}
+@keyframes pulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.5);opacity:0}}
+
+/* ========== UTILITY ========== */
+.hidden{display:none}
+::-webkit-scrollbar{display:none}
+</style>
+</head>
+<body>
+
+<div class="device-frame" id="device">
+  <div class="dynamic-island"></div>
+  <div class="status-bar">
+    <span class="time">10:32</span>
+    <span class="icons">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 12.5h2v3H1zM5 9.5h2v6H5zM9 6.5h2v9H9zM13 3.5h2v12h-2z"/></svg>
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 2C4.5 2 1.5 3.8.2 6.5l1.4 1C2.8 5.2 5.2 3.8 8 3.8s5.2 1.4 6.4 3.7l1.4-1C14.5 3.8 11.5 2 8 2zm0 4c-2 0-3.8 1-4.9 2.5l1.4 1C5.4 8.5 6.6 7.8 8 7.8s2.6.7 3.5 1.7l1.4-1C11.8 7 10 6 8 6zm0 4c-.8 0-1.5.4-2 1l2 2.5L10 11c-.5-.6-1.2-1-2-1z"/></svg>
+      <svg viewBox="0 0 24 12" fill="currentColor"><rect x="0" y="1" width="20" height="10" rx="2" stroke="currentColor" fill="none" stroke-width="1"/><rect x="21" y="3.5" width="2" height="5" rx="1"/><rect x="2" y="3" width="14" height="6" rx="1" fill="var(--success)"/></svg>
+    </span>
+  </div>
+
+  <div class="screens">
+
+    <!-- ========== SCREEN 0: LOCATION PERMISSION ========== -->
+    <div class="screen active" id="screen-permission">
+      <div class="permission-screen">
+        <div class="permission-illustration">
+          <div class="map-bg"><span class="pin">📍</span></div>
+        </div>
+        <div class="permission-title">¿Te avisamos cuando<br>estés cerca de una tienda?</div>
+        <div class="permission-desc">Recibirás una notificación con tus ofertas disponibles al pasar cerca de tu supermercado. Sin spam, prometido.</div>
+        <div class="permission-features">
+          <div class="perm-feature">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="var(--brand-01)"/><circle cx="12" cy="9" r="2.5" fill="#fff"/></svg></div>
+            <div class="text">Solo te avisamos al pasar cerca de tu tienda habitual</div>
+          </div>
+          <div class="perm-feature">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9z" fill="var(--brand-01)"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="var(--brand-01)" stroke-width="1.5"/></svg></div>
+            <div class="text">Máximo 1 notificación al día — sin agobios</div>
+          </div>
+          <div class="perm-feature">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="var(--brand-01)"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="text">Tu ubicación nunca sale de tu teléfono</div>
+          </div>
+        </div>
+        <div class="permission-btns">
+          <button class="gradient-btn" onclick="goToScreen('screen-lockscreen')">Sí, avísame 📍</button>
+          <button class="secondary-btn" onclick="goToScreen('screen-lockscreen')">Ahora no</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SCREEN 1: LOCK SCREEN WITH NOTIFICATION ========== -->
+    <div class="screen" id="screen-lockscreen">
+      <div class="lock-screen" style="height:100%">
+        <div class="lock-time">10:32</div>
+        <div class="lock-date">sábado, 24 de mayo</div>
+
+        <div class="notification-card" onclick="goToScreen('screen-offers')">
+          <div class="notif-header">
+            <div class="notif-app-icon">
+              <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z"/></svg>
+            </div>
+            <span class="notif-app-name">La Cuponera</span>
+            <span class="notif-time">ahora</span>
+          </div>
+          <div class="notif-title">¿Estás en Carrefour? 🛒</div>
+          <div class="notif-body">Tienes <strong>23 ofertas</strong> disponibles hoy. Puedes ahorrar hasta <strong>+€80</strong> en esta compra. ¡No te las pierdas!</div>
+          <div class="notif-location">
+            <svg viewBox="0 0 24 24" fill="var(--neutrals-400)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            <span>Carrefour Las Rosas — a 50m de ti</span>
+          </div>
+        </div>
+
+        <span class="lock-hint">Toca la notificación para ver tus ofertas →</span>
+      </div>
+    </div>
+
+    <!-- ========== SCREEN 2: FILTERED OFFERS ========== -->
+    <div class="screen" id="screen-offers">
+      <div class="screen-content">
+        <!-- Retailer header -->
+        <div class="retailer-header">
+          <div class="retailer-logo-row">
+            <div class="retailer-logo" style="padding:4px;overflow:hidden"><img src="carrefour_logo.jpg" alt="Carrefour" style="width:100%;height:100%;object-fit:contain;border-radius:8px"></div>
+            <div>
+              <div class="retailer-name" style="font-size:28px">Carrefour</div>
+              <div class="retailer-subtitle" style="font-size:15px">Ofertas disponibles ahora</div>
+            </div>
+          </div>
+          <div class="retailer-stats">
+            <div class="retailer-stat">
+              <div class="stat-num">23</div>
+              <div class="stat-label">OFERTAS</div>
+            </div>
+            <div class="retailer-stat">
+              <div class="stat-num">+€80</div>
+              <div class="stat-label">AHORRO MÁX</div>
+            </div>
+            <div class="retailer-stat">
+              <div class="stat-num">8</div>
+              <div class="stat-label">MARCAS</div>
+            </div>
+          </div>
+          <div class="nearby-badge">
+            <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            <span>📍 Estás aquí — Carrefour Las Rosas</span>
+          </div>
+        </div>
+
+        <!-- Category chips -->
+        <div style="padding-top:14px">
+          <div class="category-chips">
+            <div class="chip active">Todas (23)</div>
+            <div class="chip">Limpieza</div>
+            <div class="chip">Bebé</div>
+            <div class="chip">Cuidado personal</div>
+            <div class="chip">Higiene bucal</div>
+            <div class="chip">Afeitado</div>
+          </div>
+        </div>
+
+        <!-- Offers list -->
+        <div class="offers-section">
+          <div class="offers-section-title">Tus ofertas en esta tienda <span class="count">23</span></div>
+
+          <div class="offer-list-item" onclick="goToScreen('screen-detail')">
+            <div class="offer-tag">🔥 Popular</div>
+            <div class="offer-thumb"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc562c9b-4962-4d70-b321-ef101a83a329.jpeg&w=640&q=75" alt="Ariel"></div>
+            <div class="offer-detail">
+              <div class="offer-brand">ARIEL</div>
+              <div class="offer-name">Ariel Líquido</div>
+              <div class="offer-desc">Cualquier producto</div>
+            </div>
+            <div class="offer-cashback">€2,00</div>
+          </div>
+
+          <div class="offer-list-item" onclick="goToScreen('screen-detail-oralb')">
+            <div class="offer-thumb"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F4556a36e-a197-4b97-99d5-26e1a02fdc43.png&w=640&q=75" alt="Oral-B"></div>
+            <div class="offer-detail">
+              <div class="offer-brand">ORAL-B</div>
+              <div class="offer-name">Oral-B Pro-Expert</div>
+              <div class="offer-desc">Protección Profesional 2x1</div>
+            </div>
+            <div class="offer-cashback">2x1</div>
+          </div>
+
+          <div class="offer-list-item">
+            <div class="offer-thumb"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Ff0a2af01-a6b0-44bf-bd1a-e809b27e055e.png&w=640&q=75" alt="Lenor"></div>
+            <div class="offer-detail">
+              <div class="offer-brand">LENOR</div>
+              <div class="offer-name">Lenor Unstoppables</div>
+              <div class="offer-desc">Productos superiores a 150gr</div>
+            </div>
+            <div class="offer-cashback">€3,50</div>
+          </div>
+
+          <div class="offer-list-item">
+            <div class="offer-tag">✨ Nuevo</div>
+            <div class="offer-thumb"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fd0343577-d143-4179-9567-6d6d3ab534c4.jpeg&w=640&q=75" alt="Fairy"></div>
+            <div class="offer-detail">
+              <div class="offer-brand">FAIRY</div>
+              <div class="offer-name">Fairy Platinum Plus</div>
+              <div class="offer-desc">Todos los productos</div>
+            </div>
+            <div class="offer-cashback">€4,00</div>
+          </div>
+
+          <div class="offer-list-item">
+            <div class="offer-thumb"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fb7878290-0949-4cba-8cdc-2b308e66ff16.jpeg&w=640&q=75" alt="H&S"></div>
+            <div class="offer-detail">
+              <div class="offer-brand">H&S</div>
+              <div class="offer-name">H&S Anticaída</div>
+              <div class="offer-desc">Cualquier producto</div>
+            </div>
+            <div class="offer-cashback">50%</div>
+          </div>
+
+          <div class="offer-list-item">
+            <div class="offer-thumb"><span class="placeholder">🧔</span></div>
+            <div class="offer-detail">
+              <div class="offer-brand">GILLETTE</div>
+              <div class="offer-name">Gillette Venus Desechables</div>
+              <div class="offer-desc">Cualquier producto</div>
+            </div>
+            <div class="offer-cashback">20%</div>
+          </div>
+
+          <div class="offer-list-item">
+            <div class="offer-thumb"><span class="placeholder">😴</span></div>
+            <div class="offer-detail">
+              <div class="offer-brand">ZZZQUIL</div>
+              <div class="offer-name">ZzzQuil Sueño</div>
+              <div class="offer-desc">Botes de 30, 60 y 90 gummies</div>
+            </div>
+            <div class="offer-cashback">35%</div>
+          </div>
+        </div>
+
+        <!-- Treasure Hunt Banner -->
+        <div style="margin:16px 16px 20px;padding:18px 20px;background:linear-gradient(135deg,#FFF8E1 0%,#FFECB3 100%);border-radius:16px;border:2px solid #FFD54F;cursor:pointer;box-shadow:0 4px 12px rgba(255,213,79,.3)" onclick="goToScreen('screen-scan')">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#FF6F00,#FFA000);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🔍</div>
+            <div style="flex:1">
+              <div style="font-size:16px;font-weight:800;color:#E65100;margin-bottom:3px">Búsqueda de Tesoro</div>
+              <div style="font-size:13px;color:#795548;font-weight:500;line-height:17px">Escanea un producto y descubre si tiene oferta 🎁</div>
+            </div>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M9 18l6-6-6-6" stroke="#E65100" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab bar -->
+      <div class="tab-bar">
+        <div class="tab-bar-item">
+          <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10" fill="none" stroke="var(--neutrals-400)" stroke-width="2"/></svg>
+          <span>Inicio</span>
+        </div>
+        <div class="tab-bar-item active">
+          <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="13" r="0" fill="var(--brand-01)"/><path d="M9 12h6M9 16h4" stroke="var(--brand-01)" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>Ofertas</span>
+        </div>
+        <div class="tab-bar-item" onclick="goToScreen('screen-map')">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="none" stroke="var(--neutrals-400)" stroke-width="1.5"/></svg>
+          <span>Mapa</span>
+        </div>
+        <div class="tab-bar-item">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" fill="none" stroke="var(--neutrals-400)" stroke-width="2"/></svg>
+          <span>Perfil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SCREEN 3: OFFER DETAIL (ARIEL) ========== -->
+    <div class="screen" id="screen-detail">
+      <div class="screen-content" style="padding-top:0">
+        <div class="detail-header">
+          <div class="detail-back" onclick="goToScreen('screen-offers')">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M15 18l-6-6 6-6" stroke="var(--primary-600)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="detail-image"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc562c9b-4962-4d70-b321-ef101a83a329.jpeg&w=640&q=75" alt="Ariel Líquido"></div>
+        </div>
+        <div class="detail-body">
+          <div class="detail-brand-tag">ARIEL</div>
+          <div class="detail-title">Ariel Líquido</div>
+          <div class="detail-cashback-row">
+            <div class="amount">€2,00</div>
+            <div class="label">de cashback por unidad comprada</div>
+          </div>
+          <div class="detail-retailers">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F39821a73-3011-4ca1-9830-c2132ca01727.png&w=640&q=75" alt="Retailer">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc515a21-5caa-4414-9c0b-2627485eec59.png&w=640&q=75" alt="Retailer">
+            <span>+3 tiendas</span>
+          </div>
+
+          <!-- TABS -->
+          <div class="detail-tabs">
+            <div class="detail-tab active" onclick="switchTab(this, 'tab-desc')">Detalles</div>
+            <div class="detail-tab" onclick="switchTab(this, 'tab-ingredients')">Ingredientes</div>
+            <div class="detail-tab" onclick="switchTab(this, 'tab-reviews')">Valoraciones</div>
+            <div class="detail-tab" onclick="switchTab(this, 'tab-howto')">Cómo usar</div>
+            <div class="detail-tab" onclick="switchTab(this, 'tab-faq')">FAQs</div>
+          </div>
+
+          <!-- TAB: Detalles -->
+          <div class="tab-content active" id="tab-desc">
+            <div class="detail-desc">Ariel líquido elimina manchas y malos olores en 1 lavado. Gracias a su fórmula especialmente diseñada para los programas fríos, proporciona resultados impecables incluso a bajas temperaturas.</div>
+            <div style="font-size:var(--fs-body);font-weight:700;color:var(--primary-600);margin-bottom:8px">Condiciones:</div>
+            <ul class="detail-conditions">
+              <li>Válido del 01/04/2026 al 30/06/2026</li>
+              <li>Máximo 1 unidad por ticket</li>
+              <li>Hasta 10.000 tickets o 20.000€ en reembolsos</li>
+              <li>Sube el ticket con el producto visible</li>
+            </ul>
+          </div>
+
+          <!-- TAB: Ingredientes -->
+          <div class="tab-content" id="tab-ingredients">
+            <div style="margin-bottom:10px">
+              <span class="ingredient-badge">🌍 Biodegradable</span>
+              <span class="ingredient-badge">🧪 Dermatológicamente testado</span>
+              <span class="ingredient-badge">♻️ Envase reciclable</span>
+            </div>
+            <ul class="ingredient-list">
+              <li>Aqua (agua)</li>
+              <li>C12-15 Pareth-7 (tensioactivo no iónico)</li>
+              <li>Sodium Laureth Sulfate (limpiador)</li>
+              <li>Propylene Glycol (estabilizante)</li>
+              <li>Sodium Citrate (agente quelante)</li>
+              <li>Enzimas (proteasa, amilasa, lipasa)</li>
+              <li>Perfume (fragancia)</li>
+              <li>Colorante CI 61585</li>
+              <li>Methylisothiazolinone (conservante)</li>
+            </ul>
+            <div style="margin-top:12px;font-size:var(--fs-small);color:var(--neutrals-500)">
+              ℹ️ Información proporcionada por P&G. Consulta siempre la etiqueta del producto.
+            </div>
+          </div>
+
+          <!-- TAB: Valoraciones -->
+          <div class="tab-content" id="tab-reviews">
+            <div class="rating-summary">
+              <div class="rating-big">4.6</div>
+              <div class="rating-details">
+                <div class="rating-bar-row"><span>5</span><div class="rating-bar"><div class="rating-bar-fill" style="width:72%"></div></div></div>
+                <div class="rating-bar-row"><span>4</span><div class="rating-bar"><div class="rating-bar-fill" style="width:18%"></div></div></div>
+                <div class="rating-bar-row"><span>3</span><div class="rating-bar"><div class="rating-bar-fill" style="width:6%"></div></div></div>
+                <div class="rating-bar-row"><span>2</span><div class="rating-bar"><div class="rating-bar-fill" style="width:3%"></div></div></div>
+                <div class="rating-bar-row"><span>1</span><div class="rating-bar"><div class="rating-bar-fill" style="width:1%"></div></div></div>
+              </div>
+              <div class="rating-count">847 opiniones</div>
+            </div>
+
+            <div class="review-item">
+              <div class="review-header">
+                <div class="review-avatar">MR</div>
+                <div class="review-name">María R.</div>
+                <div class="review-date">hace 3 días</div>
+              </div>
+              <div class="review-stars">★★★★★</div>
+              <div class="review-text">Increíble cómo quita las manchas de cacao de la ropa de mis hijos. Con agua fría y a 30° queda todo perfecto. Repetiré seguro.</div>
+            </div>
+            <div class="review-item">
+              <div class="review-header">
+                <div class="review-avatar">JL</div>
+                <div class="review-name">Juan L.</div>
+                <div class="review-date">hace 1 semana</div>
+              </div>
+              <div class="review-stars">★★★★☆</div>
+              <div class="review-text">Buen detergente para el día a día. El olor es agradable pero no demasiado fuerte. Lo compro siempre que está en oferta.</div>
+            </div>
+            <div class="review-item">
+              <div class="review-header">
+                <div class="review-avatar">AP</div>
+                <div class="review-name">Ana P.</div>
+                <div class="review-date">hace 2 semanas</div>
+              </div>
+              <div class="review-stars">★★★★★</div>
+              <div class="review-text">Lo mejor para manchas difíciles. He probado muchas marcas y Ariel es la que mejor funciona en frío. Con el cashback es genial! 💚</div>
+            </div>
+          </div>
+
+          <!-- TAB: Cómo usar -->
+          <div class="tab-content" id="tab-howto">
+            <div style="margin:0 auto 14px;border-radius:12px;overflow:hidden;aspect-ratio:9/16;max-height:420px;width:100%;max-width:300px">
+              <iframe src="https://www.instagram.com/reel/DMBZmCyuhCS/embed/" style="width:100%;height:100%;border:none" allowfullscreen></iframe>
+            </div>
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-text">Selecciona el programa de lavado adecuado para tus prendas (funciona desde 20°C).</div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-text">Dosifica según la suciedad: 35ml para ropa normal, 52ml para ropa muy sucia o agua dura.</div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-text">Vierte el detergente directamente en el cajón dosificador de tu lavadora.</div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <div class="step-text">Para manchas difíciles: aplica una pequeña cantidad directamente sobre la mancha antes del lavado.</div>
+            </div>
+            <div style="margin-top:12px;padding:12px;background:var(--primary-100);border-radius:10px;font-size:var(--fs-small);color:var(--primary-600);line-height:16px">
+              💡 <strong>Consejo pro:</strong> No necesitas lavar a más de 30°C para la mayoría de prendas. Ahorras energía y Ariel elimina las manchas igual de bien.
+            </div>
+          </div>
+
+          <!-- TAB: FAQs -->
+          <div class="tab-content" id="tab-faq">
+            <div class="faq-item open">
+              <div class="faq-question" onclick="toggleFaq(this)">¿Puedo usar Ariel en ropa de color?<span class="arrow">▼</span></div>
+              <div class="faq-answer">Sí, Ariel Líquido es seguro para ropa de color. No contiene blanqueadores ópticos que dañen los colores. Para ropa muy delicada, recomendamos usar Ariel Color.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">¿Funciona bien en agua fría?<span class="arrow">▼</span></div>
+              <div class="faq-answer">Absolutamente. La fórmula de Ariel está diseñada para activarse desde 20°C, ofreciendo resultados excelentes incluso en programas fríos. Esto ahorra hasta un 60% de energía por lavado.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">¿Cuánto dura un bote de Ariel Líquido?<span class="arrow">▼</span></div>
+              <div class="faq-answer">Un bote estándar de 1,75L rinde aproximadamente 35 lavados con dosificación normal (50ml por lavado). Si usas menos cantidad para ropa poco sucia, puede durar hasta 50 lavados.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">¿Es compatible con suavizante?<span class="arrow">▼</span></div>
+              <div class="faq-answer">Sí, puedes combinar Ariel con cualquier suavizante. Para mejores resultados con aroma, te recomendamos combinarlo con Lenor Unstoppables (¡también tiene cashback en La Cuponera! 😉).</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">¿Cómo subo el ticket para el reembolso?<span class="arrow">▼</span></div>
+              <div class="faq-answer">Después de comprar, abre La Cuponera → toca "Escanear" → haz una foto del ticket completo donde se vea el producto Ariel. En 24-48h validamos y el cashback aparece en tu monedero.</div>
+            </div>
+          </div>
+
+        </div>
+        <div class="detail-fixed-btn">
+          <button class="gradient-btn" onclick="goToScreen('screen-confirmed')">¡Lo quiero! 🛒</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SCREEN 4: OFFER ADDED CONFIRMATION ========== -->
+    <div class="screen" id="screen-confirmed">
+      <div class="confirmation-screen">
+        <div class="confirm-icon" style="background:none;width:120px;height:120px">
+          <img src="cupi_success.png" alt="Cupi" style="width:100%;height:100%;object-fit:contain">
+        </div>
+        <div class="confirm-title">¡Oferta activada! ✨</div>
+        <div class="confirm-subtitle">Ariel Líquido se ha añadido a tu lista. Cuando compres, sube el ticket y recibirás tu cashback.</div>
+
+        <div class="confirm-offers-added">
+          <div class="row">
+            <span class="left">🧴 Ariel Líquido</span>
+            <span class="right">€2,00</span>
+          </div>
+          <div class="row" style="border-top:1px solid var(--neutrals-200);margin-top:6px;padding-top:6px">
+            <span class="left" style="font-weight:700">Total posible hoy</span>
+            <span class="right" style="font-weight:800;font-size:16px">+€80</span>
+          </div>
+        </div>
+
+        <div class="confirm-bottom">
+          <div class="confirm-tip">
+            <svg viewBox="0 0 24 24" fill="var(--brand-01)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            <span>Recuerda: después de pagar, solo tienes que subir una foto del ticket 📸</span>
+          </div>
+          <button class="gradient-btn" onclick="goToScreen('screen-offers')">Ver más ofertas en Carrefour</button>
+          <button class="secondary-btn" style="margin-top:10px" onclick="goToScreen('screen-permission')">Volver al inicio</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SCREEN 5: ORAL-B DETAIL ========== -->
+    <div class="screen" id="screen-detail-oralb">
+      <div class="screen-content" style="padding-top:0">
+        <div class="detail-header">
+          <div class="detail-back" onclick="goToScreen('screen-offers')">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M15 18l-6-6 6-6" stroke="var(--primary-600)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="detail-image"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F4556a36e-a197-4b97-99d5-26e1a02fdc43.png&w=640&q=75" alt="Oral-B ProExpert"></div>
+        </div>
+        <div class="detail-body">
+          <div class="detail-brand-tag">ORAL-B</div>
+          <div class="detail-title">Oral-B Pro-Expert Protección Profesional</div>
+          <div class="detail-cashback-row">
+            <div class="amount">2x1</div>
+            <div class="label">te reembolsamos la 2ª unidad (hasta €3)</div>
+          </div>
+          <div class="detail-retailers">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F57c0fd46-58ae-4d60-8795-48e42d8f6bb9.png&w=640&q=75" alt="Retailer">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F3e49e532-98cf-459e-9099-94da7d0fd011.png&w=640&q=75" alt="Retailer">
+            <span>+2 tiendas</span>
+          </div>
+
+          <!-- TABS -->
+          <div class="detail-tabs">
+            <div class="detail-tab active" onclick="switchTab(this, 'tab-desc-ob')">Detalles</div>
+            <div class="detail-tab" onclick="switchTab(this, 'tab-ingredients-ob')">Ingredientes</div>
+            <div class="detail-tab" onclick="switchTab(this, 'tab-reviews-ob')">Valoraciones</div>
+            <div class="detail-tab" onclick="switchTab(this, 'tab-howto-ob')">Cómo usar</div>
+            <div class="detail-tab" onclick="switchTab(this, 'tab-faq-ob')">FAQs</div>
+          </div>
+
+          <!-- TAB: Detalles -->
+          <div class="tab-content active" id="tab-desc-ob">
+            <div class="detail-desc">El dentífrico Oral-B Pro-Expert protege los 8 problemas que se tratan con más frecuencia en las consultas de los dentistas. Contiene un complejo de fluoruro de estaño, una combinación exclusiva de ingredientes.</div>
+            <div style="font-size:var(--fs-body);font-weight:700;color:var(--primary-600);margin-bottom:8px">Condiciones:</div>
+            <ul class="detail-conditions">
+              <li>Válido del 01/11/2025 al 30/06/2026</li>
+              <li>Compra 2 unidades — te reembolsamos la 2ª</li>
+              <li>Solo pastas en caja con descripción en español</li>
+              <li>Hasta 28.000 tickets o 70.000€ en reembolsos</li>
+            </ul>
+          </div>
+
+          <!-- TAB: Ingredientes -->
+          <div class="tab-content" id="tab-ingredients-ob">
+            <div style="margin-bottom:10px">
+              <span class="ingredient-badge">🦷 Fluoruro de estaño</span>
+              <span class="ingredient-badge">🛡️ 8 protecciones</span>
+              <span class="ingredient-badge">✅ Recomendado dentistas</span>
+            </div>
+            <ul class="ingredient-list">
+              <li>Aqua (agua)</li>
+              <li>Sorbitol (humectante)</li>
+              <li>Stannous Fluoride (fluoruro de estaño — anticaries)</li>
+              <li>Hydrated Silica (agente limpiador)</li>
+              <li>Sodium Lauryl Sulfate (espumante)</li>
+              <li>Zinc Citrate (protección encías)</li>
+              <li>Sodium Gluconate (agente quelante)</li>
+              <li>Aroma (sabor menta)</li>
+              <li>Titanium Dioxide (color blanco)</li>
+            </ul>
+          </div>
+
+          <!-- TAB: Valoraciones -->
+          <div class="tab-content" id="tab-reviews-ob">
+            <div class="rating-summary">
+              <div class="rating-big">4.8</div>
+              <div class="rating-details">
+                <div class="rating-bar-row"><span>5</span><div class="rating-bar"><div class="rating-bar-fill" style="width:82%"></div></div></div>
+                <div class="rating-bar-row"><span>4</span><div class="rating-bar"><div class="rating-bar-fill" style="width:12%"></div></div></div>
+                <div class="rating-bar-row"><span>3</span><div class="rating-bar"><div class="rating-bar-fill" style="width:4%"></div></div></div>
+                <div class="rating-bar-row"><span>2</span><div class="rating-bar"><div class="rating-bar-fill" style="width:1%"></div></div></div>
+                <div class="rating-bar-row"><span>1</span><div class="rating-bar"><div class="rating-bar-fill" style="width:1%"></div></div></div>
+              </div>
+              <div class="rating-count">1.2K opiniones</div>
+            </div>
+            <div class="review-item">
+              <div class="review-header">
+                <div class="review-avatar">CG</div>
+                <div class="review-name">Carlos G.</div>
+                <div class="review-date">hace 5 días</div>
+              </div>
+              <div class="review-stars">★★★★★</div>
+              <div class="review-text">Mi dentista me la recomendó y no he vuelto a otra marca. Nota la diferencia en las encías desde la primera semana. El 2x1 en La Cuponera es un regalo.</div>
+            </div>
+            <div class="review-item">
+              <div class="review-header">
+                <div class="review-avatar">LM</div>
+                <div class="review-name">Laura M.</div>
+                <div class="review-date">hace 1 semana</div>
+              </div>
+              <div class="review-stars">★★★★★</div>
+              <div class="review-text">La mejor pasta de dientes que he probado. Protege contra la sensibilidad y deja un aliento fresco todo el día. Toda la familia la usa.</div>
+            </div>
+          </div>
+
+          <!-- TAB: Cómo usar -->
+          <div class="tab-content" id="tab-howto-ob">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-text">Aplica una cantidad del tamaño de un guisante en tu cepillo de dientes.</div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-text">Cepilla durante 2 minutos, cubriendo todas las superficies de los dientes.</div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-text">Escupe sin enjuagar con agua para maximizar la protección con flúor.</div>
+            </div>
+            <div style="margin-top:12px;padding:12px;background:var(--primary-100);border-radius:10px;font-size:var(--fs-small);color:var(--primary-600);line-height:16px">
+              💡 <strong>Consejo:</strong> Usa 2 veces al día (mañana y noche) para la protección completa de 8 áreas: caries, placa, encías, sensibilidad, manchas, mal aliento, sarro y esmalte.
+            </div>
+          </div>
+
+          <!-- TAB: FAQs -->
+          <div class="tab-content" id="tab-faq-ob">
+            <div class="faq-item open">
+              <div class="faq-question" onclick="toggleFaq(this)">¿Es apta para encías sensibles?<span class="arrow">▼</span></div>
+              <div class="faq-answer">Sí, Oral-B Pro-Expert está formulada con fluoruro de estaño que protege las encías y reduce la sensibilidad. Es una de las más recomendadas por dentistas para problemas de encías.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">¿Puedo usarla con brackets?<span class="arrow">▼</span></div>
+              <div class="faq-answer">Absolutamente. Su fórmula limpia alrededor de los brackets y protege el esmalte de posibles manchas blancas post-ortodoncia.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">¿Es segura para niños?<span class="arrow">▼</span></div>
+              <div class="faq-answer">Recomendada para mayores de 12 años. Para niños menores, utiliza la gama Oral-B Kids con menor concentración de flúor.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">¿Cómo funciona el 2x1?<span class="arrow">▼</span></div>
+              <div class="faq-answer">Compra 2 unidades de Oral-B Pro-Expert Protección Profesional, sube el ticket a La Cuponera, y te reembolsamos el precio de la segunda unidad (hasta un máximo de 3€).</div>
+            </div>
+          </div>
+
+        </div>
+        <div class="detail-fixed-btn">
+          <button class="gradient-btn" onclick="goToScreen('screen-confirmed')">¡Lo quiero! 🛒</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SCREEN 6: SCAN CAMERA ========== -->
+    <div class="screen" id="screen-scan">
+      <div class="scan-screen" style="overflow:hidden">
+        <!-- Background video simulating live camera -->
+        <video id="scan-video" autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0">
+          <source src="scanariel.mp4" type="video/mp4">
+        </video>
+        <div class="scan-top-bar">
+          <div class="scan-close" onclick="goToScreen('screen-offers')">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="scan-title">🔍 Busca Tesoro</div>
+          <div style="width:36px"></div>
+        </div>
+        <div class="scan-viewfinder" onclick="simulateScan()">
+          <div class="scan-frame">
+            <div class="scan-frame-bottom"></div>
+            <div class="scan-laser" id="scan-laser"></div>
+          </div>
+          <div class="scan-instruction" id="scan-instruction">Apunta la cámara al producto</div>
+          <div class="scan-hint" id="scan-hint">Toca para escanear</div>
+        </div>
+        <div class="scan-bottom-btn">
+          <button class="gradient-btn" onclick="simulateScan()" style="background:rgba(255,255,255,.2);backdrop-filter:blur(10px)">📷 Escanear producto</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SCREEN 7: SCAN RESULT — FOUND (ON PROMO) ========== -->
+    <div class="screen" id="screen-scan-found">
+      <div class="screen-content">
+        <div class="scan-result">
+          <div class="scan-result-header">
+            <div class="scan-result-icon success" style="background:none;width:100px;height:100px">
+              <img src="cupi_success.png" alt="Cupi" style="width:100%;height:100%;object-fit:contain">
+            </div>
+            <div class="scan-result-title">¡Enhorabuena! 🎉</div>
+            <div class="scan-result-subtitle">Este producto tiene una oferta activa en La Cuponera</div>
+          </div>
+
+          <div class="scan-product-card">
+            <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc562c9b-4962-4d70-b321-ef101a83a329.jpeg&w=640&q=75" alt="Ariel Líquido">
+            <div class="scan-product-info">
+              <div class="offer-brand">ARIEL</div>
+              <div class="offer-name" style="font-size:15px;font-weight:700;color:var(--primary-600)">Ariel Líquido</div>
+              <div style="font-size:var(--fs-small);color:var(--neutrals-500);margin-top:2px">Elimina manchas en 1 lavado</div>
+            </div>
+          </div>
+
+          <div class="scan-savings">
+            <div class="big">€2,00</div>
+            <div class="label">de ahorro con esta oferta</div>
+          </div>
+
+          <div style="background:var(--neutrals-100);border-radius:12px;padding:14px;margin-bottom:16px">
+            <div style="font-size:var(--fs-body);font-weight:700;color:var(--primary-600);margin-bottom:8px">Detalles de la oferta</div>
+            <ul class="detail-conditions">
+              <li>Te reembolsamos 2€ por la compra de 1 unidad</li>
+              <li>Válido hasta 30 junio 2026</li>
+              <li>Compatible con otras ofertas del ticket</li>
+              <li>Sube tu ticket después de pagar</li>
+            </ul>
+          </div>
+
+          <div style="display:flex;gap:10px;align-items:center;background:var(--primary-100);border-radius:10px;padding:12px;margin-bottom:20px">
+            <span style="font-size:24px">💡</span>
+            <span style="font-size:var(--fs-small);color:var(--primary-600);font-weight:600;line-height:16px">Combina esta oferta con Lenor Unstoppables (€3,50) y ¡ahorra €5,50 en total!</span>
+          </div>
+
+          <button class="gradient-btn" onclick="goToScreen('screen-confirmed')">¡Activar oferta! 🛒</button>
+          <button class="secondary-btn" style="margin-top:10px" onclick="goToScreen('screen-scan')">Escanear otro producto</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SCREEN 8: SCAN RESULT — NOT FOUND ========== -->
+    <div class="screen" id="screen-scan-notfound">
+      <div class="screen-content">
+        <div class="scan-result">
+          <div class="scan-result-header">
+            <div class="scan-result-icon fail" style="background:none;width:100px;height:100px">
+              <img src="cupi_oops.png" alt="Cupi oops" style="width:100%;height:100%;object-fit:contain">
+            </div>
+            <div class="scan-result-title">¡Oops! 😅</div>
+            <div class="scan-result-subtitle">Este producto no tiene oferta activa ahora mismo, pero mira lo que sí tenemos para ti en esta categoría:</div>
+          </div>
+
+          <div class="scan-reco-title">Productos recomendados</div>
+
+          <div class="offer-list-item" onclick="goToScreen('screen-detail')">
+            <div class="offer-tag">🔥 Popular</div>
+            <div class="offer-thumb"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc562c9b-4962-4d70-b321-ef101a83a329.jpeg&w=640&q=75" alt="Ariel"></div>
+            <div class="offer-detail">
+              <div class="offer-brand">ARIEL</div>
+              <div class="offer-name">Ariel Líquido</div>
+              <div class="offer-desc">Cualquier producto — €2,00</div>
+            </div>
+            <div class="offer-cashback">€2,00</div>
+          </div>
+
+          <div class="offer-list-item" onclick="goToScreen('screen-offers')">
+            <div class="offer-thumb"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Ff0a2af01-a6b0-44bf-bd1a-e809b27e055e.png&w=640&q=75" alt="Lenor"></div>
+            <div class="offer-detail">
+              <div class="offer-brand">LENOR</div>
+              <div class="offer-name">Lenor Unstoppables</div>
+              <div class="offer-desc">Productos superiores a 150gr</div>
+            </div>
+            <div class="offer-cashback">€3,50</div>
+          </div>
+
+          <div class="offer-list-item" onclick="goToScreen('screen-offers')">
+            <div class="offer-tag">✨ Nuevo</div>
+            <div class="offer-thumb"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fd0343577-d143-4179-9567-6d6d3ab534c4.jpeg&w=640&q=75" alt="Fairy"></div>
+            <div class="offer-detail">
+              <div class="offer-brand">FAIRY</div>
+              <div class="offer-name">Fairy Platinum Plus</div>
+              <div class="offer-desc">Todos los productos</div>
+            </div>
+            <div class="offer-cashback">€4,00</div>
+          </div>
+
+          <button class="gradient-btn" style="margin-top:16px" onclick="goToScreen('screen-scan')">Escanear otro producto</button>
+          <button class="secondary-btn" style="margin-top:10px" onclick="goToScreen('screen-offers')">Ver todas mis ofertas</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SCREEN 9: MAP ========== -->
+    <div class="screen" id="screen-map">
+      <div style="position:relative;width:100%;height:100%;background:#e8e4d8">
+        <!-- Fake map background -->
+        <div style="position:absolute;inset:0;overflow:hidden">
+          <!-- Streets grid -->
+          <svg style="width:100%;height:100%;opacity:.6" viewBox="0 0 400 850" fill="none">
+            <!-- Horizontal streets -->
+            <rect x="0" y="150" width="400" height="30" fill="#fff"/>
+            <rect x="0" y="300" width="400" height="40" fill="#fff"/>
+            <rect x="0" y="480" width="400" height="25" fill="#fff"/>
+            <rect x="0" y="620" width="400" height="35" fill="#fff"/>
+            <rect x="0" y="750" width="400" height="28" fill="#fff"/>
+            <!-- Vertical streets -->
+            <rect x="60" y="0" width="25" height="850" fill="#fff"/>
+            <rect x="180" y="0" width="35" height="850" fill="#fff"/>
+            <rect x="300" y="0" width="30" height="850" fill="#fff"/>
+            <!-- Park -->
+            <rect x="100" y="350" width="70" height="100" rx="8" fill="#c8e6c9"/>
+            <rect x="250" y="150" width="50" height="80" rx="6" fill="#c8e6c9"/>
+            <!-- Buildings (blocks) -->
+            <rect x="90" y="160" width="80" height="110" rx="4" fill="#f0ece3"/>
+            <rect x="220" y="320" width="70" height="130" rx="4" fill="#f0ece3"/>
+            <rect x="10" y="500" width="55" height="90" rx="4" fill="#f0ece3"/>
+            <rect x="320" y="490" width="70" height="100" rx="4" fill="#f0ece3"/>
+            <rect x="90" y="640" width="85" height="80" rx="4" fill="#f0ece3"/>
+            <rect x="220" y="660" width="60" height="70" rx="4" fill="#f0ece3"/>
+          </svg>
+        </div>
+
+        <!-- User location (blue dot) -->
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10">
+          <div style="width:20px;height:20px;border-radius:50%;background:#4285F4;border:3px solid #fff;box-shadow:0 2px 8px rgba(66,133,244,.5)"></div>
+          <div style="position:absolute;top:-2px;left:-2px;width:24px;height:24px;border-radius:50%;background:rgba(66,133,244,.2);animation:pulse 2s infinite"></div>
+        </div>
+
+        <!-- Retailer pins -->
+        <!-- Carrefour -->
+        <div class="map-pin" style="top:32%;left:30%" onclick="goToScreen('screen-offers')">
+          <div class="map-pin-icon" style="background:#003DA5"><img src="carrefour_logo.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
+          <div class="map-pin-label">Carrefour<br><span style="font-weight:400;font-size:9px">23 ofertas</span></div>
+        </div>
+        <!-- Mercadona -->
+        <div class="map-pin" style="top:62%;left:65%" onclick="goToScreen('screen-mercadona')">
+          <div class="map-pin-icon" style="background:#009B3A">🟢</div>
+          <div class="map-pin-label">Mercadona<br><span style="font-weight:400;font-size:9px">18 ofertas</span></div>
+        </div>
+        <!-- Alcampo -->
+        <div class="map-pin" style="top:25%;left:72%">
+          <div class="map-pin-icon" style="background:#E30613">🔴</div>
+          <div class="map-pin-label">Alcampo<br><span style="font-weight:400;font-size:9px">12 ofertas</span></div>
+        </div>
+        <!-- Lidl -->
+        <div class="map-pin" style="top:72%;left:25%">
+          <div class="map-pin-icon" style="background:#0050AA">🔵</div>
+          <div class="map-pin-label">Lidl<br><span style="font-weight:400;font-size:9px">9 ofertas</span></div>
+        </div>
+        <!-- El Corte Inglés -->
+        <div class="map-pin" style="top:40%;left:78%">
+          <div class="map-pin-icon" style="background:#006633">🟩</div>
+          <div class="map-pin-label">El Corte Inglés<br><span style="font-weight:400;font-size:9px">15 ofertas</span></div>
+        </div>
+
+        <!-- Top search bar -->
+        <div style="position:absolute;top:60px;left:16px;right:16px;z-index:20">
+          <div style="background:#fff;border-radius:24px;padding:12px 18px;box-shadow:0 4px 16px rgba(0,0,0,.15);display:flex;align-items:center;gap:10px">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><circle cx="11" cy="11" r="8" stroke="var(--neutrals-400)" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="var(--neutrals-400)" stroke-width="2" stroke-linecap="round"/></svg>
+            <span style="font-size:14px;color:var(--neutrals-400);font-weight:500">Buscar tienda cerca de ti...</span>
+          </div>
+        </div>
+
+        <!-- Bottom card -->
+        <div style="position:absolute;bottom:20px;left:16px;right:16px;z-index:20">
+          <div style="background:#fff;border-radius:16px;padding:16px;box-shadow:0 6px 20px rgba(0,0,0,.15)">
+            <div style="font-size:13px;font-weight:700;color:var(--primary-600);margin-bottom:10px">📍 Tiendas cerca de ti</div>
+            <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px">
+              <div style="flex-shrink:0;text-align:center;cursor:pointer" onclick="goToScreen('screen-offers')">
+                <div style="width:50px;height:50px;border-radius:12px;overflow:hidden;border:2px solid #003DA5;margin-bottom:4px"><img src="carrefour_logo.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+                <div style="font-size:9px;font-weight:600;color:var(--neutrals-600)">50m</div>
+              </div>
+              <div style="flex-shrink:0;text-align:center;cursor:pointer" onclick="goToScreen('screen-mercadona')">
+                <div style="width:50px;height:50px;border-radius:12px;background:#009B3A;display:flex;align-items:center;justify-content:center;border:2px solid #009B3A;margin-bottom:4px">
+                  <span style="color:#fff;font-size:10px;font-weight:900;text-align:center;line-height:1.1">M</span>
+                </div>
+                <div style="font-size:9px;font-weight:600;color:var(--neutrals-600)">200m</div>
+              </div>
+              <div style="flex-shrink:0;text-align:center">
+                <div style="width:50px;height:50px;border-radius:12px;background:#E30613;display:flex;align-items:center;justify-content:center;border:2px solid #E30613;margin-bottom:4px">
+                  <span style="color:#fff;font-size:9px;font-weight:900;text-align:center;line-height:1.1">Alcampo</span>
+                </div>
+                <div style="font-size:9px;font-weight:600;color:var(--neutrals-600)">350m</div>
+              </div>
+              <div style="flex-shrink:0;text-align:center">
+                <div style="width:50px;height:50px;border-radius:12px;background:#0050AA;display:flex;align-items:center;justify-content:center;border:2px solid #0050AA;margin-bottom:4px">
+                  <span style="color:#fff;font-size:10px;font-weight:900">Lidl</span>
+                </div>
+                <div style="font-size:9px;font-weight:600;color:var(--neutrals-600)">500m</div>
+              </div>
+              <div style="flex-shrink:0;text-align:center">
+                <div style="width:50px;height:50px;border-radius:12px;background:#006633;display:flex;align-items:center;justify-content:center;border:2px solid #006633;margin-bottom:4px">
+                  <span style="color:#fff;font-size:8px;font-weight:900;text-align:center;line-height:1">ECI</span>
+                </div>
+                <div style="font-size:9px;font-weight:600;color:var(--neutrals-600)">800m</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recenter button -->
+        <div style="position:absolute;bottom:180px;right:16px;z-index:20">
+          <div style="width:44px;height:44px;border-radius:50%;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;cursor:pointer">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><circle cx="12" cy="12" r="3" stroke="#4285F4" stroke-width="2"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="#4285F4" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SCREEN 10: MERCADONA OFFERS ========== -->
+    <div class="screen" id="screen-mercadona">
+      <div class="screen-content">
+        <!-- Retailer header - Mercadona green -->
+        <div class="retailer-header" style="background:linear-gradient(135deg,#009B3A 0%,#00C853 100%)">
+          <div class="retailer-logo-row">
+            <div class="retailer-logo" style="padding:6px;overflow:hidden;background:#fff">
+              <span style="font-size:11px;font-weight:900;color:#009B3A;text-align:center;line-height:1.1">M</span>
+            </div>
+            <div>
+              <div class="retailer-name" style="font-size:28px">Mercadona</div>
+              <div class="retailer-subtitle" style="font-size:15px">Ofertas disponibles ahora</div>
+            </div>
+          </div>
+          <div class="retailer-stats">
+            <div class="retailer-stat">
+              <div class="stat-num">18</div>
+              <div class="stat-label">OFERTAS</div>
+            </div>
+            <div class="retailer-stat">
+              <div class="stat-num">+€65</div>
+              <div class="stat-label">AHORRO MÁX</div>
+            </div>
+            <div class="retailer-stat">
+              <div class="stat-num">6</div>
+              <div class="stat-label">MARCAS</div>
+            </div>
+          </div>
+          <div class="nearby-badge">
+            <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            <span>📍 A 200m — Mercadona Méndez Álvaro</span>
+          </div>
+        </div>
+
+        <!-- Category chips -->
+        <div style="padding-top:14px">
+          <div class="category-chips">
+            <div class="chip active">Todas (18)</div>
+            <div class="chip">Limpieza</div>
+            <div class="chip">Cuidado personal</div>
+            <div class="chip">Higiene bucal</div>
+            <div class="chip">Bebé</div>
+          </div>
+        </div>
+
+        <!-- Offers list -->
+        <div class="offers-section">
+          <div class="offers-section-title">Tus ofertas en esta tienda <span class="count">18</span></div>
+
+          <div class="offer-list-item">
+            <div class="offer-tag">🔥 Popular</div>
+            <div class="offer-thumb"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fd0343577-d143-4179-9567-6d6d3ab534c4.jpeg&w=640&q=75" alt="Fairy"></div>
+            <div class="offer-detail">
+              <div class="offer-brand">FAIRY</div>
+              <div class="offer-name">Fairy Platinum Plus</div>
+              <div class="offer-desc">Todos los productos</div>
+            </div>
+            <div class="offer-cashback">€4,00</div>
+          </div>
+
+          <div class="offer-list-item">
+            <div class="offer-thumb"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fb7878290-0949-4cba-8cdc-2b308e66ff16.jpeg&w=640&q=75" alt="H&S"></div>
+            <div class="offer-detail">
+              <div class="offer-brand">H&S</div>
+              <div class="offer-name">H&S Anticaída</div>
+              <div class="offer-desc">Cualquier producto</div>
+            </div>
+            <div class="offer-cashback">50%</div>
+          </div>
+
+          <div class="offer-list-item">
+            <div class="offer-tag">✨ Nuevo</div>
+            <div class="offer-thumb"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F4556a36e-a197-4b97-99d5-26e1a02fdc43.png&w=640&q=75" alt="Oral-B"></div>
+            <div class="offer-detail">
+              <div class="offer-brand">ORAL-B</div>
+              <div class="offer-name">Oral-B Pro-Expert</div>
+              <div class="offer-desc">Protección Profesional 2x1</div>
+            </div>
+            <div class="offer-cashback">2x1</div>
+          </div>
+
+          <div class="offer-list-item">
+            <div class="offer-thumb"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Ff0a2af01-a6b0-44bf-bd1a-e809b27e055e.png&w=640&q=75" alt="Lenor"></div>
+            <div class="offer-detail">
+              <div class="offer-brand">LENOR</div>
+              <div class="offer-name">Lenor Unstoppables</div>
+              <div class="offer-desc">Productos superiores a 150gr</div>
+            </div>
+            <div class="offer-cashback">€3,50</div>
+          </div>
+
+          <div class="offer-list-item">
+            <div class="offer-thumb"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc562c9b-4962-4d70-b321-ef101a83a329.jpeg&w=640&q=75" alt="Ariel"></div>
+            <div class="offer-detail">
+              <div class="offer-brand">ARIEL</div>
+              <div class="offer-name">Ariel Líquido</div>
+              <div class="offer-desc">Cualquier producto</div>
+            </div>
+            <div class="offer-cashback">€2,00</div>
+          </div>
+
+          <div class="offer-list-item">
+            <div class="offer-thumb"><span class="placeholder">🧔</span></div>
+            <div class="offer-detail">
+              <div class="offer-brand">GILLETTE</div>
+              <div class="offer-name">Gillette Venus Desechables</div>
+              <div class="offer-desc">Cualquier producto</div>
+            </div>
+            <div class="offer-cashback">20%</div>
+          </div>
+
+          <div class="offer-list-item">
+            <div class="offer-thumb"><span class="placeholder">😴</span></div>
+            <div class="offer-detail">
+              <div class="offer-brand">ZZZQUIL</div>
+              <div class="offer-name">ZzzQuil Sueño</div>
+              <div class="offer-desc">Botes de 30, 60 y 90 gummies</div>
+            </div>
+            <div class="offer-cashback">35%</div>
+          </div>
+        </div>
+
+        <!-- Treasure Hunt Banner -->
+        <div style="margin:16px 16px 20px;padding:18px 20px;background:linear-gradient(135deg,#FFF8E1 0%,#FFECB3 100%);border-radius:16px;border:2px solid #FFD54F;cursor:pointer;box-shadow:0 4px 12px rgba(255,213,79,.3)" onclick="goToScreen('screen-scan')">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#FF6F00,#FFA000);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🔍</div>
+            <div style="flex:1">
+              <div style="font-size:16px;font-weight:800;color:#E65100;margin-bottom:3px">Búsqueda de Tesoro</div>
+              <div style="font-size:13px;color:#795548;font-weight:500;line-height:17px">Escanea un producto y descubre si tiene oferta 🎁</div>
+            </div>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M9 18l6-6-6-6" stroke="#E65100" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab bar -->
+      <div class="tab-bar">
+        <div class="tab-bar-item">
+          <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10" fill="none" stroke="var(--neutrals-400)" stroke-width="2"/></svg>
+          <span>Inicio</span>
+        </div>
+        <div class="tab-bar-item active">
+          <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="13" r="0" fill="var(--brand-01)"/><path d="M9 12h6M9 16h4" stroke="var(--brand-01)" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>Ofertas</span>
+        </div>
+        <div class="tab-bar-item" onclick="goToScreen('screen-map')">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="none" stroke="var(--neutrals-400)" stroke-width="1.5"/></svg>
+          <span>Mapa</span>
+        </div>
+        <div class="tab-bar-item">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" fill="none" stroke="var(--neutrals-400)" stroke-width="2"/></svg>
+          <span>Perfil</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function goToScreen(targetId) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+  });
+  const target = document.getElementById(targetId);
+  if (target) {
+    target.classList.add('active');
+    const content = target.querySelector('.screen-content');
+    if (content) content.scrollTop = 0;
+  }
+}
+
+function switchTab(tabEl, contentId) {
+  // Deactivate all tabs in same container
+  const tabBar = tabEl.parentElement;
+  tabBar.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+  tabEl.classList.add('active');
+  // Show correct content
+  const body = tabEl.closest('.detail-body');
+  body.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  const content = document.getElementById(contentId);
+  if (content) content.classList.add('active');
+}
+
+function toggleFaq(questionEl) {
+  const item = questionEl.parentElement;
+  item.classList.toggle('open');
+}
+
+function simulateScan() {
+  const laser = document.getElementById('scan-laser');
+  const instruction = document.getElementById('scan-instruction');
+  const hint = document.getElementById('scan-hint');
+  // Simulate detection
+  laser.style.background = 'linear-gradient(90deg,transparent,#4CAF50,transparent)';
+  instruction.textContent = 'Producto detectado...';
+  hint.textContent = 'Analizando...';
+  // After delay, navigate to result
+  setTimeout(() => {
+    laser.style.background = '';
+    instruction.textContent = 'Apunta la c\u00e1mara al producto';
+    hint.textContent = 'Toca para escanear';
+    goToScreen(window._scanNotFound ? 'screen-scan-notfound' : 'screen-scan-found');
+    window._scanNotFound = false;
+  }, 1500);
+}
+
+// Long-press on scan screen to demo "not found" path
+let _scanHoldTimer;
+document.addEventListener('DOMContentLoaded', () => {
+  const scanScreen = document.getElementById('screen-scan');
+  if (scanScreen) {
+    scanScreen.addEventListener('touchstart', () => { _scanHoldTimer = setTimeout(() => { window._scanNotFound = true; }, 800); });
+    scanScreen.addEventListener('touchend', () => clearTimeout(_scanHoldTimer));
+    scanScreen.addEventListener('mousedown', () => { _scanHoldTimer = setTimeout(() => { window._scanNotFound = true; }, 800); });
+    scanScreen.addEventListener('mouseup', () => clearTimeout(_scanHoldTimer));
+  }
+});
+</script>
+
+</body>
+</html>
