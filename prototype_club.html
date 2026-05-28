@@ -507,10 +507,10 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 
       <div class="section-title"><h2>Gana puntos</h2></div>
       <div style="padding:0 16px">
-        <div class="task-card" onclick="goTo('screen-missions')">
-          <div class="task-icon" style="background:var(--club-soft)">🎯</div>
-          <div class="task-body"><h3>Misiones activas</h3><p>Completa retos para ganar puntos extra.</p></div>
-          <div class="points-pill">3 activas</div><div class="chev">›</div>
+        <div class="task-card" onclick="goTo('screen-scan-flow')" style="border-color:var(--brand-01);background:var(--primary-100)">
+          <div class="task-icon" style="background:var(--brand-01)"><span style="font-size:22px;filter:brightness(10)">📷</span></div>
+          <div class="task-body"><h3>Sube un ticket de compra</h3><p>Escanea tu ticket y gana cashback instantáneo.</p></div>
+          <div class="points-pill" style="background:var(--primary-100);color:var(--primary-400);font-size:var(--fs-body)">+100 🔥</div><div class="chev">›</div>
         </div>
         <div class="task-card" onclick="goToTask('rating')">
           <div class="task-icon">⭐</div>
@@ -527,11 +527,10 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
           <div class="task-body"><h3>Comparte en redes</h3><p>Toma una foto/vídeo y pulsa compartir.</p></div>
           <div class="points-pill">+50</div><div class="chev">›</div>
         </div>
-
-        <div class="info-card" style="background:var(--primary-100);border-color:var(--primary-200);margin-top:6px">
-          <h2 style="color:var(--brand-01)">📷 Cashback instantáneo</h2>
-          <p style="font-size:var(--fs-small);color:var(--neutrals-600);font-weight:600;line-height:1.4">Cada ticket aprobado suma +100 pts y añade el cashback al wallet.</p>
-          <button class="btn-secondary" style="margin-top:10px;padding:10px;font-size:13px" onclick="goTo('screen-scan-flow')">IR A ESCANEAR</button>
+        <div class="task-card" onclick="goTo('screen-missions')" style="border-color:#E1DEFF;background:var(--club-soft)">
+          <div class="task-icon" style="background:var(--accent-purple)"><span style="font-size:22px;filter:brightness(10)">🎯</span></div>
+          <div class="task-body"><h3>Misiones semanales</h3><p>Completa retos para ganar puntos extra.</p></div>
+          <div class="points-pill">3 activas</div><div class="chev">›</div>
         </div>
       </div>
     </div>
