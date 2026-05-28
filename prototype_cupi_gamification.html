@@ -113,9 +113,9 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 /* Wallet detail screen */
 .wallet-detail-card{margin:0 16px 14px;border-radius:22px;padding:22px;background:linear-gradient(135deg,#153B25,#4FB978);color:#fff;box-shadow:0 8px 24px rgba(18,43,28,.12);position:relative;overflow:hidden}
 .wallet-detail-card::after{content:'€';position:absolute;right:-10px;top:-20px;font-size:110px;color:rgba(255,255,255,.06);font-weight:900}
-.wd-top{display:flex;align-items:center;gap:14px;position:relative;z-index:1;margin-bottom:14px}
-.wd-cupi{width:64px;height:64px;object-fit:contain;flex-shrink:0;border-radius:50%;background:rgba(255,255,255,.85);padding:4px}
-.wd-info{flex:1}
+.wd-top{display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:1;margin-bottom:14px}
+.wd-cupi{width:128px;height:128px;object-fit:contain;border-radius:50%;background:rgba(255,255,255,.85);padding:8px;animation:cupiFloat 3s ease-in-out infinite}
+.wd-info{text-align:center}
 .wd-balance{font-size:36px;font-weight:900;line-height:1}
 .wd-label{font-size:var(--fs-xs);font-weight:800;text-transform:uppercase;opacity:.75;margin-bottom:4px}
 .wd-hist-row{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;padding-top:12px;border-top:1px solid rgba(255,255,255,.15)}
@@ -407,18 +407,18 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
       <!-- Balance card with Cupi -->
       <div class="wallet-detail-card">
         <div class="wd-top">
+          <img id="walletCupiImg" src="baby_cupi.png" class="wd-cupi" alt="Cupi">
+          <div class="wallet-level-badge" id="walletLevelBadge">Nivel 1</div>
           <div class="wd-info">
             <div class="wd-label">Saldo disponible</div>
             <div class="wd-balance" id="walletBalance">0,00€</div>
           </div>
-          <img id="walletCupiImg" src="baby_cupi.png" class="wd-cupi" alt="Cupi">
         </div>
         <div class="wd-hist-row">
           <div>
             <div class="wd-hist-label">Acumulado total</div>
             <div class="wd-hist-val" id="walletHistorical">11,00€</div>
           </div>
-          <div class="wallet-level-badge" id="walletLevelBadge">Nivel 1</div>
         </div>
       </div>
 
