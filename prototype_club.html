@@ -826,6 +826,23 @@ function renderMissions(){
 // Option selection
 document.addEventListener('click',e=>{if(e.target.classList.contains('option')){e.target.parentElement.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));e.target.classList.add('selected')}});
 
+// === TAB BAR ===
+const TAB_ITEMS = [
+  {id:'home',label:'Inicio',screen:'screen-home',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>'},
+  {id:'offers',label:'Ofertas',screen:'screen-offers',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>'},
+  {id:'scan',label:'Escanear',screen:'screen-scan-flow',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v3h-3M14 20h3M20 20h0"/></svg>'},
+  {id:'club',label:'Club',screen:'screen-club-dashboard',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'},
+  {id:'profile',label:'Perfil',screen:'screen-profile',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'}
+];
+const TAB_MAP = {'tab-home':'home','tab-offers':'offers','tab-club-intro':'club','tab-club':'club','tab-profile':'profile'};
+function renderTabs(){
+  document.querySelectorAll('.tab-bar').forEach(bar=>{
+    const activeTab = TAB_MAP[bar.id] || 'home';
+    bar.innerHTML = TAB_ITEMS.map(t=>`<div class="tab-bar-item${t.id===activeTab?' active':''}" onclick="goTo('${t.screen}')">${t.icon}<span>${t.label}</span></div>`).join('');
+  });
+}
+renderTabs();
+
 // Init
 renderAll();
 </script>
