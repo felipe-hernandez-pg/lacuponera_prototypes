@@ -145,10 +145,16 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
 .offer-tag{position:absolute;top:-6px;left:12px;background:var(--secondary-02);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px}
 
 /* Categories */
-.category-chips{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.category-chips{display:flex;gap:12px;padding:0 16px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .category-chips::-webkit-scrollbar{display:none}
+.cat-btn{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;flex-shrink:0}
+.cat-btn-icon{width:56px;height:56px;border-radius:14px;background:#fff;border:1.5px solid var(--neutrals-200);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:all .15s}
+.cat-btn-icon img{width:70%;height:70%;object-fit:contain}
+.cat-btn-label{font-size:11px;font-weight:600;color:var(--neutrals-600);text-align:center;max-width:64px;line-height:1.2}
+.cat-btn.active .cat-btn-icon{border-color:var(--primary-600);background:var(--primary-100)}
+.cat-btn.active .cat-btn-label{color:var(--primary-600)}
+.cat-btn:active .cat-btn-icon{transform:scale(.92)}
 .chip{padding:10px 16px;border-radius:22px;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer;border:1.5px solid var(--neutrals-200);color:var(--neutrals-600);background:#fff;transition:all .15s;display:flex;align-items:center;gap:6px}
-.chip-icon{width:20px;height:20px;object-fit:contain;flex-shrink:0}
 .chip.active{background:var(--primary-600);color:#fff;border-color:var(--primary-600)}
 .chip:active{transform:scale(.95)}
 
@@ -400,15 +406,33 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
           </div>
         </div>
 
-        <!-- Category chips -->
+        <!-- Category icons -->
         <div style="padding-top:14px">
           <div class="category-chips">
-            <div class="chip active">Todas (23)</div>
-            <div class="chip"><img class="chip-icon" src="cuidado_del_hogar.png" alt="">Limpieza</div>
-            <div class="chip"><img class="chip-icon" src="belleza.png" alt="">Bebé</div>
-            <div class="chip"><img class="chip-icon" src="cuidado_de_la_ropa.png" alt="">Cuidado de la ropa</div>
-            <div class="chip"><img class="chip-icon" src="higiene_bucal.png" alt="">Higiene bucal</div>
-            <div class="chip"><img class="chip-icon" src="belleza.png" alt="">Belleza</div>
+            <div class="cat-btn active">
+              <div class="cat-btn-icon" style="background:var(--primary-100)"><span style="font-size:20px">⭐</span></div>
+              <div class="cat-btn-label">Todas</div>
+            </div>
+            <div class="cat-btn">
+              <div class="cat-btn-icon"><img src="cuidado%20del%20hogar.png" alt=""></div>
+              <div class="cat-btn-label">Cuidado del hogar</div>
+            </div>
+            <div class="cat-btn">
+              <div class="cat-btn-icon"><img src="cuidado%20de%20la%20ropa.png" alt=""></div>
+              <div class="cat-btn-label">Cuidado de la ropa</div>
+            </div>
+            <div class="cat-btn">
+              <div class="cat-btn-icon"><img src="higiene%20bucal.png" alt=""></div>
+              <div class="cat-btn-label">Higiene bucal</div>
+            </div>
+            <div class="cat-btn">
+              <div class="cat-btn-icon"><img src="belleza.png" alt=""></div>
+              <div class="cat-btn-label">Belleza</div>
+            </div>
+            <div class="cat-btn">
+              <div class="cat-btn-icon"><img src="parafarmacia.png" alt=""></div>
+              <div class="cat-btn-label">Parafarmacia</div>
+            </div>
           </div>
         </div>
 
@@ -1145,14 +1169,33 @@ body{font-family:'Montserrat',system-ui,-apple-system,sans-serif;background:#000
           </div>
         </div>
 
-        <!-- Category chips -->
+        <!-- Category icons -->
         <div style="padding-top:14px">
           <div class="category-chips">
-            <div class="chip active">Todas (18)</div>
-            <div class="chip"><img class="chip-icon" src="cuidado_del_hogar.png" alt="">Limpieza</div>
-            <div class="chip"><img class="chip-icon" src="cuidado_de_la_ropa.png" alt="">Cuidado de la ropa</div>
-            <div class="chip"><img class="chip-icon" src="higiene_bucal.png" alt="">Higiene bucal</div>
-            <div class="chip"><img class="chip-icon" src="belleza.png" alt="">Belleza</div>
+            <div class="cat-btn active">
+              <div class="cat-btn-icon" style="background:var(--primary-100)"><span style="font-size:20px">⭐</span></div>
+              <div class="cat-btn-label">Todas</div>
+            </div>
+            <div class="cat-btn">
+              <div class="cat-btn-icon"><img src="cuidado%20del%20hogar.png" alt=""></div>
+              <div class="cat-btn-label">Cuidado del hogar</div>
+            </div>
+            <div class="cat-btn">
+              <div class="cat-btn-icon"><img src="cuidado%20de%20la%20ropa.png" alt=""></div>
+              <div class="cat-btn-label">Cuidado de la ropa</div>
+            </div>
+            <div class="cat-btn">
+              <div class="cat-btn-icon"><img src="higiene%20bucal.png" alt=""></div>
+              <div class="cat-btn-label">Higiene bucal</div>
+            </div>
+            <div class="cat-btn">
+              <div class="cat-btn-icon"><img src="belleza.png" alt=""></div>
+              <div class="cat-btn-label">Belleza</div>
+            </div>
+            <div class="cat-btn">
+              <div class="cat-btn-icon"><img src="parafarmacia.png" alt=""></div>
+              <div class="cat-btn-label">Parafarmacia</div>
+            </div>
           </div>
         </div>
 
