@@ -643,8 +643,8 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
       <div class="lock-time">10:32</div>
       <div class="lock-date">miércoles, 28 de mayo</div>
 
-      <!-- Push notification (not clickable) -->
-      <div class="notif-card" style="opacity:.95">
+      <!-- Push notification (Evax - clickable) -->
+      <div class="notif-card" style="opacity:.95;cursor:pointer" onclick="goTo('screen-evax-promo')">
         <div class="notif-card-header">
           <img src="cuponera_logo.png" alt="La Cuponera">
           <span>La Cuponera · 10:00</span>
@@ -670,6 +670,46 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 
       <div style="flex:1"></div>
       <div style="text-align:center;padding:20px;color:rgba(255,255,255,.5);font-size:var(--fs-small)">Desliza para desbloquear</div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: EVAX PROMO ===== -->
+  <div class="screen" id="screen-evax-promo">
+    <div class="screen-content" style="background:#fff">
+      <!-- Product image -->
+      <div style="position:relative">
+        <img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fb7878290-0949-4cba-8cdc-2b308e66ff16.jpeg&w=640&q=75" style="width:100%;aspect-ratio:1;object-fit:cover" alt="Evax Cottonlike">
+        <!-- Back button overlay -->
+        <div style="position:absolute;top:48px;left:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)" onclick="goTo('screen-home')">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M15 18l-6-6 6-6" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <!-- GRATIS badge -->
+        <div style="position:absolute;top:48px;right:16px;background:#E65100;color:#fff;font-size:var(--fs-h4);font-weight:800;padding:6px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.2)">GRATIS</div>
+      </div>
+      <!-- Product info -->
+      <div style="padding:20px">
+        <div style="font-size:var(--fs-small);font-weight:600;color:var(--brand-01);text-transform:uppercase;margin-bottom:6px">Higiene femenina</div>
+        <div style="font-size:var(--fs-h1);font-weight:900;color:var(--primary-600);margin-bottom:8px">Evax Cottonlike</div>
+        <div style="font-size:var(--fs-h3);font-weight:800;color:#E65100;margin-bottom:16px">100% Reembolso — GRATIS</div>
+        <div style="font-size:var(--fs-body);color:var(--neutrals-600);line-height:1.6;margin-bottom:20px">Compresas Evax Cottonlike Normal con alas. Máxima suavidad con una capa de algodón natural en contacto con la piel. Protección fiable y comodidad durante todo el día.</div>
+        <!-- Details -->
+        <div style="background:var(--neutrals-100);border-radius:14px;padding:16px;margin-bottom:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--neutrals-200)">
+            <span style="font-size:var(--fs-body);color:var(--neutrals-600)">Cashback</span>
+            <span style="font-size:var(--fs-body);font-weight:700;color:var(--brand-01)">100% (hasta 3,49€)</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--neutrals-200)">
+            <span style="font-size:var(--fs-body);color:var(--neutrals-600)">Válido en</span>
+            <span style="font-size:var(--fs-body);font-weight:700;color:var(--neutrals-800)">Todos los supermercados</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
+            <span style="font-size:var(--fs-body);color:var(--neutrals-600)">Expira</span>
+            <span style="font-size:var(--fs-body);font-weight:700;color:var(--neutrals-800)">15 jun 2026</span>
+          </div>
+        </div>
+        <!-- CTA -->
+        <div class="btn-primary" style="font-size:var(--fs-h3);padding:18px;box-shadow:0 6px 20px rgba(94,188,130,.4)" onclick="goTo('screen-home')">Volver al inicio</div>
+      </div>
     </div>
   </div>
 
