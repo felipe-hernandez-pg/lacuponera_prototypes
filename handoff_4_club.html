@@ -22,8 +22,6 @@ h3{font-size:16px;font-weight:800;color:var(--dark);margin:20px 0 8px}
 .step-content p{font-size:13px;color:var(--grey);margin-top:4px}
 .step-action{display:inline-block;background:var(--dark);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;margin-top:6px}
 .note{background:#FEF3C7;border-left:4px solid #F59E0B;border-radius:0 10px 10px 0;padding:14px 16px;margin:16px 0;font-size:13px;font-weight:600;color:#92400E}
-.visual-ref{background:#EDF7F1;border:2px dashed var(--green);border-radius:12px;padding:14px;margin:12px 0;font-size:13px;font-weight:700;color:var(--dark)}
-.visual-ref::before{content:'👁️ ';font-size:14px}
 table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
 th{text-align:left;padding:10px 12px;background:var(--dark);color:#fff;font-weight:700}
 td{padding:10px 12px;border-bottom:1px solid #E5E7EB}
@@ -45,175 +43,155 @@ td{padding:10px 12px;border-bottom:1px solid #E5E7EB}
 <p class="subtitle">Handoff para agencia · Design Sprint La Cuponera · 29/5/2026</p>
 
 <div class="objective">
-  <h3>🎯 Objetivo del test</h3>
-  <p>Evaluar si un programa de fidelización con niveles (tiers), puntos de participación, misiones semanales y recompensas "mystery box" motiva al consumidor a interactuar más frecuentemente con la app. Probar si el ascenso de nivel y las recompensas sorpresa generan engagement sostenido.</p>
+<h3>🎯 Objetivo del test</h3>
+<p>Evaluar si un programa de fidelización con niveles (tiers), puntos de participación, misiones semanales y cajas sorpresa motiva al consumidor a interactuar más frecuentemente con la app. Probar si el ascenso de nivel y las recompensas sorpresa generan un interés real y recurrente.</p>
 </div>
 
 <h2>📋 Resumen del Concepto</h2>
 <div class="section">
-  <p>Además del cashback habitual, el usuario gana <strong>puntos Club</strong> por cada interacción: subir tickets (+100 pts), dejar reseñas (+30), responder encuestas (+20), compartir en redes (+50). Al acumular puntos sube de nivel (tier) y desbloquea recompensas cada vez mejores. Las misiones semanales gamifican la experiencia. Al subir de nivel se abre una "mystery box" con premio sorpresa.</p>
+<p>Además del cashback habitual, el usuario gana <strong>puntos</strong> por cada interacción: subir tickets (+100 pts), dejar reseñas (+30), responder encuestas (+20) o compartir en redes (+50). También existen <strong>misiones semanales</strong> para gamificar la experiencia. Al acumular puntos, el usuario sube de nivel y desbloquea recompensas. Al subir de nivel, se abre una <strong>caja sorpresa</strong> con un premio aleatorio.</p>
 </div>
 
 <h2>🏅 Sistema de Niveles (Tiers)</h2>
 <div class="tier-table">
-  <div class="tier-row"><div class="tier-icon">🌱</div><div class="tier-name">Básico</div><div class="tier-req">0 puntos — Acceso al Club</div></div>
-  <div class="tier-row"><div class="tier-icon">🥉</div><div class="tier-name">Bronce</div><div class="tier-req">250 puntos — Mystery boxes + vouchers</div></div>
-  <div class="tier-row"><div class="tier-icon">🥈</div><div class="tier-name">Plata</div><div class="tier-req">750 puntos — Muestras + merchandising</div></div>
-  <div class="tier-row"><div class="tier-icon">🥇</div><div class="tier-name">Oro</div><div class="tier-req">1.250 puntos — Acceso anticipado a ofertas</div></div>
-  <div class="tier-row" style="border-color:var(--purple);background:#F5F3FF"><div class="tier-icon">💎</div><div class="tier-name" style="color:var(--purple)">Diamante</div><div class="tier-req">2.500 pts + 52 tickets — Embajador, experiencia VIP</div></div>
+<div class="tier-row"><div class="tier-icon">🌱</div><div class="tier-name">Básico</div><div class="tier-req">0 puntos — Acceso al Club</div></div>
+<div class="tier-row"><div class="tier-icon">🥉</div><div class="tier-name">Bronce</div><div class="tier-req">250 puntos — Cajas sorpresa + promos exclusivas</div></div>
+<div class="tier-row"><div class="tier-icon">🥈</div><div class="tier-name">Plata</div><div class="tier-req">750 puntos — Muestras + merchandising</div></div>
+<div class="tier-row"><div class="tier-icon">🥇</div><div class="tier-name">Oro</div><div class="tier-req">1.250 puntos — Acceso anticipado a ofertas</div></div>
+<div class="tier-row" style="border-color:var(--purple);background:#F5F3FF"><div class="tier-icon">💎</div><div class="tier-name" style="color:var(--purple)">Diamante</div><div class="tier-req">2.500 pts + 52 tickets — Embajador, experiencia VIP</div></div>
 </div>
 
 <h2>🗺️ Flujo Completo (Paso a Paso)</h2>
 
 <div class="step">
-  <div class="step-num">1</div>
-  <div class="step-content">
-    <strong>Pantalla Home</strong>
-    <p>El usuario llega al Home. Ve: hero card de ahorro, wallet con su tier actual, ofertas por retailer, y una invitación al Club ("Gana puntos por cada interacción").</p>
-    <span class="step-action">ACCIÓN → Tocar la tarjeta "La Cuponera Club" (invitación inferior)</span>
-  </div>
+<div class="step-num">1</div>
+<div class="step-content">
+<strong>Pantalla Home</strong>
+<p>El usuario llega al Home. Ve el hero card, wallet con nivel actual, ofertas y una invitación al Club ("Gana puntos por cada interacción").</p>
+<span class="step-action">ACCIÓN → Tocar la tarjeta "La Cuponera Club"</span>
 </div>
-<div class="visual-ref">Hero verde "Ahorra en tus marcas favoritas", wallet con nivel 🌱 Básico, ofertas horizontales (Ariel, Fairy, H&S, Oral-B), tarjeta Club abajo con iconos de actividades</div>
+</div>
 
 <div class="flow-arrow">↓</div>
 
 <div class="step">
-  <div class="step-num">2</div>
-  <div class="step-content">
-    <strong>Introducción al Club</strong>
-    <p>Pantalla explicativa del programa: qué es, cómo se gana puntos, y los 5 niveles con sus beneficios.</p>
-    <span class="step-action">ACCIÓN → Leer los niveles → Pulsar "ENTRAR AL CLUB"</span>
-  </div>
+<div class="step-num">2</div>
+<div class="step-content">
+<strong>Introducción al Club</strong>
+<p>Pantalla explicativa: qué es, cómo ganar puntos y los 5 niveles con sus beneficios.</p>
+<span class="step-action">ACCIÓN → Leer niveles → Pulsar "ENTRAR AL CLUB"</span>
 </div>
-<div class="visual-ref">Header con degradado morado/azul, headline "La Cuponera Club", 5 niveles apilados verticalmente con líneas conectoras y requisitos de puntos para cada uno</div>
+</div>
 
 <div class="flow-arrow">↓</div>
 
 <div class="step">
-  <div class="step-num">3</div>
-  <div class="step-content">
-    <strong>Dashboard del Club</strong>
-    <p>Panel principal: barra de progreso hacia siguiente nivel, puntos actuales, y lista de 5 formas de ganar puntos. La acción #1 (Subir ticket) está destacada en verde.</p>
-    <span class="step-action">ACCIÓN → Explorar las opciones → Tocar "📷 Sube un ticket" (+100 pts)</span>
-  </div>
+<div class="step-num">3</div>
+<div class="step-content">
+<strong>Dashboard del Club</strong>
+<p>Panel principal con barra de progreso, puntos y formas de ganar (destacando "Subir ticket").</p>
+<span class="step-action">ACCIÓN → Explorar opciones → Tocar "📷 Sube un ticket" (+100 pts)</span>
 </div>
-<div class="visual-ref">Tarjeta verde degradada con "🌱 Básico · 0 puntos", barra de progreso "0/250 para Bronce", luego 5 tarjetas de tareas (Ticket destacada, Valoración, Encuesta, Compartir, Misiones semanales en morado)</div>
+</div>
 
 <div class="flow-arrow">↓</div>
 
 <div class="step">
-  <div class="step-num">4</div>
-  <div class="step-content">
-    <strong>Flujo de Escaneo (3 pasos)</strong>
-    <p>Paso 1: Seleccionar tienda (Mercadona, Carrefour, Lidl, Alcampo, Aldi). Paso 2: Seleccionar oferta. Paso 3: Captura de ticket. Confirmación con cashback + puntos.</p>
-    <span class="step-action">ACCIÓN → Seleccionar retailer → Seleccionar oferta → Confirmar ticket</span>
-  </div>
+<div class="step-num">4</div>
+<div class="step-content">
+<strong>Flujo de Escaneo (3 pasos)</strong>
+<p>Selección de tienda, selección de oferta y captura de ticket.</p>
+<span class="step-action">ACCIÓN → Seleccionar retailer → Seleccionar oferta → Confirmar ticket</span>
 </div>
-<div class="visual-ref">Indicador de progreso 1/3 → 2/3 → 3/3. Lista de retailers con logos. Luego lista de ofertas con "+ puntos Club" junto al cashback. Finalmente previsualización del ticket con botón de confirmación.</div>
+</div>
 
 <div class="flow-arrow">↓</div>
 
 <div class="step">
-  <div class="step-num">5</div>
-  <div class="step-content">
-    <strong>Resultado: Cashback + Puntos + ¡Subida de Nivel!</strong>
-    <p>La demo está configurada para que el primer ticket suba al usuario a 🥉 Bronce (se necesitan 250 pts, y la demo simula que ya tenía puntos previos). Se muestra directamente la Mystery Box.</p>
-    <span class="step-action">ACCIÓN → Ver la celebración de subida de nivel → Tocar la caja misteriosa 🎁</span>
-  </div>
+<div class="step-num">5</div>
+<div class="step-content">
+<strong>Paso 5.1: Flujo alternativo desde Home</strong>
+<p>El usuario puede subir un ticket directamente desde la pantalla de inicio o de ofertas. Tras la pantalla de "Gracias por tu ticket" (TYP), aparece un CTA invitando a volver al Club para ver los puntos ganados.</p>
+<span class="step-action">ACCIÓN → Subir ticket desde Home → Tocar CTA en pantalla de éxito para volver al Club</span>
 </div>
-<div class="visual-ref">Confeti animado, headline "🚀 ¡Ahora eres 🥉 Bronce!", caja 🎁 pulsante en el centro con texto "Toca para abrir tu recompensa sorpresa"</div>
-
-<div class="note">⚠️ <strong>Momento clave:</strong> Este es el reward más emotivo del prototipo. Observar si la animación de confeti + mystery box genera entusiasmo y sorpresa.</div>
+</div>
 
 <div class="flow-arrow">↓</div>
 
 <div class="step">
-  <div class="step-num">6</div>
-  <div class="step-content">
-    <strong>Mystery Box: Recompensa Revelada</strong>
-    <p>Al tocar la caja, se revela un premio aleatorio: +50 pts extra, +0,50€ extra, muestra gratis de Ariel, o 50% descuento en producto P&G.</p>
-    <span class="step-action">ACCIÓN → Tocar la caja → Ver premio → Pulsar "VOLVER AL CLUB"</span>
-  </div>
+<div class="step-num">6</div>
+<div class="step-content">
+<strong>Realizar acciones y Subida de Nivel</strong>
+<p>El usuario completa tareas (reseñas, encuestas) dentro del Club. Al superar el umbral de puntos, se activa la celebración.</p>
+<span class="step-action">ACCIÓN → Completar tareas hasta subir de nivel → Ver celebración → Tocar caja sorpresa 🎁</span>
 </div>
-<div class="visual-ref">La caja se "abre" con animación, aparece el premio con emoji y descripción. Ejemplo: "🧺 Muestra gratis de Ariel Pods — Recibirás una muestra gratuita en tu próximo pedido"</div>
+</div>
 
 <div class="flow-arrow">↓</div>
 
 <div class="step">
-  <div class="step-num">7</div>
-  <div class="step-content">
-    <strong>Completar Tareas del Club</strong>
-    <p>Volver al Dashboard del Club. Ahora probar otras acciones: dejar una valoración (⭐ +30 pts), responder una encuesta (💬 +20 pts), o compartir en redes (📸 +50 pts).</p>
-    <span class="step-action">ACCIÓN → Tocar "⭐ Deja una valoración" → Puntuar con estrellas → Publicar</span>
-  </div>
+<div class="step-num">7</div>
+<div class="step-content">
+<strong>Caja Sorpresa: Recompensa Revelada</strong>
+<p>Se abre la caja y se muestra el premio (puntos extra, dinero extra, muestras o descuentos).</p>
+<span class="step-action">ACCIÓN → Abrir caja → Ver premio → "VOLVER AL CLUB"</span>
 </div>
-<div class="visual-ref">Pantalla de valoración con selector de 5 estrellas, campo de texto para review, botón "PUBLICAR RESEÑA Y GANAR +30"</div>
+</div>
 
 <div class="flow-arrow">↓</div>
 
 <div class="step">
-  <div class="step-num">8</div>
-  <div class="step-content">
-    <strong>Misiones Semanales</strong>
-    <p>Explorar las 3 misiones activas: abrir la app 7 días seguidos (+20), encontrar Fairy Spray en el súper (+40), invitar a un amigo con código (+50).</p>
-    <span class="step-action">ACCIÓN → Tocar "🎯 Misiones semanales" → Explorar las 3 misiones → Completar una</span>
-  </div>
+<div class="step-num">8</div>
+<div class="step-content">
+<strong>Misiones Semanales y Resto de Tareas</strong>
+<p>Si aún quedan tareas o misiones por ver, el usuario vuelve al dashboard para explorarlas (abrir app 7 días, invitar amigos, etc.).</p>
+<span class="step-action">ACCIÓN → Tocar "🎯 Misiones semanales" → Explorar misiones</span>
 </div>
-<div class="visual-ref">Header morado degradado "🎯 Misiones", 3 cards con barra de progreso cada una, botones de completar, nota informativa "Las misiones se renuevan cada lunes"</div>
+</div>
 
 <div class="flow-arrow">↓</div>
 
 <div class="step">
-  <div class="step-num">9</div>
-  <div class="step-content">
-    <strong>Wallet / Perfil</strong>
-    <p>Revisar el wallet donde se muestra el saldo acumulado de cashback y el nivel del Club.</p>
-    <span class="step-action">ACCIÓN → Tocar tab "Perfil" → Ver resumen de wallet y nivel</span>
-  </div>
+<div class="step-num">9</div>
+<div class="step-content">
+<strong>Perfil / Wallet</strong>
+<p>Revisión final del saldo acumulado y nivel alcanzado.</p>
+<span class="step-action">ACCIÓN → Tocar tab "Perfil" → Ver resumen</span>
 </div>
-<div class="visual-ref">Tarjeta verde "Cashback disponible" con balance, badge de nivel "🌱 Nivel Básico" (o el que tenga)</div>
+</div>
 
 <h2>⏱️ Duración Estimada del Test</h2>
 <div class="section">
-  <p><strong>8–12 minutos</strong> para completar el flujo completo (es el prototipo más rico en interacciones).</p>
+<p><strong>15–20 minutos</strong> (flujo de alta interacción y exploración de secciones).</p>
 </div>
 
-<h2>📝 Guion Sugerido para el Moderador</h2>
+<h2>📝 Guion Sugerido (Ejemplo para el entrevistador)</h2>
 <div class="section">
-  <table>
-    <tr><th>#</th><th>Indicación al Consumidor</th><th>Qué Observar</th></tr>
-    <tr><td>1</td><td>"Estás en la app. Explora la pantalla principal y dime qué partes te llaman la atención."</td><td>¿Nota la tarjeta del Club? ¿Entiende que hay un programa de recompensas?</td></tr>
-    <tr><td>2</td><td>"Explora cómo funciona el Club."</td><td>¿Entiende los niveles? ¿Le motiva subir de tier? ¿Cuál nivel aspiraría a alcanzar?</td></tr>
-    <tr><td>3</td><td>"¿Qué harías para ganar puntos?"</td><td>¿Elige ticket primero (más puntos)? ¿Lee las otras opciones (encuesta, reseña)?</td></tr>
-    <tr><td>4</td><td>"Sube un ticket."</td><td>¿El flujo de 3 pasos (tienda → oferta → ticket) le parece claro? ¿Le gusta ver "puntos + cashback"?</td></tr>
-    <tr><td>5</td><td>"¡Has subido de nivel! ¿Qué ves?"</td><td>¿Le sorprende? ¿Le emociona la mystery box? ¿Tocaría la caja intuitivamente?</td></tr>
-    <tr><td>6</td><td>"Abre la caja."</td><td>Reacción emocional al premio. ¿Le parece justo? ¿Le motivaría seguir subiendo?</td></tr>
-    <tr><td>7</td><td>"Explora otras formas de ganar puntos."</td><td>¿Le interesa más la reseña, la encuesta o compartir? ¿Cuál haría y cuál no?</td></tr>
-    <tr><td>8</td><td>"Mira las misiones semanales."</td><td>¿Le parece divertido o agobiante? ¿Abriría la app a diario por la misión? ¿Le motiva el código de invitación?</td></tr>
-    <tr><td>9</td><td>"Si esta app existiera, ¿participarías en el Club? ¿Hasta qué nivel llegarías?"</td><td>Intención de uso, motivación a largo plazo, puntos de abandono potencial.</td></tr>
-  </table>
+<table>
+<tr><th>#</th><th>Indicación al Consumidor</th><th>Qué Observar</th></tr>
+<tr><td>1</td><td>"Explora la pantalla principal. ¿Ves algo nuevo que te llame la atención?"</td><td>¿Identifica el Club como algo relevante?</td></tr>
+<tr><td>2</td><td>"Mira cómo funciona el Club. ¿Qué opinas de este sistema de niveles?"</td><td>¿Le resulta fácil de entender? ¿Le motiva subir?</td></tr>
+<tr><td>3</td><td>"¿Qué acciones estarías dispuesto a hacer para ganar puntos?"</td><td>Relevancia de las tareas (ticket, reseña, encuesta).</td></tr>
+<tr><td>4</td><td>"Imagina que acabas de subir un ticket desde la pantalla de ofertas. ¿Qué harías a continuación?"</td><td>¿Entiende el camino de vuelta al Club desde la confirmación?</td></tr>
+<tr><td>5</td><td>"¡Has subido de nivel! Abre tu regalo."</td><td>Sentimiento/Reacción ante la caja sorpresa. ¿Se siente recompensado?</td></tr>
+<tr><td>6</td><td>"Echa un vistazo a las misiones semanales."</td><td>¿Le parecen útiles o complicadas? ¿Le harían volver a la app a menudo?</td></tr>
+<tr><td>7</td><td>"Si tuvieras esta app, ¿entrarías al Club? ¿Por qué?"</td><td>Interés real y valor percibido del programa.</td></tr>
+</table>
 </div>
 
 <h2>🎯 KPIs a Evaluar</h2>
 <div class="section">
-  <ul style="list-style:none;padding:0">
-    <li style="margin:8px 0;font-size:14px">✅ <strong>Motivación de niveles:</strong> ¿Los tiers motivan o son irrelevantes? ¿Qué nivel es "meta"?</li>
-    <li style="margin:8px 0;font-size:14px">✅ <strong>Mystery box:</strong> ¿La sorpresa genera dopamina? ¿La recompensa se percibe justa?</li>
-    <li style="margin:8px 0;font-size:14px">✅ <strong>Puntos vs dinero:</strong> ¿Les importan los puntos o solo el cashback en €?</li>
-    <li style="margin:8px 0;font-size:14px">✅ <strong>Tareas diversas:</strong> ¿Cuáles harían (ticket, reseña, encuesta, share)? ¿Cuáles nunca?</li>
-    <li style="margin:8px 0;font-size:14px">✅ <strong>Misiones:</strong> ¿Crean hábito (abrir 7 días) o presión? ¿El código referral les interesa?</li>
-    <li style="margin:8px 0;font-size:14px">✅ <strong>Complejidad:</strong> ¿El sistema es demasiado complejo o asimilable? ¿Se pierde el usuario?</li>
-    <li style="margin:8px 0;font-size:14px">✅ <strong>Retención:</strong> ¿Volverían a la app por el Club o solo por el cashback?</li>
-  </ul>
-</div>
-
-<div class="note">
-  ⚠️ <strong>Nota técnica:</strong> El prototipo tiene estado persistente (localStorage). Los puntos se acumulan y se sube de nivel automáticamente al superar el umbral. Para reiniciar: tab Perfil → "🔄 REINICIAR DEMO" en la parte inferior. La mystery box aparece automáticamente al subir de nivel (no se puede forzar).
+<ul style="list-style:none;padding:0">
+<li style="margin:8px 0;font-size:14px">✅ <strong>Relevancia:</strong> ¿El Club aporta valor real al usuario o es una distracción?</li>
+<li style="margin:8px 0;font-size:14px">✅ <strong>Retención:</strong> ¿Las misiones y niveles motivan al usuario a volver a abrir la app?</li>
+<li style="margin:8px 0;font-size:14px">✅ <strong>Facilidad de uso:</strong> ¿Es intuitivo el sistema de puntos y el flujo de navegación?</li>
+<li style="margin:8px 0;font-size:14px">✅ <strong>Satisfacción (Caja Sorpresa):</strong> ¿La recompensa aleatoria genera una experiencia positiva?</li>
+</ul>
 </div>
 
 <h2>🔗 URL del Prototipo</h2>
 <div class="section">
-  <p style="font-size:14px;font-weight:700;word-break:break-all">https://felipe-hernandez-pg.github.io/lacuponera_prototypes/prototype_club.html</p>
+<p style="font-size:14px;font-weight:700;word-break:break-all">https://felipe-hernandez-pg.github.io/lacuponera_prototypes/prototype_club.html</p>
 </div>
 
 </body>
