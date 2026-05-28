@@ -267,10 +267,9 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
             <div class="wallet-kicker">Mi wallet</div>
             <div class="wallet-sub">Cashback aprobado</div>
           </div>
-          <div class="wallet-tier" id="homeWalletTier">🌱 Básico</div>
+          <div class="wallet-tier" id="homeWalletTier">🌱 Nivel Básico</div>
         </div>
         <div class="wallet-amount" id="homeWalletAmount">0,00€</div>
-        <div class="wallet-sub">Toca para ver tu nivel en el Club</div>
       </div>
 
       <div class="section-title"><h2>Compra en</h2><span>Todos</span></div>
@@ -628,10 +627,9 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
             <div class="wallet-kicker">Cashback disponible</div>
             <div class="wallet-sub">Participaciones aprobadas</div>
           </div>
-          <div class="wallet-tier" id="profileWalletTier">🌱 Básico</div>
+          <div class="wallet-tier" id="profileWalletTier">🌱 Nivel Básico</div>
         </div>
         <div class="wallet-amount" style="font-size:50px" id="profileWalletAmount">0,00€</div>
-        <div class="wallet-sub">Toca para ir al Club</div>
       </div>
       <div style="padding:0 16px">
         <div class="info-card">
@@ -809,7 +807,7 @@ function renderDashboard(){
 }
 function renderWallet(){
   const tier=getTier(state);
-  ['home','profile'].forEach(p=>{const a=document.getElementById(p+'WalletAmount');const t=document.getElementById(p+'WalletTier');if(a)a.textContent=money(state.wallet);if(t)t.textContent=tier.icon+' '+tier.label});
+  ['home','profile'].forEach(p=>{const a=document.getElementById(p+'WalletAmount');const t=document.getElementById(p+'WalletTier');if(a)a.textContent=money(state.wallet);if(t)t.textContent=tier.icon+' Nivel '+tier.label});
   document.getElementById('profileStatus').textContent=state.points+' puntos · '+state.receipts+' tickets · '+tier.label+' · '+money(state.wallet)+' wallet';
 }
 function renderMissions(){
