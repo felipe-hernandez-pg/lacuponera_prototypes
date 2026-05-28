@@ -32,7 +32,7 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 .tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--neutrals-400);cursor:pointer;padding:6px 0}
 .tab-item.active{color:var(--brand-01)}
 .tab-item svg{width:22px;height:22px}
-.tab-scan{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--neutrals-400);cursor:pointer;padding:0}
+.tab-scan{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;cursor:pointer;padding:0}
 .tab-scan-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--primary-400),var(--brand-01));display:flex;align-items:center;justify-content:center;margin-top:-20px;box-shadow:0 4px 14px rgba(94,188,130,.4);border:3px solid #fff}
 .tab-scan-btn svg{width:24px;height:24px}
 .tab-scan span{margin-top:2px;color:var(--brand-01);font-weight:800}
@@ -42,22 +42,39 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 .btn-primary:active{transform:scale(.97);opacity:.9}
 .btn-secondary{width:100%;padding:14px;border-radius:100px;border:2px solid var(--primary-200);background:#fff;color:var(--primary-600);font-size:var(--fs-body);font-weight:700;font-family:inherit;cursor:pointer;text-align:center}
 
-/* Wallet card (homescreen) */
-.wallet-home{margin:0 16px 14px;border-radius:22px;padding:18px;background:linear-gradient(135deg,#153B25,#4FB978);color:#fff;box-shadow:0 8px 24px rgba(18,43,28,.12);position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .15s}
+/* BIG Wallet card (homescreen) */
+.wallet-home{margin:0 16px 14px;border-radius:22px;padding:20px;background:linear-gradient(135deg,#153B25,#4FB978);color:#fff;box-shadow:0 8px 24px rgba(18,43,28,.12);position:relative;overflow:hidden;cursor:pointer;transition:transform .15s}
 .wallet-home:active{transform:scale(.98)}
 .wallet-home::after{content:'€';position:absolute;right:-10px;top:-24px;font-size:100px;color:rgba(255,255,255,.06);font-weight:900}
-.wallet-home-left{flex:1;position:relative;z-index:1}
-.wallet-home-cupi{width:60px;height:60px;object-fit:contain;position:relative;z-index:1;animation:cupiFloat 3s ease-in-out infinite}
-@keyframes cupiFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.wallet-balance{font-size:32px;font-weight:900;line-height:1}
+.wallet-top{display:flex;align-items:flex-start;gap:14px;position:relative;z-index:1}
+.wallet-left{flex:1}
+.wallet-balance{font-size:36px;font-weight:900;line-height:1}
 .wallet-label{font-size:var(--fs-xs);font-weight:800;text-transform:uppercase;letter-spacing:.3px;opacity:.75}
-.wallet-hist{font-size:var(--fs-small);font-weight:600;opacity:.8;margin-top:4px}
+.wallet-cupi-area{display:flex;flex-direction:column;align-items:center;gap:4px}
+.wallet-cupi-img{width:80px;height:80px;object-fit:contain;animation:cupiFloat 3s ease-in-out infinite}
+@keyframes cupiFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.wallet-level-badge{font-size:10px;font-weight:900;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.2);color:#fff;text-transform:uppercase;letter-spacing:.5px}
+.wallet-accumulated{font-size:11px;font-weight:600;opacity:.65;margin-top:10px;position:relative;z-index:1}
 
-/* Cupi coach bubble */
-.coach-bubble{display:flex;align-items:flex-start;gap:10px;margin:0 16px 14px;padding:14px;background:#fff;border:1.5px solid var(--primary-200);border-radius:16px;box-shadow:0 4px 12px rgba(94,188,130,.06)}
-.coach-avatar{width:36px;height:36px;border-radius:50%;object-fit:contain;flex-shrink:0;border:2px solid var(--primary-200)}
-.coach-text{font-size:var(--fs-small);color:var(--neutrals-600);line-height:1.4;font-weight:600}
-.coach-text b{color:var(--brand-01)}
+/* Level dots under wallet */
+.level-dots{display:flex;justify-content:center;gap:6px;margin:-6px 16px 14px;position:relative;z-index:1}
+.level-dot{display:flex;flex-direction:column;align-items:center;gap:2px}
+.level-dot-circle{width:28px;height:28px;border-radius:50%;border:2px solid var(--neutrals-200);display:flex;align-items:center;justify-content:center;font-size:12px;background:#fff}
+.level-dot-circle.active{border-color:var(--brand-01);background:var(--primary-100)}
+.level-dot-circle.completed{border-color:var(--brand-01);background:var(--brand-01);color:#fff}
+.level-dot-label{font-size:8px;font-weight:800;color:var(--neutrals-400)}
+.level-dot-label.active{color:var(--brand-01)}
+.level-connector{width:20px;height:2px;background:var(--neutrals-200);margin-top:14px}
+.level-connector.done{background:var(--brand-01)}
+
+/* Next best action card */
+.nba-card{margin:0 16px 14px;padding:16px;border-radius:16px;border:2px solid var(--accent-purple);background:linear-gradient(135deg,#F5F3FF,#EDE7F6);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:14px}
+.nba-card:active{transform:scale(.98)}
+.nba-cupi{width:56px;height:56px;object-fit:contain;flex-shrink:0}
+.nba-body{flex:1}
+.nba-title{font-size:13px;font-weight:800;color:var(--primary-600)}
+.nba-desc{font-size:11px;font-weight:600;color:var(--neutrals-600);margin-top:2px}
+.nba-reward{display:inline-block;margin-top:6px;font-size:11px;font-weight:900;color:var(--accent-purple);background:#EDE7F6;padding:3px 8px;border-radius:6px}
 
 /* Section */
 .section-title{display:flex;align-items:center;justify-content:space-between;padding:0 16px;margin-bottom:10px}
@@ -72,11 +89,11 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 .chip:active{transform:scale(.96)}
 .chip img{width:16px;height:16px;border-radius:4px;vertical-align:middle;margin-right:4px}
 
-/* Booster grid — 2 columns */
+/* Booster grid — 2 columns with bigger Cupi icons */
 .booster-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 14px}
-.booster-item{border-radius:16px;padding:14px;border:1.5px solid var(--neutrals-200);background:#fff;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:8px}
+.booster-item{border-radius:16px;padding:14px;border:1.5px solid var(--neutrals-200);background:#fff;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
 .booster-item:active{transform:scale(.97)}
-.booster-item .bi-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.booster-item .bi-cupi{width:48px;height:48px;object-fit:contain}
 .booster-item .bi-title{font-size:12px;font-weight:800;color:var(--neutrals-800);line-height:1.3}
 .booster-item .bi-reward{font-size:11px;font-weight:800;color:var(--brand-01)}
 .booster-item .bi-expiry{font-size:10px;font-weight:600;color:var(--neutrals-400)}
@@ -96,13 +113,14 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 /* Wallet detail screen */
 .wallet-detail-card{margin:0 16px 14px;border-radius:22px;padding:22px;background:linear-gradient(135deg,#153B25,#4FB978);color:#fff;box-shadow:0 8px 24px rgba(18,43,28,.12);position:relative;overflow:hidden}
 .wallet-detail-card::after{content:'€';position:absolute;right:-10px;top:-20px;font-size:110px;color:rgba(255,255,255,.06);font-weight:900}
-.wd-row{display:flex;justify-content:space-between;align-items:flex-end;position:relative;z-index:1}
-.wd-balance{font-size:40px;font-weight:900;line-height:1}
+.wd-top{display:flex;align-items:center;gap:14px;position:relative;z-index:1;margin-bottom:14px}
+.wd-cupi{width:64px;height:64px;object-fit:contain;flex-shrink:0}
+.wd-info{flex:1}
+.wd-balance{font-size:36px;font-weight:900;line-height:1}
 .wd-label{font-size:var(--fs-xs);font-weight:800;text-transform:uppercase;opacity:.75;margin-bottom:4px}
-.wd-hist-box{text-align:right}
+.wd-hist-row{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;padding-top:12px;border-top:1px solid rgba(255,255,255,.15)}
 .wd-hist-val{font-size:var(--fs-h2);font-weight:900}
 .wd-hist-label{font-size:var(--fs-xs);font-weight:700;opacity:.75}
-.wd-redeem{margin-top:14px;text-align:center;font-size:var(--fs-xs);font-weight:700;opacity:.7;position:relative;z-index:1}
 
 /* Promo history list */
 .promo-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;border:1px solid var(--neutrals-200);background:#fff;margin-bottom:8px}
@@ -124,15 +142,28 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 
 /* Success */
 .success-screen{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px}
-.success-icon{width:100px;height:100px;border-radius:50%;background:var(--primary-100);display:flex;align-items:center;justify-content:center;margin-bottom:16px;animation:pop .35s ease}
-.success-icon img{width:64px;height:64px;object-fit:contain}
+.success-icon{width:120px;height:120px;border-radius:50%;background:var(--primary-100);display:flex;align-items:center;justify-content:center;margin-bottom:16px;animation:pop .35s ease}
+.success-icon img{width:80px;height:80px;object-fit:contain}
 @keyframes pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
 .success-reward{background:var(--primary-100);color:var(--primary-400);border-radius:999px;padding:10px 16px;font-size:var(--fs-h4);font-weight:900;margin-bottom:10px}
+.success-level{background:var(--accent-purple);color:#fff;border-radius:999px;padding:8px 16px;font-size:var(--fs-body);font-weight:900;margin-bottom:10px}
+
+/* Level up screen */
+.levelup-screen{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#F5F3FF 0%,#fff 40%,var(--primary-100) 100%)}
+.levelup-cupi{width:160px;height:160px;object-fit:contain;margin-bottom:16px;animation:pop .5s ease;filter:drop-shadow(0 8px 20px rgba(0,0,0,.12))}
+.confetti{position:absolute;width:10px;height:10px;border-radius:2px;animation:fall 3s linear infinite}
+@keyframes fall{0%{transform:translateY(-100px) rotate(0);opacity:1}100%{transform:translateY(800px) rotate(720deg);opacity:0}}
 
 /* Top header */
 .top-header{padding:52px 20px 14px;background:#fff}
 .top-header h1{font-size:var(--fs-h2);font-weight:900;color:var(--primary-600)}
 .top-header p{font-size:var(--fs-small);color:var(--neutrals-400);font-weight:600;margin-top:2px}
+
+/* Coach bubble */
+.coach-bubble{display:flex;align-items:flex-start;gap:10px;margin:0 16px 14px;padding:14px;background:#fff;border:1.5px solid var(--primary-200);border-radius:16px;box-shadow:0 4px 12px rgba(94,188,130,.06)}
+.coach-avatar{width:36px;height:36px;border-radius:50%;object-fit:contain;flex-shrink:0;border:2px solid var(--primary-200)}
+.coach-text{font-size:var(--fs-small);color:var(--neutrals-600);line-height:1.4;font-weight:600}
+.coach-text b{color:var(--brand-01)}
 
 /* Retailer list */
 .retailer-list-item{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;border:1.5px solid var(--neutrals-200);background:#fff;margin-bottom:10px;cursor:pointer;transition:all .15s}
@@ -165,23 +196,35 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
         </div>
       </div>
 
-      <!-- Wallet card with Cupi -->
+      <!-- BIG Wallet card with Cupi + Level -->
       <div class="wallet-home" onclick="goTo('screen-wallet')">
-        <div class="wallet-home-left">
-          <div class="wallet-label">Saldo disponible</div>
-          <div class="wallet-balance" id="homeBalance">0,00€</div>
-          <div class="wallet-hist">Acumulado total: <b id="homeHistorical">0,00€</b></div>
+        <div class="wallet-top">
+          <div class="wallet-left">
+            <div class="wallet-label">Saldo disponible</div>
+            <div class="wallet-balance" id="homeBalance">0,00€</div>
+          </div>
+          <div class="wallet-cupi-area">
+            <img id="homeCupiImg" src="baby_cupi.png" class="wallet-cupi-img" alt="Cupi">
+            <div class="wallet-level-badge" id="homeLevelBadge">Nivel 1</div>
+          </div>
         </div>
-        <img src="cupi_money.png" class="wallet-home-cupi" alt="Cupi">
+        <div class="wallet-accumulated" id="homeAccumulated">Acumulado total: 11,00€</div>
       </div>
 
-      <!-- Cupi coach bubble -->
-      <div class="coach-bubble">
-        <img src="cupi_generic.png" class="coach-avatar" alt="Cupi">
-        <div class="coach-text" id="coachTip">💡 <b>Cupi dice:</b> ¡Tienes 3 ofertas nuevas esta semana! Escanea un ticket y gana cashback.</div>
+      <!-- Level progression dots -->
+      <div class="level-dots" id="levelDotsHome"></div>
+
+      <!-- Next Best Action (replaces coach tip) -->
+      <div class="nba-card" id="nbaCard" onclick="doAction('survey')">
+        <img id="nbaCupi" src="baby_cupi.png" class="nba-cupi" alt="Cupi">
+        <div class="nba-body">
+          <div class="nba-title" id="nbaTitle">📋 Completa la encuesta</div>
+          <div class="nba-desc" id="nbaDesc">¡Desbloquea el Nivel 2 completando esta acción!</div>
+          <div class="nba-reward" id="nbaReward">+0,50€ → Nivel 2</div>
+        </div>
       </div>
 
-      <!-- Filters: retailer -->
+      <!-- Offers -->
       <div class="section-title"><h2>Ofertas</h2><span onclick="goTo('screen-offers')">Ver todas</span></div>
       <div class="filter-row">
         <div class="chip active">Todas</div>
@@ -190,7 +233,6 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
         <div class="chip"><img src="lidl.png">Lidl</div>
         <div class="chip"><img src="alcampo.png">Alcampo</div>
       </div>
-      <!-- Filters: category -->
       <div class="filter-row" style="margin-top:-4px">
         <div class="chip active">Todo</div>
         <div class="chip">🧺 Hogar</div>
@@ -219,29 +261,29 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
         </div>
       </div>
 
-      <!-- Boosters 2-col grid -->
+      <!-- Gana más with bigger Cupi icons -->
       <div class="section-title"><h2>🔥 Gana más</h2><span>Esta semana</span></div>
       <div class="booster-grid">
         <div class="booster-item" style="border-color:var(--accent-purple);background:#FAFAFE" onclick="doAction('survey')">
-          <div class="bi-icon" style="background:#EDE7F6">📋</div>
+          <img src="cupi_valoration.png" class="bi-cupi">
           <div class="bi-title">Encuesta semanal</div>
           <div class="bi-reward">+0,50€ bonus</div>
           <div class="bi-expiry">Expira en 3 días</div>
         </div>
         <div class="booster-item" style="border-color:var(--accent-orange);background:#FFFCF8" onclick="doAction('share')">
-          <div class="bi-icon" style="background:#FFF3E0">👋</div>
+          <img src="cupi_users.png" class="bi-cupi">
           <div class="bi-title">Invita a un amigo</div>
           <div class="bi-reward">+1,00€ bonus</div>
           <div class="bi-expiry">Sin caducidad</div>
         </div>
         <div class="booster-item" style="border-color:var(--brand-01);background:#FAFFF6" onclick="doAction('review')">
-          <div class="bi-icon" style="background:var(--primary-100)">⭐</div>
+          <img src="cupi_hearts.png" class="bi-cupi">
           <div class="bi-title">Deja una reseña</div>
           <div class="bi-reward">+0,30€ bonus</div>
           <div class="bi-expiry">Expira en 5 días</div>
         </div>
         <div class="booster-item" style="border-color:var(--neutrals-200)">
-          <div class="bi-icon" style="background:var(--neutrals-100)">📸</div>
+          <img src="cupi_ticketscan.png" class="bi-cupi">
           <div class="bi-title">Sube 3 tickets</div>
           <div class="bi-reward">x2 cashback</div>
           <div class="bi-expiry">1/3 completado</div>
@@ -294,7 +336,6 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
           <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px"><div style="width:22px;height:22px;border-radius:11px;background:var(--brand-01);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0">2</div><span style="font-size:13px;font-weight:600;color:var(--neutrals-600)">Escanea tu ticket de compra.</span></div>
           <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:22px;height:22px;border-radius:11px;background:var(--brand-01);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0">3</div><span style="font-size:13px;font-weight:600;color:var(--neutrals-600)">Cashback añadido a tu wallet.</span></div>
         </div>
-        <!-- Cupi coach tip -->
         <div class="coach-bubble" style="margin:0 0 16px">
           <img src="cupi_ticketscan.png" class="coach-avatar" alt="Cupi">
           <div class="coach-text">💡 <b>Cupi dice:</b> Este producto es de los más canjeados. ¡Sube tu ticket y gana 2,00€ al instante!</div>
@@ -325,18 +366,35 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
   <!-- ===== SCAN SUCCESS ===== -->
   <div class="screen" id="screen-scan-success">
     <div class="success-screen">
-      <div class="success-icon"><img src="cupi_success_new.png"></div>
+      <div class="success-icon" id="successIconWrap"><img id="successCupiImg" src="cupi_success_new.png"></div>
       <h1 style="font-size:var(--fs-h1);font-weight:900;color:var(--primary-600);margin-bottom:8px">¡Cashback aprobado!</h1>
-      <p style="font-size:var(--fs-body);color:var(--neutrals-600);font-weight:600;margin-bottom:14px">Tu ticket se ha validado correctamente.</p>
+      <p style="font-size:var(--fs-body);color:var(--neutrals-600);font-weight:600;margin-bottom:14px" id="successSubText">Tu ticket se ha validado correctamente.</p>
       <div class="success-reward" id="successCashback">+2,00€ en tu wallet</div>
-      <!-- Coach -->
-      <div class="coach-bubble" style="margin:14px 0;text-align:left">
-        <img src="cupi_hearts.png" class="coach-avatar" alt="Cupi">
-        <div class="coach-text">🎉 <b>¡Genial!</b> Ya llevas <span id="successTotal">2,00€</span> acumulados. ¡Sigue así!</div>
-      </div>
-      <div style="width:100%">
+      <div class="success-level" id="successLevelBadge" style="display:none">Nivel 2</div>
+      <div style="width:100%;margin-top:16px">
         <button class="btn-primary" onclick="goTo('screen-wallet')">VER MI WALLET</button>
         <button class="btn-secondary" style="margin-top:10px" onclick="goTo('screen-home')">VOLVER AL INICIO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LEVEL UP SCREEN ===== -->
+  <div class="screen" id="screen-levelup">
+    <div class="levelup-screen" style="position:relative;overflow:hidden">
+      <!-- Confetti -->
+      <div class="confetti" style="left:10%;background:#FF6F00;animation-delay:0s"></div>
+      <div class="confetti" style="left:20%;background:#7C4DFF;animation-delay:.3s"></div>
+      <div class="confetti" style="left:35%;background:#5EBC82;animation-delay:.6s"></div>
+      <div class="confetti" style="left:50%;background:#FFD54F;animation-delay:.2s"></div>
+      <div class="confetti" style="left:65%;background:#FF4081;animation-delay:.8s"></div>
+      <div class="confetti" style="left:80%;background:#448AFF;animation-delay:.4s"></div>
+      <div class="confetti" style="left:90%;background:#5EBC82;animation-delay:.7s"></div>
+
+      <img id="levelupCupiImg" src="cupi_generic.png" class="levelup-cupi" alt="Cupi">
+      <h1 style="font-size:26px;font-weight:900;color:var(--primary-600);margin-bottom:8px" id="levelupTitle">🚀 ¡Nivel 2 desbloqueado!</h1>
+      <p style="font-size:var(--fs-body);color:var(--neutrals-600);font-weight:600;margin-bottom:20px" id="levelupDesc">Cupi ha crecido. ¡Ya no lleva pañal!</p>
+      <div style="width:100%;max-width:280px">
+        <button class="btn-primary" id="levelupBtn" onclick="afterLevelUp()">CONTINUAR</button>
       </div>
     </div>
   </div>
@@ -346,20 +404,26 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
     <div class="screen-content">
       <div class="top-header"><h1>Mi Wallet</h1><p>Balance y historial de participaciones</p></div>
 
-      <!-- Balance card -->
+      <!-- Balance card with Cupi -->
       <div class="wallet-detail-card">
-        <div class="wd-row">
-          <div>
+        <div class="wd-top">
+          <div class="wd-info">
             <div class="wd-label">Saldo disponible</div>
             <div class="wd-balance" id="walletBalance">0,00€</div>
           </div>
-          <div class="wd-hist-box">
-            <div class="wd-hist-label">Acumulado total</div>
-            <div class="wd-hist-val" id="walletHistorical">0,00€</div>
-          </div>
+          <img id="walletCupiImg" src="baby_cupi.png" class="wd-cupi" alt="Cupi">
         </div>
-        <div class="wd-redeem">Canjeable a partir de 10,00€</div>
+        <div class="wd-hist-row">
+          <div>
+            <div class="wd-hist-label">Acumulado total</div>
+            <div class="wd-hist-val" id="walletHistorical">11,00€</div>
+          </div>
+          <div class="wallet-level-badge" id="walletLevelBadge">Nivel 1</div>
+        </div>
       </div>
+
+      <!-- Level dots -->
+      <div class="level-dots" id="levelDotsWallet"></div>
 
       <!-- Redeem button -->
       <div style="padding:0 16px 14px">
@@ -380,14 +444,15 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
     <div class="screen-content">
       <div class="top-header"><h1>Mi Perfil</h1><p>Ajustes y estadísticas</p></div>
       <div style="padding:16px;text-align:center">
-        <img src="cupi_waving.png" style="width:80px;height:80px;object-fit:contain;margin-bottom:12px">
+        <img id="profileCupiImg" src="baby_cupi.png" style="width:80px;height:80px;object-fit:contain;margin-bottom:12px">
         <h2 style="font-size:var(--fs-h3);font-weight:900;color:var(--primary-600)">Usuario Demo</h2>
         <p style="font-size:var(--fs-small);color:var(--neutrals-400);font-weight:600;margin-top:4px">Miembro desde mayo 2026</p>
       </div>
       <div style="padding:0 16px">
         <div style="border-radius:16px;border:1.5px solid var(--neutrals-200);padding:16px;margin-bottom:12px">
           <div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="font-size:var(--fs-body);font-weight:700;color:var(--neutrals-600)">Saldo actual</span><span style="font-size:var(--fs-body);font-weight:900;color:var(--brand-01)" id="profileBalance">0,00€</span></div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="font-size:var(--fs-body);font-weight:700;color:var(--neutrals-600)">Acumulado total</span><span style="font-size:var(--fs-body);font-weight:900;color:var(--primary-600)" id="profileHist">0,00€</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="font-size:var(--fs-body);font-weight:700;color:var(--neutrals-600)">Acumulado total</span><span style="font-size:var(--fs-body);font-weight:900;color:var(--primary-600)" id="profileHist">11,00€</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="font-size:var(--fs-body);font-weight:700;color:var(--neutrals-600)">Nivel</span><span style="font-size:var(--fs-body);font-weight:900;color:var(--accent-purple)" id="profileLevel">Nivel 1</span></div>
           <div style="display:flex;justify-content:space-between"><span style="font-size:var(--fs-body);font-weight:700;color:var(--neutrals-600)">Tickets escaneados</span><span style="font-size:var(--fs-body);font-weight:900;color:var(--primary-600)" id="profileTickets">0</span></div>
         </div>
         <button class="btn-secondary" onclick="resetDemo()" style="border-color:#FFCDD2;color:#D32F2F;font-size:var(--fs-small);font-weight:800;margin-top:8px">🔄 REINICIAR DEMO</button>
@@ -399,21 +464,33 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 </div>
 
 <script>
+// === LEVELS CONFIG ===
+// Level 1: Baby Cupi (pañal) | Level 2: Growing Cupi | Level 3: Warrior Cupi (shield+sword) | Level 4: King Cupi (crown)
+const LEVELS = [
+  {level:1, label:'Nivel 1', img:'baby_cupi.png', emoji:'🍼'},
+  {level:2, label:'Nivel 2', img:'cupi_generic.png', emoji:'🌱'},
+  {level:3, label:'Nivel 3', img:'cupi_success_new.png', emoji:'⚔️'},
+  {level:4, label:'Nivel 4', img:'cupi_hearts.png', emoji:'👑'}
+];
+
+function getLevelForState(s){
+  // Level based on number of actions completed
+  const actions = s.tickets + s.surveys + s.shares + s.reviews;
+  if(actions >= 4) return 4;
+  if(actions >= 3) return 3;
+  if(actions >= 1) return 2;
+  return 1;
+}
+function getLevelData(lvl){return LEVELS.find(l=>l.level===lvl)||LEVELS[0]}
+
 // === STATE ===
-const STORAGE_KEY = 'cupi_coach_v2';
-function freshState(){return{balance:0,historical:0,redeemed:0,tickets:0,promos:[]}}
+const STORAGE_KEY = 'cupi_coach_v3';
+function freshState(){return{balance:0,historical:11,redeemed:0,tickets:0,surveys:0,shares:0,reviews:0,promos:[],level:1,_pendingLevelUp:0}}
 function load(){try{return{...freshState(),...JSON.parse(localStorage.getItem(STORAGE_KEY))}}catch(e){return freshState()}}
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
 let state = load();
 
 const money = v => Number(v||0).toFixed(2).replace('.',',')+'\u20ac';
-
-const coachTips = [
-  '¡Tienes 3 ofertas nuevas esta semana! Escanea un ticket y gana cashback.',
-  'Fairy Platinum está en promoción. ¡Aprovecha antes de que expire!',
-  'Llevas buen ritmo. A 10€ puedes canjear tu saldo.',
-  'H&S y Ariel tienen doble cashback esta semana. ¡No te lo pierdas!'
-];
 
 // === NAVIGATION ===
 function goTo(id){
@@ -430,40 +507,142 @@ function submitReceipt(){
   state.historical = Number((state.historical + cashback).toFixed(2));
   state.tickets++;
   state.promos.unshift({name:'Ariel Pods 3en1',cashback:cashback,date:'Hoy',status:'approved',img:'https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fdc562c9b-4962-4d70-b321-ef101a83a329.jpeg&w=640&q=75'});
-  save();
-  document.getElementById('successCashback').textContent = '+'+money(cashback)+' en tu wallet';
-  document.getElementById('successTotal').textContent = money(state.historical);
-  goTo('screen-scan-success');
+  checkLevelUp(cashback);
 }
 
 function doAction(type){
-  let bonus = 0;
-  let name = '';
-  if(type==='survey'){bonus=0.50;name='Encuesta semanal (bonus)'}
-  else if(type==='share'){bonus=1.00;name='Invita amigo (bonus)'}
-  else if(type==='review'){bonus=0.30;name='Reseña (bonus)'}
+  let bonus = 0, name = '';
+  if(type==='survey'){bonus=0.50;name='Encuesta semanal (bonus)';state.surveys++}
+  else if(type==='share'){bonus=1.00;name='Invita amigo (bonus)';state.shares++}
+  else if(type==='review'){bonus=0.30;name='Reseña (bonus)';state.reviews++}
   if(bonus>0){
     state.balance=Number((state.balance+bonus).toFixed(2));
     state.historical=Number((state.historical+bonus).toFixed(2));
     state.promos.unshift({name:name,cashback:bonus,date:'Hoy',status:'approved',img:''});
-    save();
-    document.getElementById('successCashback').textContent='+'+money(bonus)+' bonus en tu wallet';
-    document.getElementById('successTotal').textContent=money(state.historical);
-    goTo('screen-scan-success');
+    checkLevelUp(bonus);
   }
+}
+
+function checkLevelUp(cashback){
+  const oldLevel = state.level;
+  const newLevel = getLevelForState(state);
+  if(newLevel > oldLevel){
+    state.level = newLevel;
+    state._pendingLevelUp = newLevel;
+    save();
+    showLevelUp(newLevel, cashback);
+  } else {
+    state.level = newLevel;
+    save();
+    showSuccess(cashback, newLevel);
+  }
+}
+
+function showSuccess(cashback, level){
+  const ld = getLevelData(level);
+  document.getElementById('successCupiImg').src = ld.img;
+  document.getElementById('successCashback').textContent = '+'+money(cashback)+' en tu wallet';
+  document.getElementById('successSubText').textContent = 'Tu acción se ha completado correctamente.';
+  const badge = document.getElementById('successLevelBadge');
+  badge.textContent = ld.label;
+  badge.style.display = 'inline-block';
+  goTo('screen-scan-success');
+}
+
+function showLevelUp(newLevel, cashback){
+  const ld = getLevelData(newLevel);
+  document.getElementById('levelupCupiImg').src = ld.img;
+  const descs = {
+    2: '¡Cupi ha crecido! Ya no lleva pañal.',
+    3: '¡Cupi es un guerrero! Escudo y espada desbloqueados.',
+    4: '¡Cupi es el REY! Corona desbloqueada. 👑'
+  };
+  document.getElementById('levelupTitle').textContent = '🚀 ¡'+ld.label+' desbloqueado!';
+  document.getElementById('levelupDesc').textContent = descs[newLevel] || '¡Has subido de nivel!';
+  state._lastCashback = cashback;
+  save();
+  goTo('screen-levelup');
+}
+
+function afterLevelUp(){
+  const cashback = state._lastCashback || 0;
+  showSuccess(cashback, state.level);
 }
 
 function resetDemo(){state=freshState();save();renderAll();goTo('screen-home')}
 
+// === LEVEL DOTS ===
+function renderLevelDots(containerId){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  let html = '';
+  LEVELS.forEach((l,i)=>{
+    if(i > 0) html += '<div class="level-connector'+(state.level >= l.level?' done':'')+'"></div>';
+    const cls = state.level > l.level ? 'completed' : state.level === l.level ? 'active' : '';
+    const lblCls = state.level >= l.level ? ' active' : '';
+    html += '<div class="level-dot"><div class="level-dot-circle '+cls+'">'+l.emoji+'</div><div class="level-dot-label'+lblCls+'">'+l.label+'</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+// === NBA (Next Best Action) ===
+function renderNBA(){
+  const card = document.getElementById('nbaCard');
+  const ld = getLevelData(state.level);
+  const nextLd = getLevelData(Math.min(state.level+1, 4));
+  document.getElementById('nbaCupi').src = ld.img;
+
+  if(state.level >= 4){
+    document.getElementById('nbaTitle').textContent = '👑 ¡Eres el máximo nivel!';
+    document.getElementById('nbaDesc').textContent = 'Sigue ganando cashback con tickets y acciones.';
+    document.getElementById('nbaReward').textContent = 'Nivel máximo alcanzado';
+    card.onclick = ()=> goTo('screen-offers');
+  } else if(state.surveys === 0){
+    document.getElementById('nbaTitle').textContent = '📋 Completa la encuesta';
+    document.getElementById('nbaDesc').textContent = '¡Desbloquea '+nextLd.label+' completando esta acción!';
+    document.getElementById('nbaReward').textContent = '+0,50€ → '+nextLd.label;
+    card.onclick = ()=> doAction('survey');
+  } else if(state.tickets === 0){
+    document.getElementById('nbaTitle').textContent = '🎟️ Sube tu primer ticket';
+    document.getElementById('nbaDesc').textContent = '¡Escanea un ticket y acércate a '+nextLd.label+'!';
+    document.getElementById('nbaReward').textContent = '+2,00€ → '+nextLd.label;
+    card.onclick = ()=> goTo('screen-offers');
+  } else if(state.reviews === 0){
+    document.getElementById('nbaTitle').textContent = '⭐ Deja una reseña';
+    document.getElementById('nbaDesc').textContent = '¡Comparte tu opinión y sube a '+nextLd.label+'!';
+    document.getElementById('nbaReward').textContent = '+0,30€ → '+nextLd.label;
+    card.onclick = ()=> doAction('review');
+  } else {
+    document.getElementById('nbaTitle').textContent = '👋 Invita a un amigo';
+    document.getElementById('nbaDesc').textContent = '¡Comparte y desbloquea '+nextLd.label+'!';
+    document.getElementById('nbaReward').textContent = '+1,00€ → '+nextLd.label;
+    card.onclick = ()=> doAction('share');
+  }
+}
+
 // === RENDER ===
 function renderAll(){
+  const ld = getLevelData(state.level);
+
+  // Home
   document.getElementById('homeBalance').textContent=money(state.balance);
-  document.getElementById('homeHistorical').textContent=money(state.historical);
+  document.getElementById('homeAccumulated').textContent='Acumulado total: '+money(state.historical);
+  document.getElementById('homeCupiImg').src=ld.img;
+  document.getElementById('homeLevelBadge').textContent=ld.label;
+
+  // Wallet
   document.getElementById('walletBalance').textContent=money(state.balance);
   document.getElementById('walletHistorical').textContent=money(state.historical);
+  document.getElementById('walletCupiImg').src=ld.img;
+  document.getElementById('walletLevelBadge').textContent=ld.label;
+
+  // Profile
   document.getElementById('profileBalance').textContent=money(state.balance);
   document.getElementById('profileHist').textContent=money(state.historical);
   document.getElementById('profileTickets').textContent=state.tickets;
+  document.getElementById('profileLevel').textContent=ld.label;
+  document.getElementById('profileCupiImg').src=ld.img;
+
   document.getElementById('histCount').textContent=state.promos.length+' participaciones';
 
   // Redeem button
@@ -471,8 +650,12 @@ function renderAll(){
   if(state.balance>=10){btn.style.opacity='1';btn.style.pointerEvents='auto'}
   else{btn.style.opacity='.5';btn.style.pointerEvents='none'}
 
-  // Coach tip
-  document.getElementById('coachTip').innerHTML='💡 <b>Cupi dice:</b> '+coachTips[Math.floor(Math.random()*coachTips.length)];
+  // Level dots
+  renderLevelDots('levelDotsHome');
+  renderLevelDots('levelDotsWallet');
+
+  // NBA
+  renderNBA();
 
   // Promo history
   const hist=document.getElementById('promoHistory');
@@ -485,7 +668,6 @@ function renderAll(){
       const icon=p.img?`<img src="${p.img}">`:'<div style="width:100%;height:100%;background:var(--primary-100);display:flex;align-items:center;justify-content:center;font-size:16px">🎁</div>';
       return `<div class="promo-item"><div class="promo-icon">${icon}</div><div class="promo-body"><h4>${p.name}</h4><p>${p.date} · +${money(p.cashback)}</p></div><span class="promo-status ${statusClass}">${statusLabel}</span></div>`;
     }).join('');
-    // Add mock entries for variety
     if(state.promos.length<=2){
       html+=`<div class="promo-item"><div class="promo-icon"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2Fd0343577-d143-4179-9567-6d6d3ab534c4.jpeg&w=640&q=75"></div><div class="promo-body"><h4>Fairy Platinum</h4><p>Hace 3 días · +1,50€</p></div><span class="promo-status status-expiring">Por expirar</span></div>`;
       html+=`<div class="promo-item"><div class="promo-icon"><img src="https://www.lacuponera.es/promociones/_next/image?url=https%3A%2F%2Fjolt-assets.s3.eu-central-1.amazonaws.com%2Ftemplate%2F4556a36e-a197-4b97-99d5-26e1a02fdc43.png&w=640&q=75"></div><div class="promo-body"><h4>Oral-B Pro-Expert</h4><p>Hace 1 semana · +1,50€</p></div><span class="promo-status status-redeemed">Canjeado</span></div>`;
