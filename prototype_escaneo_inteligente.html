@@ -538,15 +538,35 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
     <div class="screen-content">
       <!-- Timeframe tabs -->
       <div class="timeframe-tabs" style="padding-top:12px">
-        <div class="tf-tab active">Hoy</div>
-        <div class="tf-tab">Mes</div>
-        <div class="tf-tab">3 meses</div>
-        <div class="tf-tab">Histórico</div>
+        <div class="tf-tab active" data-tf="hoy">Hoy</div>
+        <div class="tf-tab" data-tf="mes">Mes</div>
+        <div class="tf-tab" data-tf="3meses">3 meses</div>
+        <div class="tf-tab" data-tf="historico">Histórico</div>
+      </div>
+
+      <!-- Summary stats -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px 16px">
+        <div style="background:var(--primary-100);border-radius:12px;padding:14px;text-align:center">
+          <div style="font-size:var(--fs-small);font-weight:600;color:var(--neutrals-600)">Gasto total</div>
+          <div id="stat-total" style="font-size:var(--fs-h2);font-weight:900;color:var(--primary-600)">32,50€</div>
+        </div>
+        <div style="background:var(--primary-100);border-radius:12px;padding:14px;text-align:center">
+          <div style="font-size:var(--fs-small);font-weight:600;color:var(--neutrals-600)">Ahorro total</div>
+          <div id="stat-savings" style="font-size:var(--fs-h2);font-weight:900;color:var(--brand-01)">6,50€</div>
+        </div>
+        <div style="background:var(--neutrals-100);border-radius:12px;padding:14px;text-align:center">
+          <div style="font-size:var(--fs-small);font-weight:600;color:var(--neutrals-600)">Tickets</div>
+          <div id="stat-tickets" style="font-size:var(--fs-h2);font-weight:900;color:var(--neutrals-800)">1</div>
+        </div>
+        <div style="background:var(--neutrals-100);border-radius:12px;padding:14px;text-align:center">
+          <div style="font-size:var(--fs-small);font-weight:600;color:var(--neutrals-600)">Cesta media</div>
+          <div id="stat-avg" style="font-size:var(--fs-h2);font-weight:900;color:var(--neutrals-800)">32,50€</div>
+        </div>
       </div>
 
       <!-- Donut chart -->
       <div class="donut-container">
-        <svg viewBox="0 0 100 100">
+        <svg viewBox="0 0 100 100" id="donut-chart">
           <circle cx="50" cy="50" r="40" fill="none" stroke="#E8F5EE" stroke-width="18"/>
           <circle cx="50" cy="50" r="40" fill="none" stroke="#FF7043" stroke-width="18" stroke-dasharray="75 176" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
           <circle cx="50" cy="50" r="40" fill="none" stroke="#5EBC82" stroke-width="18" stroke-dasharray="50 201" stroke-dashoffset="-75" transform="rotate(-90 50 50)"/>
@@ -556,13 +576,13 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
         </svg>
       </div>
 
-      <!-- Category legend -->
-      <div style="padding:0 20px 16px">
-        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#FF7043"></div><div class="cat-legend-text">Alimentación y bebidas</div></div>
-        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#5EBC82"></div><div class="cat-legend-text">Limpieza y hogar</div></div>
-        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#42A5F5"></div><div class="cat-legend-text">Higiene y cuidado personal</div></div>
-        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#AB47BC"></div><div class="cat-legend-text">Salud y farmacia</div></div>
-        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#FFB74D"></div><div class="cat-legend-text">Mascotas</div></div>
+      <!-- Category legend with amounts -->
+      <div style="padding:0 20px 16px" id="cat-legend">
+        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#FF7043"></div><div class="cat-legend-text">Alimentación y bebidas</div><div style="margin-left:auto;font-size:var(--fs-body);font-weight:800;color:var(--neutrals-800)" class="cat-amount">9,80€</div></div>
+        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#5EBC82"></div><div class="cat-legend-text">Limpieza y hogar</div><div style="margin-left:auto;font-size:var(--fs-body);font-weight:800;color:var(--neutrals-800)" class="cat-amount">8,20€</div></div>
+        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#42A5F5"></div><div class="cat-legend-text">Higiene y cuidado personal</div><div style="margin-left:auto;font-size:var(--fs-body);font-weight:800;color:var(--neutrals-800)" class="cat-amount">6,50€</div></div>
+        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#AB47BC"></div><div class="cat-legend-text">Salud y farmacia</div><div style="margin-left:auto;font-size:var(--fs-body);font-weight:800;color:var(--neutrals-800)" class="cat-amount">4,80€</div></div>
+        <div class="cat-legend-item"><div class="cat-legend-dot" style="background:#FFB74D"></div><div class="cat-legend-text">Mascotas</div><div style="margin-left:auto;font-size:var(--fs-body);font-weight:800;color:var(--neutrals-800)" class="cat-amount">3,20€</div></div>
       </div>
 
       <!-- Cupi insights -->
@@ -623,21 +643,94 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
         </div>
       </div>
 
-      <!-- Mail notification (clickable) -->
-      <div class="notif-card" style="cursor:pointer" onclick="goTo('screen-email-ofertas')">
-        <div class="notif-card-header">
-          <img src="cuponera_logo.png" alt="La Cuponera">
-          <span>La Cuponera · ayer 19:00</span>
+      <!-- Email notification (looks like real email app) -->
+      <div class="notif-card" style="cursor:pointer;padding:16px 18px" onclick="goTo('screen-email-inbox')">
+        <div class="notif-card-header" style="margin-bottom:10px">
+          <div style="width:24px;height:24px;border-radius:6px;background:#EA4335;display:flex;align-items:center;justify-content:center">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="#fff"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </div>
+          <span>Gmail · ayer 19:00</span>
         </div>
-        <div class="notif-card-title">📧 Cupi te recomienda</div>
-        <div class="notif-card-body">Tus ofertas de hoy · Consejos y Comunidad</div>
-        <div style="margin-top:10px">
-          <div class="btn-primary" style="padding:10px;font-size:var(--fs-small)">Ver ofertas personalizadas</div>
-        </div>
+        <div class="notif-card-title" style="font-size:var(--fs-h4);margin-bottom:6px">La Cuponera — Cupi te recomienda</div>
+        <div class="notif-card-body" style="font-size:var(--fs-body);line-height:1.5">Tus ofertas personalizadas de hoy están listas. Fairy GRATIS, Ariel -50% y más...</div>
       </div>
 
       <div style="flex:1"></div>
       <div style="text-align:center;padding:20px;color:rgba(255,255,255,.5);font-size:var(--fs-small)">Desliza para desbloquear</div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: EMAIL INBOX ===== -->
+  <div class="screen" id="screen-email-inbox">
+    <div class="screen-content" style="background:var(--neutrals-100)">
+      <!-- Gmail-style header -->
+      <div style="background:#fff;padding:48px 16px 12px;border-bottom:1px solid var(--neutrals-200)">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="cursor:pointer" onclick="goTo('screen-home-ofertas')">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M3 18h18M3 12h18M3 6h18" stroke="#333" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div style="flex:1;background:var(--neutrals-100);border-radius:24px;padding:10px 16px;font-size:var(--fs-body);color:var(--neutrals-400)">Buscar en el correo</div>
+        </div>
+      </div>
+      <!-- Inbox list -->
+      <div style="background:#fff;margin-top:1px">
+        <!-- Email 1 (La Cuponera - clickable) -->
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--neutrals-100);cursor:pointer;background:#E8F5EE" onclick="goTo('screen-email-ofertas')">
+          <div style="width:40px;height:40px;border-radius:50%;background:var(--brand-01);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <span style="color:#fff;font-weight:800;font-size:16px">C</span>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+              <div style="font-size:var(--fs-body);font-weight:800;color:var(--neutrals-800)">La Cuponera</div>
+              <div style="font-size:var(--fs-small);color:var(--neutrals-400)">19:00</div>
+            </div>
+            <div style="font-size:var(--fs-body);font-weight:700;color:var(--neutrals-800);margin-bottom:2px">Cupi te recomienda</div>
+            <div style="font-size:var(--fs-small);color:var(--neutrals-600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Tus ofertas personalizadas de hoy están listas...</div>
+          </div>
+        </div>
+        <!-- Email 2 (other - not clickable) -->
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--neutrals-100)">
+          <div style="width:40px;height:40px;border-radius:50%;background:#4285F4;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <span style="color:#fff;font-weight:800;font-size:16px">G</span>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+              <div style="font-size:var(--fs-body);font-weight:600;color:var(--neutrals-600)">Google</div>
+              <div style="font-size:var(--fs-small);color:var(--neutrals-400)">15:32</div>
+            </div>
+            <div style="font-size:var(--fs-body);font-weight:600;color:var(--neutrals-600);margin-bottom:2px">Alerta de seguridad</div>
+            <div style="font-size:var(--fs-small);color:var(--neutrals-400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Se ha iniciado sesión en tu cuenta desde un nuevo...</div>
+          </div>
+        </div>
+        <!-- Email 3 (other - not clickable) -->
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--neutrals-100)">
+          <div style="width:40px;height:40px;border-radius:50%;background:#FBBC05;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <span style="color:#fff;font-weight:800;font-size:16px">A</span>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+              <div style="font-size:var(--fs-body);font-weight:600;color:var(--neutrals-600)">Amazon</div>
+              <div style="font-size:var(--fs-small);color:var(--neutrals-400)">ayer</div>
+            </div>
+            <div style="font-size:var(--fs-body);font-weight:600;color:var(--neutrals-600);margin-bottom:2px">Tu pedido ha sido enviado</div>
+            <div style="font-size:var(--fs-small);color:var(--neutrals-400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Tu paquete está en camino y llegará mañana...</div>
+          </div>
+        </div>
+        <!-- Email 4 (other - not clickable) -->
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px">
+          <div style="width:40px;height:40px;border-radius:50%;background:#34A853;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <span style="color:#fff;font-weight:800;font-size:16px">S</span>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+              <div style="font-size:var(--fs-body);font-weight:600;color:var(--neutrals-600)">Spotify</div>
+              <div style="font-size:var(--fs-small);color:var(--neutrals-400)">lun</div>
+            </div>
+            <div style="font-size:var(--fs-body);font-weight:600;color:var(--neutrals-600);margin-bottom:2px">Tu Discover Weekly está listo</div>
+            <div style="font-size:var(--fs-small);color:var(--neutrals-400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Nuevas canciones seleccionadas para ti esta semana...</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -646,10 +739,10 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
     <div class="screen-content" style="background:var(--neutrals-100)">
       <!-- Email app header -->
       <div style="background:#fff;padding:48px 16px 12px;border-bottom:1px solid var(--neutrals-200);display:flex;align-items:center;gap:12px">
-        <div style="cursor:pointer" onclick="goTo('screen-home-ofertas')">
+        <div style="cursor:pointer" onclick="goTo('screen-email-inbox')">
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M15 18l-6-6 6-6" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <div style="flex:1;font-size:var(--fs-body);font-weight:700;color:var(--neutrals-800)">Bandeja de entrada</div>
+        <div style="flex:1;font-size:var(--fs-body);font-weight:700;color:var(--neutrals-800)">Cupi te recomienda</div>
       </div>
       <!-- Email content -->
       <div style="background:#fff;margin:12px;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.06)">
@@ -690,10 +783,7 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
             <div style="margin-top:12px;font-size:var(--fs-small);color:var(--brand-01);font-weight:600">Más info en oralb.es →</div>
           </div>
 
-          <!-- Espacio marcas -->
-          <div style="border:2px dashed var(--neutrals-200);border-radius:12px;padding:20px;text-align:center;color:var(--neutrals-400);font-size:var(--fs-small);font-weight:600">
-            Espacio para las marcas
-          </div>
+
         </div>
       </div>
       <div style="padding:16px 20px 30px">
@@ -816,12 +906,32 @@ function toggleDevPanel() {
   document.getElementById('devPanel').classList.toggle('visible');
 }
 
+// Timeframe data sets
+const tfData = {
+  hoy: { total:'32,50€', savings:'6,50€', tickets:'1', avg:'32,50€', cats:['9,80€','8,20€','6,50€','4,80€','3,20€'] },
+  mes: { total:'187,30€', savings:'24,80€', tickets:'6', avg:'31,22€', cats:['56,10€','45,60€','38,40€','28,90€','18,30€'] },
+  '3meses': { total:'542,90€', savings:'68,50€', tickets:'17', avg:'31,94€', cats:['162,80€','130,10€','112,50€','81,20€','56,30€'] },
+  historico: { total:'1.284,60€', savings:'156,20€', tickets:'41', avg:'31,33€', cats:['385,40€','308,30€','256,90€','192,70€','141,30€'] }
+};
+
+function updateAnalysis(tf) {
+  const d = tfData[tf];
+  if (!d) return;
+  document.getElementById('stat-total').textContent = d.total;
+  document.getElementById('stat-savings').textContent = d.savings;
+  document.getElementById('stat-tickets').textContent = d.tickets;
+  document.getElementById('stat-avg').textContent = d.avg;
+  const amounts = document.querySelectorAll('#cat-legend .cat-amount');
+  d.cats.forEach((v,i) => { if(amounts[i]) amounts[i].textContent = v; });
+}
+
 // Timeframe tabs interaction
 document.querySelectorAll('.tf-tab').forEach(tab => {
   tab.addEventListener('click', function() {
     this.parentElement.querySelectorAll('.tf-tab').forEach(t => t.classList.remove('active'));
     this.classList.add('active');
     state.timeframe = this.textContent;
+    updateAnalysis(this.dataset.tf);
   });
 });
 </script>
