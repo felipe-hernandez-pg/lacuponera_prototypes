@@ -51,7 +51,7 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 .wallet-balance{font-size:36px;font-weight:900;line-height:1}
 .wallet-label{font-size:var(--fs-xs);font-weight:800;text-transform:uppercase;letter-spacing:.3px;opacity:.75}
 .wallet-cupi-area{display:flex;flex-direction:column;align-items:center;gap:4px}
-.wallet-cupi-img{width:80px;height:80px;object-fit:contain;animation:cupiFloat 3s ease-in-out infinite}
+.wallet-cupi-img{width:80px;height:80px;object-fit:contain;animation:cupiFloat 3s ease-in-out infinite;border-radius:50%;background:rgba(255,255,255,.85);padding:4px}
 @keyframes cupiFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 .wallet-level-badge{font-size:10px;font-weight:900;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.2);color:#fff;text-transform:uppercase;letter-spacing:.5px}
 .wallet-accumulated{font-size:11px;font-weight:600;opacity:.65;margin-top:10px;position:relative;z-index:1}
@@ -114,7 +114,7 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 .wallet-detail-card{margin:0 16px 14px;border-radius:22px;padding:22px;background:linear-gradient(135deg,#153B25,#4FB978);color:#fff;box-shadow:0 8px 24px rgba(18,43,28,.12);position:relative;overflow:hidden}
 .wallet-detail-card::after{content:'€';position:absolute;right:-10px;top:-20px;font-size:110px;color:rgba(255,255,255,.06);font-weight:900}
 .wd-top{display:flex;align-items:center;gap:14px;position:relative;z-index:1;margin-bottom:14px}
-.wd-cupi{width:64px;height:64px;object-fit:contain;flex-shrink:0}
+.wd-cupi{width:64px;height:64px;object-fit:contain;flex-shrink:0;border-radius:50%;background:rgba(255,255,255,.85);padding:4px}
 .wd-info{flex:1}
 .wd-balance{font-size:36px;font-weight:900;line-height:1}
 .wd-label{font-size:var(--fs-xs);font-weight:800;text-transform:uppercase;opacity:.75;margin-bottom:4px}
@@ -150,7 +150,7 @@ body{font-family:'Montserrat',sans-serif;background:#1a1a2e;display:flex;justify
 
 /* Level up screen */
 .levelup-screen{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;background:linear-gradient(180deg,#F5F3FF 0%,#fff 40%,var(--primary-100) 100%)}
-.levelup-cupi{width:160px;height:160px;object-fit:contain;margin-bottom:16px;animation:pop .5s ease;filter:drop-shadow(0 8px 20px rgba(0,0,0,.12))}
+.levelup-cupi{width:160px;height:160px;object-fit:contain;margin-bottom:16px;animation:pop .5s ease;filter:drop-shadow(0 8px 20px rgba(0,0,0,.12));border-radius:50%;background:rgba(255,255,255,.85);padding:8px}
 .confetti{position:absolute;width:10px;height:10px;border-radius:2px;animation:fall 3s linear infinite}
 @keyframes fall{0%{transform:translateY(-100px) rotate(0);opacity:1}100%{transform:translateY(800px) rotate(720deg);opacity:0}}
 
