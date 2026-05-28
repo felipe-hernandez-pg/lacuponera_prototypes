@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Handoff #2 — Escaneo Inteligente</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--green:#5EBC82;--dark:#122B1C;--grey:#6B7280;--light:#F3F4F6;--orange:#FF6F00}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:#fff;color:#1a1a1a;line-height:1.6;padding:40px 24px;max-width:800px;margin:0 auto}
+h1{font-size:28px;font-weight:900;color:var(--dark);margin-bottom:8px}
+h2{font-size:20px;font-weight:800;color:var(--dark);margin:32px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--green)}
+h3{font-size:16px;font-weight:800;color:var(--dark);margin:20px 0 8px}
+.subtitle{font-size:14px;color:var(--grey);font-weight:600;margin-bottom:24px}
+.badge{display:inline-block;background:var(--green);color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.5px}
+.badge-orange{background:var(--orange)}
+.section{background:var(--light);border-radius:16px;padding:20px;margin:16px 0}
+.step{display:flex;align-items:flex-start;gap:14px;margin:16px 0;padding:14px;background:#fff;border-radius:12px;border:1.5px solid #E5E7EB}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0}
+.step-content{flex:1}
+.step-content strong{font-size:14px;color:var(--dark)}
+.step-content p{font-size:13px;color:var(--grey);margin-top:4px}
+.step-action{display:inline-block;background:var(--dark);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;margin-top:6px}
+.note{background:#FEF3C7;border-left:4px solid #F59E0B;border-radius:0 10px 10px 0;padding:14px 16px;margin:16px 0;font-size:13px;font-weight:600;color:#92400E}
+.visual-ref{background:#EDF7F1;border:2px dashed var(--green);border-radius:12px;padding:14px;margin:12px 0;font-size:13px;font-weight:700;color:var(--dark)}
+.visual-ref::before{content:'👁️ ';font-size:14px}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+th{text-align:left;padding:10px 12px;background:var(--dark);color:#fff;font-weight:700}
+td{padding:10px 12px;border-bottom:1px solid #E5E7EB}
+.objective{background:linear-gradient(135deg,#153B25,var(--green));color:#fff;border-radius:16px;padding:20px;margin:16px 0}
+.objective h3{color:#fff;margin:0 0 8px}
+.objective p{font-size:14px;opacity:.9;font-weight:600}
+.flow-arrow{text-align:center;font-size:22px;color:var(--green);margin:4px 0}
+.comparison{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.comparison-card{border-radius:14px;padding:16px;border:2px solid}
+.comparison-card h4{font-size:14px;margin-bottom:8px}
+.comparison-card ul{list-style:none;padding:0;font-size:12px;font-weight:600}
+.comparison-card li{margin:6px 0;padding-left:18px;position:relative}
+.comparison-card li::before{content:'✓';position:absolute;left:0;font-weight:900}
+@media(max-width:600px){.comparison{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<span class="badge">Prototipo #2</span>
+<h1>Escaneo Inteligente — Upload Automático</h1>
+<p class="subtitle">Handoff para agencia · Design Sprint La Cuponera · 29/5/2026</p>
+
+<div class="objective">
+  <h3>🎯 Objetivo del test</h3>
+  <p>Comparar dos modos de subida de tickets (Inteligente vs Manual) y evaluar si el consumidor prefiere la comodidad del escaneo inteligente (sube el ticket y la app aplica las ofertas automáticamente) frente al modo manual (seleccionar tienda → seleccionar oferta → subir ticket). Además, evaluar el valor del análisis de compras y las notificaciones con ofertas personalizadas.</p>
+</div>
+
+<h2>📋 Resumen del Concepto</h2>
+<div class="section">
+  <p>Actualmente, el usuario debe seleccionar manualmente la tienda y la oferta antes de subir un ticket. Con el <strong>Escaneo Inteligente</strong>, simplemente sube la foto del ticket y la app aplica las ofertas automáticamente. Además, recibe un análisis gratuito de sus compras (categorías, gasto, ahorro) y ofertas personalizadas basadas en su historial.</p>
+</div>
+
+<h2>⚡ Los Dos Modos (Comparativa)</h2>
+<div class="comparison">
+  <div class="comparison-card" style="border-color:var(--green);background:#F0FFF4">
+    <h4 style="color:var(--dark)">✨ INTELIGENTE (Nuevo)</h4>
+    <ul style="color:var(--dark)">
+      <li>Solo necesitas subir tu ticket</li>
+      <li>Ofertas aplicadas automáticamente</li>
+      <li>Análisis de compras GRATIS</li>
+      <li>Ofertas personalizadas según historial</li>
+    </ul>
+  </div>
+  <div class="comparison-card" style="border-color:var(--grey);background:#fff">
+    <h4 style="color:var(--grey)">📋 MANUAL (Actual)</h4>
+    <ul style="color:var(--grey)">
+      <li>Seleccionar establecimiento</li>
+      <li>Seleccionar oferta</li>
+      <li>Subir ticket</li>
+      <li>Sin análisis adicional</li>
+    </ul>
+  </div>
+</div>
+
+<h2>🗺️ Flujo Principal: Modo Inteligente</h2>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <strong>Pantalla Home</strong>
+    <p>El usuario ve su balance de wallet (€10,00), ofertas destacadas por retailer, y el botón central "Escanear" con pulso animado que lo invita a interactuar.</p>
+    <span class="step-action">ACCIÓN → Pulsar botón "Escanear" (centro de la tab bar)</span>
+  </div>
+</div>
+<div class="visual-ref">Wallet arriba, scroll de ofertas por retailer (Carrefour, Mercadona, etc.), botón Escanear verde con animación pulsante en la barra inferior</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <strong>Selector de Modo: Inteligente vs Manual</strong>
+    <p>Se muestran dos opciones: Escaneo Inteligente (marcado como "NUEVO") y Escaneo Manual. Cada uno explica sus pasos y ventajas.</p>
+    <span class="step-action">ACCIÓN → Pulsar "Elegir Inteligente ✨"</span>
+  </div>
+</div>
+<div class="visual-ref">Dos tarjetas verticales: la de Inteligente con borde verde y badge "NUEVO", la Manual con borde gris. La Inteligente viene preseleccionada.</div>
+
+<div class="note">⚠️ <strong>Importante:</strong> Dejar que el consumidor lea ambas opciones antes de decidir. Observar si entiende la diferencia sin ayuda.</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <strong>Pantalla de Captura: "Sube tu ticket"</strong>
+    <p>Se muestra una previsualización de un ticket de compra con borde verde. El usuario confirma "Subir ticket".</p>
+    <span class="step-action">ACCIÓN → Pulsar "✅ Subir ticket"</span>
+  </div>
+</div>
+<div class="visual-ref">Zona de previsualización con imagen de un ticket real (ratio 3:4), borde verde como guía de alineamiento, botón de confirmación abajo</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">4</div>
+  <div class="step-content">
+    <strong>Pantalla de Validación (Automática)</strong>
+    <p>CUPI (mascota) sale con un spinner y dice "Estoy validando tu ticket". Tras 3 segundos aparece un check verde y botón "Ver resultado".</p>
+    <span class="step-action">ACCIÓN → Esperar animación → Pulsar "Ver resultado"</span>
+  </div>
+</div>
+<div class="visual-ref">Cupi animado en el centro, spinner, luego ✓ verde con "¡Ticket validado!"</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">5</div>
+  <div class="step-content">
+    <strong>Resultado: Ofertas Encontradas</strong>
+    <p>Se muestra cuánto ha ahorrado: "6,50€ en esta compra". Desglose por producto (Fairy €3,50, Ariel €2,00, Oral-B €1,00). Y el saldo total acumulado en wallet: "10,00€".</p>
+    <span class="step-action">ACCIÓN → Pulsar "Ver detalle de mis compras"</span>
+  </div>
+</div>
+<div class="visual-ref">Grande "6,50€" verde arriba, lista de productos con ahorro desglosado, resumen de wallet total abajo</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">6</div>
+  <div class="step-content">
+    <strong>Análisis de Compras</strong>
+    <p>Dashboard con gasto total, ahorro, tickets, cesta media. Gráfico de donut por categorías. Tips educativos de CUPI y trucos de la comunidad.</p>
+    <span class="step-action">ACCIÓN → Explorar tabs (Hoy, Mes, 3 meses, Histórico) + scroll completo</span>
+  </div>
+</div>
+<div class="visual-ref">4 tarjetas de stats, donut chart coloreado, sección "CUPI dice", carrusel horizontal de vídeo-tips de la comunidad</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">7</div>
+  <div class="step-content">
+    <strong>Notificación de Ofertas Personalizadas (Bonus)</strong>
+    <p>Tras el análisis, volver al inicio. El prototipo muestra una pantalla de bloqueo con notificación personalizada de CUPI con productos relevantes (ej: Evax Gratis).</p>
+    <span class="step-action">ACCIÓN → "Volver a inicio" → Tocar notificación de oferta personalizada</span>
+  </div>
+</div>
+<div class="visual-ref">Lock screen con notificación "Cupi te trae tus ofertas de hoy" mostrando mini preview de un producto Evax</div>
+
+<h2>🗺️ Flujo Alternativo: Modo Manual</h2>
+<div class="section">
+  <p>Si el moderador quiere testear también el modo manual (para comparar):</p>
+  <ol style="padding-left:20px;font-size:13px;font-weight:600">
+    <li style="margin:8px 0">En el paso 2, pulsar "Usar manual" en vez de "Elegir Inteligente"</li>
+    <li style="margin:8px 0">Seleccionar ofertas manualmente (tocar cada producto que compró)</li>
+    <li style="margin:8px 0">Aparece barra inferior con contador de ofertas seleccionadas</li>
+    <li style="margin:8px 0">Pulsar "📸 Subir ticket" → misma pantalla de captura</li>
+    <li style="margin:8px 0">El resultado es idéntico pero sin análisis de compras</li>
+  </ol>
+</div>
+
+<h2>⏱️ Duración Estimada del Test</h2>
+<div class="section">
+  <p><strong>7–10 minutos</strong> (incluyendo ambos modos si se comparan)</p>
+</div>
+
+<h2>📝 Guion Sugerido para el Moderador</h2>
+<div class="section">
+  <table>
+    <tr><th>#</th><th>Indicación al Consumidor</th><th>Qué Observar</th></tr>
+    <tr><td>1</td><td>"Acabas de comprar en el súper. Quieres subir tu ticket para recibir cashback. ¿Qué haces?"</td><td>¿Encuentra el botón de escanear? ¿Le llama la atención la animación?</td></tr>
+    <tr><td>2</td><td>"Lee las dos opciones y elige la que prefieras."</td><td>¿Entiende la diferencia? ¿Cuál elige y por qué? ¿Lee las ventajas?</td></tr>
+    <tr><td>3</td><td>"Sube tu ticket como lo harías normalmente."</td><td>¿El proceso le parece rápido? ¿Sabe que no tiene que seleccionar nada más?</td></tr>
+    <tr><td>4</td><td>"Espera al resultado… ¿Qué te parece?"</td><td>¿Le genera confianza que la app detecte ofertas sola? ¿Le gusta el desglose?</td></tr>
+    <tr><td>5</td><td>"Entra a ver el detalle de tus compras."</td><td>¿Le interesa el análisis de gasto? ¿Cambia entre periodos? ¿Los tips le aportan valor?</td></tr>
+    <tr><td>6</td><td>"Si ahora recibieras esta notificación en tu móvil, ¿qué harías?"</td><td>¿Le parece intrusivo o útil? ¿Le motiva la personalización?</td></tr>
+    <tr><td>7</td><td>"Entre el modo Inteligente y el Manual, ¿cuál preferirías usar?"</td><td>Preferencia clara y por qué. Confianza vs control.</td></tr>
+  </table>
+</div>
+
+<h2>🎯 KPIs a Evaluar</h2>
+<div class="section">
+  <ul style="list-style:none;padding:0">
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Preferencia de modo:</strong> ¿Inteligente > Manual? ¿Por qué?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Comprensión:</strong> ¿Entiende que "Inteligente" no requiere selección previa?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Confianza:</strong> ¿Confía en que la app detecte las ofertas correctas?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Valor del análisis:</strong> ¿El dashboard de compras le motiva a subir más tickets?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Notifs personalizadas:</strong> ¿Las ve como intrusivas o como un beneficio?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Velocidad percibida:</strong> ¿El flujo inteligente se siente más rápido?</li>
+  </ul>
+</div>
+
+<div class="note">
+  ⚠️ <strong>Nota técnica:</strong> En "Ver resultado" se puede hacer <em>pulsación larga</em> (mantener pulsado 1 segundo) para simular el caso donde no se encuentran ofertas. Esto es para que el moderador pueda mostrar ambos escenarios si interesa.
+</div>
+
+<h2>🔗 URL del Prototipo</h2>
+<div class="section">
+  <p style="font-size:14px;font-weight:700;word-break:break-all">https://felipe-hernandez-pg.github.io/lacuponera_prototypes/prototype_escaneo_inteligente.html</p>
+</div>
+
+</body>
+</html>
