@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Handoff #1 — Geolocalización</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--green:#5EBC82;--dark:#122B1C;--grey:#6B7280;--light:#F3F4F6;--orange:#FF6F00}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:#fff;color:#1a1a1a;line-height:1.6;padding:40px 24px;max-width:800px;margin:0 auto}
+h1{font-size:28px;font-weight:900;color:var(--dark);margin-bottom:8px}
+h2{font-size:20px;font-weight:800;color:var(--dark);margin:32px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--green)}
+h3{font-size:16px;font-weight:800;color:var(--dark);margin:20px 0 8px}
+.subtitle{font-size:14px;color:var(--grey);font-weight:600;margin-bottom:24px}
+.badge{display:inline-block;background:var(--green);color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.5px}
+.badge-orange{background:var(--orange)}
+.section{background:var(--light);border-radius:16px;padding:20px;margin:16px 0}
+.step{display:flex;align-items:flex-start;gap:14px;margin:16px 0;padding:14px;background:#fff;border-radius:12px;border:1.5px solid #E5E7EB}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0}
+.step-content{flex:1}
+.step-content strong{font-size:14px;color:var(--dark)}
+.step-content p{font-size:13px;color:var(--grey);margin-top:4px}
+.step-action{display:inline-block;background:var(--dark);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;margin-top:6px}
+.note{background:#FEF3C7;border-left:4px solid #F59E0B;border-radius:0 10px 10px 0;padding:14px 16px;margin:16px 0;font-size:13px;font-weight:600;color:#92400E}
+.visual-ref{background:#EDF7F1;border:2px dashed var(--green);border-radius:12px;padding:14px;margin:12px 0;font-size:13px;font-weight:700;color:var(--dark)}
+.visual-ref::before{content:'👁️ ';font-size:14px}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+th{text-align:left;padding:10px 12px;background:var(--dark);color:#fff;font-weight:700}
+td{padding:10px 12px;border-bottom:1px solid #E5E7EB}
+.objective{background:linear-gradient(135deg,#153B25,var(--green));color:#fff;border-radius:16px;padding:20px;margin:16px 0}
+.objective h3{color:#fff;margin:0 0 8px}
+.objective p{font-size:14px;opacity:.9;font-weight:600}
+.flow-arrow{text-align:center;font-size:22px;color:var(--green);margin:4px 0}
+</style>
+</head>
+<body>
+
+<span class="badge">Prototipo #1</span>
+<h1>Geolocalización — Ofertas Cerca de Ti</h1>
+<p class="subtitle">Handoff para agencia · Design Sprint La Cuponera · 29/5/2026</p>
+
+<div class="objective">
+  <h3>🎯 Objetivo del test</h3>
+  <p>Evaluar si el consumidor entiende y valora recibir una notificación push cuando está cerca de una tienda, mostrando las ofertas relevantes filtradas por establecimiento. Probar la interacción de "búsqueda del tesoro" (escaneo de producto en tienda).</p>
+</div>
+
+<h2>📋 Resumen del Concepto</h2>
+<div class="section">
+  <p>La app detecta que el usuario está cerca de un supermercado y le envía una notificación push. Al tocarla, ve las ofertas disponibles específicamente en esa tienda. Además, puede escanear productos en la tienda para descubrir si tienen oferta ("Búsqueda del Tesoro").</p>
+</div>
+
+<h2>🗺️ Flujo Completo (Paso a Paso)</h2>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <strong>Pantalla de Permiso de Ubicación</strong>
+    <p>El prototipo arranca aquí. El usuario ve una explicación de por qué la app pide permiso de ubicación: le avisará cuando esté cerca de una tienda (máximo 1 vez al día, sin spam, ubicación en el dispositivo).</p>
+    <span class="step-action">ACCIÓN → Pulsar "Sí, avísame 📍"</span>
+  </div>
+</div>
+<div class="visual-ref">Se ve un icono de mapa 📍 grande, 3 puntos de beneficio explicados, y dos botones (verde = aceptar, blanco = "Ahora no")</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <strong>Pantalla de Bloqueo con Notificación</strong>
+    <p>Simula la pantalla de bloqueo del móvil mostrando una notificación de La Cuponera: "¿Estás en Carrefour? 🛒 — Tienes 23 ofertas disponibles hoy. Puedes ahorrar hasta +€80."</p>
+    <span class="step-action">ACCIÓN → Tocar la notificación</span>
+  </div>
+</div>
+<div class="visual-ref">La pantalla muestra reloj "10:32", fecha, y una tarjeta de notificación con logo de La Cuponera, ubicación "Carrefour Las Rosas — a 50m de ti"</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <strong>Pantalla de Ofertas Filtradas por Tienda</strong>
+    <p>Se muestran las ofertas disponibles en Carrefour: 23 ofertas, ahorro hasta €80, 8 marcas. El usuario puede filtrar por categorías (Hogar, Belleza, Higiene...).</p>
+    <span class="step-action">ACCIÓN → Scroll vertical para explorar ofertas</span>
+  </div>
+</div>
+<div class="visual-ref">Header azul con logo de Carrefour, badge "📍 Estás aquí — Carrefour Las Rosas", chips de categorías, banner de Búsqueda del Tesoro, y lista de ofertas (Ariel, Oral-B, Lenor, Fairy, H&S, Gillette, ZzzQuil)</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">4</div>
+  <div class="step-content">
+    <strong>Banner "Búsqueda del Tesoro"</strong>
+    <p>Un banner especial invita al usuario a escanear un producto en la tienda para descubrir si tiene oferta.</p>
+    <span class="step-action">ACCIÓN → Tocar el banner "Búsqueda del Tesoro 🔍"</span>
+  </div>
+</div>
+<div class="visual-ref">Banner naranja con lupa y texto "Escanea un producto y descubre si tiene oferta 🎁"</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">5</div>
+  <div class="step-content">
+    <strong>Pantalla de Escaneo de Producto</strong>
+    <p>Simula la cámara apuntando a un producto en la tienda.</p>
+    <span class="step-action">ACCIÓN → Pulsar "Escanear" para simular captura</span>
+  </div>
+</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">6</div>
+  <div class="step-content">
+    <strong>Resultado del Escaneo</strong>
+    <p>Se muestra si el producto tiene oferta disponible (resultado positivo = muestra oferta con cashback).</p>
+    <span class="step-action">ACCIÓN → Explorar el detalle de la oferta encontrada</span>
+  </div>
+</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">7</div>
+  <div class="step-content">
+    <strong>Detalle de Oferta (Ariel)</strong>
+    <p>El usuario puede ver información completa: cashback (€2,00), ingredientes, valoraciones de la comunidad (4.6★ con 847 opiniones), instrucciones de uso con vídeo, y cómo participar.</p>
+    <span class="step-action">ACCIÓN → Explorar las 4 pestañas (Detalles, Ingredientes, Valoraciones, Cómo usar)</span>
+  </div>
+</div>
+<div class="visual-ref">Imagen grande del producto, badge de cashback, 4 tabs con contenido enriquecido incluyendo chart de valoraciones e instrucciones paso a paso</div>
+
+<div class="flow-arrow">↓</div>
+
+<div class="step">
+  <div class="step-num">8</div>
+  <div class="step-content">
+    <strong>Mapa de Tiendas (Tab Inferior)</strong>
+    <p>El usuario puede explorar un mapa que muestra las tiendas cercanas con ofertas disponibles.</p>
+    <span class="step-action">ACCIÓN → Tocar el icono "Mapa 📍" en la barra inferior</span>
+  </div>
+</div>
+<div class="visual-ref">Vista de mapa con pins de las tiendas cercanas</div>
+
+<h2>⏱️ Duración Estimada del Test</h2>
+<div class="section">
+  <p><strong>5–8 minutos</strong> para completar el flujo completo.</p>
+</div>
+
+<h2>📝 Guion Sugerido para el Moderador</h2>
+<div class="section">
+  <table>
+    <tr><th>#</th><th>Indicación al Consumidor</th><th>Qué Observar</th></tr>
+    <tr><td>1</td><td>"Imagina que acabas de descargar la app. Lee la pantalla y decide qué hacer."</td><td>¿Acepta el permiso? ¿Lee los beneficios? ¿Tiene dudas sobre la privacidad?</td></tr>
+    <tr><td>2</td><td>"Ahora estás en la calle y recibes esta notificación. ¿Qué harías?"</td><td>¿Entiende que es por estar cerca de una tienda? ¿Le parece invasivo o útil?</td></tr>
+    <tr><td>3</td><td>"Ya estás dentro de la app. Explora las ofertas como lo harías normalmente."</td><td>¿Usa los filtros de categoría? ¿Entiende el badge de ubicación? ¿Nota la Búsqueda del Tesoro?</td></tr>
+    <tr><td>4</td><td>"¿Ves algo que te llame la atención en la pantalla?" (si no ve el banner, señalarlo)</td><td>¿Entiende el concepto de escanear un producto en la tienda?</td></tr>
+    <tr><td>5</td><td>"Toca en una oferta para ver su detalle."</td><td>¿Nota las valoraciones? ¿Los ingredientes añaden valor? ¿El vídeo le parece útil?</td></tr>
+    <tr><td>6</td><td>"¿Usarías esta función de aviso por ubicación en tu día a día?"</td><td>Impresión general, willingness to use, concerns</td></tr>
+  </table>
+</div>
+
+<h2>🎯 KPIs a Evaluar</h2>
+<div class="section">
+  <ul style="list-style:none;padding:0">
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Comprensión:</strong> ¿El usuario entiende por qué recibe la notificación?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Aceptación de permiso:</strong> ¿Se siente cómodo compartiendo ubicación con las garantías explicadas?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Utilidad percibida:</strong> ¿Valora tener las ofertas filtradas por la tienda donde está?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Gamificación:</strong> ¿La "Búsqueda del Tesoro" le parece divertida/motivadora?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Detalle de producto:</strong> ¿Las pestañas (ingredientes, reseñas, vídeo) añaden valor?</li>
+    <li style="margin:8px 0;font-size:14px">✅ <strong>Frecuencia deseada:</strong> ¿1 notif/día le parece bien o demasiado?</li>
+  </ul>
+</div>
+
+<div class="note">
+  ⚠️ <strong>Nota técnica:</strong> El prototipo es una simulación estática. No requiere estar físicamente cerca de una tienda. El moderador debe contextualizar: "Imagina que estás caminando cerca de un Carrefour…"
+</div>
+
+<h2>🔗 URL del Prototipo</h2>
+<div class="section">
+  <p style="font-size:14px;font-weight:700;word-break:break-all">https://felipe-hernandez-pg.github.io/lacuponera_prototypes/prototype_geolocation.html</p>
+</div>
+
+</body>
+</html>
